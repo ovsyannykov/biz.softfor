@@ -1,0 +1,118 @@
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>biz.softfor</groupId>
+  <artifactId>biz.softfor.spring</artifactId>
+  <version>0.0.0</version>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>biz.softfor</groupId>
+    <artifactId>biz.softfor.bom</artifactId>
+    <version>0.0.0</version>
+    <relativePath/>
+  </parent>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${project.testResources}</directory>
+              <includes>
+                <include>messages*.properties</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <scripts>
+                <script><![CDATA[
+                  String resourcesDir = project.properties.getProperty('project.testResources').replace('\\','/');
+                  String locales = biz.softfor.util.PropertiesUtil.get(
+                    resourcesDir + "/application.properties"
+                  , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY
+                  , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY_DEFAULT_VALUE
+                  );
+                  biz.softfor.i18nutil.I18nUtil.genMessages(
+                    resourcesDir
+                  , locales
+                  , "biz.softfor.user.i18n"
+                  )
+                ]]></script>
+              </scripts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>      
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- annotation processors -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- spring starter -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- spring -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+    </dependency>
+
+    <!-- biz.softfor -->
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.user.i18n</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.util</artifactId>
+    </dependency>
+  </dependencies>
+</project>

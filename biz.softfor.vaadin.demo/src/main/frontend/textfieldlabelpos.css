@@ -1,0 +1,37 @@
+﻿:host([theme~="label-left"])::before{
+  height: 100%;
+}
+
+:host([theme~="label-left"]) [part="label"] {
+  padding-right: 5px;
+  align-self: baseline !important;
+  overflow: unset;
+}
+
+:host([theme~="label-left"]) ::slotted(input) {
+  flex-grow: 1 !important;
+}
+
+:host([theme~="label-left"]) .vaadin-field-container {
+  flex-direction: row !important;
+  align-items: baseline;
+}
+
+:host([theme~="label-right"])::before {
+  height: 100%;
+}
+
+:host([theme~="label-right"]) [part="label"] {
+  padding-left: 5px;
+  align-self: baseline !important;
+  overflow: unset;
+}
+
+:host([theme~="label-right"]) ::slotted(input) {
+  flex-grow: 1 !important;
+}
+
+:host([theme~="label-right"]) .vaadin-field-container {
+  flex-direction: row-reverse !important;
+  align-items: baseline;
+}

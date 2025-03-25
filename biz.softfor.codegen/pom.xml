@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+	<modelVersion>4.0.0</modelVersion>
+
+  <groupId>biz.softfor</groupId>
+  <artifactId>biz.softfor.codegen</artifactId>
+  <version>0.0.0</version>
+
+  <parent>
+    <groupId>biz.softfor</groupId>
+    <artifactId>biz.softfor.bom</artifactId>
+    <version>0.0.0</version>
+    <relativePath/>
+  </parent>
+
+  <dependencies>
+    <!-- biz.softfor -->
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.jpa</artifactId>
+    </dependency>
+
+    <!-- third party -->
+    <dependency>
+      <groupId>com.squareup</groupId>
+      <artifactId>javapoet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.orm</groupId>
+      <artifactId>hibernate-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+    </dependency>
+  </dependencies>
+</project>

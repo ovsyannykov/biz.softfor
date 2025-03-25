@@ -1,0 +1,42 @@
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>biz.softfor</groupId>
+  <artifactId>biz.softfor.spring.jpa.properties</artifactId>
+  <version>0.0.0</version>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>biz.softfor</groupId>
+    <artifactId>biz.softfor.bom</artifactId>
+    <version>0.0.0</version>
+    <relativePath/>
+  </parent>
+
+  <dependencies>
+    <!-- spring starter -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- third party -->
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-core</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>

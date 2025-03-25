@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>biz.softfor</groupId>
+  <artifactId>biz.softfor</artifactId>
+  <version>0.0.0</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <modulesPath>.</modulesPath>
+  </properties>
+
+  <modules>
+    <module>${modulesPath}/biz.softfor.bom</module>
+    <module>${modulesPath}/biz.softfor.codegen</module>
+    <module>${modulesPath}/biz.softfor.i18nutil</module>
+    <module>${modulesPath}/biz.softfor.jpa</module>
+    <module>${modulesPath}/biz.softfor.jpa.annotatedclassesgen</module>
+    <module>${modulesPath}/biz.softfor.jpa.apigen</module>
+    <module>${modulesPath}/biz.softfor.jpa.filtergen</module>
+    <module>${modulesPath}/biz.softfor.jpa.withoutrelationsgen</module>
+    <module>${modulesPath}/biz.softfor.logback</module>
+    <module>${modulesPath}/biz.softfor.partner.api</module>
+    <module>${modulesPath}/biz.softfor.partner.api.filter</module>
+    <module>${modulesPath}/biz.softfor.partner.i18n</module>
+    <module>${modulesPath}/biz.softfor.partner.jpa</module>
+    <module>${modulesPath}/biz.softfor.partner.jpa.apigen</module>
+    <module>${modulesPath}/biz.softfor.partner.jpa.filtergen</module>
+    <module>${modulesPath}/biz.softfor.partner.jpa.withoutrelations</module>
+    <module>${modulesPath}/biz.softfor.partner.jpa.withoutrelationsgen</module>
+    <module>${modulesPath}/biz.softfor.partner.spring</module>
+    <module>${modulesPath}/biz.softfor.partner.spring.rest</module>
+    <module>${modulesPath}/biz.softfor.reflectionsutil</module>
+    <module>${modulesPath}/biz.softfor.spring</module>
+    <module>${modulesPath}/biz.softfor.spring.i18nrest</module>
+    <module>${modulesPath}/biz.softfor.spring.jpa.crud</module>
+    <module>${modulesPath}/biz.softfor.spring.jpa.properties</module>
+    <module>${modulesPath}/biz.softfor.spring.rest</module>
+    <module>${modulesPath}/biz.softfor.spring.rest.demo</module>
+    <module>${modulesPath}/biz.softfor.spring.rest.pingdb.jpa</module>
+    <module>${modulesPath}/biz.softfor.spring.security</module>
+    <module>${modulesPath}/biz.softfor.spring.security.service</module>
+    <module>${modulesPath}/biz.softfor.spring.ws</module>
+    <module>${modulesPath}/biz.softfor.spring.ws.client.demo</module>
+    <module>${modulesPath}/biz.softfor.spring.ws.demo</module>
+    <module>${modulesPath}/biz.softfor.testutil</module>
+    <module>${modulesPath}/biz.softfor.testutil.jpa</module>
+    <module>${modulesPath}/biz.softfor.testutil.spring</module>
+    <module>${modulesPath}/biz.softfor.user.api</module>
+    <module>${modulesPath}/biz.softfor.user.api.filter</module>
+    <module>${modulesPath}/biz.softfor.user.i18n</module>
+    <module>${modulesPath}/biz.softfor.user.jpa</module>
+    <module>${modulesPath}/biz.softfor.user.jpa.apigen</module>
+    <module>${modulesPath}/biz.softfor.user.jpa.filtergen</module>
+    <module>${modulesPath}/biz.softfor.user.jpa.withoutrelations</module>
+    <module>${modulesPath}/biz.softfor.user.jpa.withoutrelationsgen</module>
+    <module>${modulesPath}/biz.softfor.user.spring</module>
+    <module>${modulesPath}/biz.softfor.user.spring.rest</module>
+    <module>${modulesPath}/biz.softfor.user.spring.ws</module>
+    <module>${modulesPath}/biz.softfor.util</module>
+    <module>${modulesPath}/biz.softfor.util.i18n</module>
+    <module>${modulesPath}/biz.softfor.vaadin</module>
+    <module>${modulesPath}/biz.softfor.vaadin.demo</module>
+    <module>${modulesPath}/biz.softfor.vaadin.demo.i18n</module>
+    <module>${modulesPath}/biz.softfor.vaadin.i18n</module>
+  </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <source>${maven.compiler.source}</source>
+            <target>${maven.compiler.target}</target>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>

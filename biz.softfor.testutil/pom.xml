@@ -1,0 +1,46 @@
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>biz.softfor</groupId>
+  <artifactId>biz.softfor.testutil</artifactId>
+  <version>0.0.0</version>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>biz.softfor</groupId>
+    <artifactId>biz.softfor.bom</artifactId>
+    <version>0.0.0</version>
+    <relativePath/>
+  </parent>
+
+  <dependencies>
+    <!-- annotation processors -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- biz.softfor -->
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.util</artifactId>
+    </dependency>
+
+    <!-- third party -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>
