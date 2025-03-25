@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified"
+  targetNamespace="biz.softfor.user.types"
+  xmlns:tns="biz.softfor.user.types"
+>
+
+  <complexType name="UserGroup">
+    <sequence>
+      <element name="id" type="long"/>
+      <element name="name" type="string"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="User">
+    <sequence>
+      <element name="id" type="long"/>
+      <element name="username" type="string" nillable="true"/>
+      <element name="password" type="string" nillable="true"/>
+      <element name="email" type="string" nillable="true"/>
+      <element name="personId" type="long" nillable="true"/>
+      <sequence>
+        <element name="groups" type="tns:UserGroup" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      </sequence>
+    </sequence>
+  </complexType>
+
+  <complexType name="UserFilter">
+    <sequence>
+      <element name="id" type="long" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      <element name="username" type="string" nillable="true"/>
+      <element name="password" type="string" nillable="true"/>
+      <element name="email" type="string" nillable="true"/>
+      <element name="personId" type="long" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </sequence>
+  </complexType>
+
+  <element name="fields" type="string" nillable="true"/>
+
+</schema>

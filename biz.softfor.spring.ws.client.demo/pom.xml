@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>biz.softfor</groupId>
+  <artifactId>biz.softfor.spring.ws.client.demo</artifactId>
+  <version>0.0.0</version>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>biz.softfor</groupId>
+    <artifactId>biz.softfor.bom</artifactId>
+    <version>0.0.0</version>
+    <relativePath/>
+  </parent>
+
+  <properties>
+    <biz.softfor.ws.schema0>/userApi.xsd</biz.softfor.ws.schema0>
+    <biz.softfor.ws.wsdl>/userApi.wsdl</biz.softfor.ws.wsdl>
+  </properties>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-user-xsd</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>biz.softfor</groupId>
+                  <artifactId>biz.softfor.user.spring.ws</artifactId>
+                  <version>${biz.softfor.user.spring.ws.version}</version>
+                  <overWrite>false</overWrite>
+                  <includes>${biz.softfor.ws.schema0},/userTypes.xsd</includes>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.tempSources}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.user.spring.ws</artifactId>
+            <version>${biz.softfor.user.spring.ws.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.ws.xmlschema</groupId>
+            <artifactId>xmlschema-core</artifactId>
+            <version>${xmlschema-core.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>wsdl4j</groupId>
+            <artifactId>wsdl4j</artifactId>
+            <version>${wsdl4j.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>generate-wsdl</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <scripts>
+                <script><![CDATA[
+                  String tempSources = project.properties.getProperty('project.tempSources').replace('\\','/');
+                  biz.softfor.spring.ws.WsdlUtil.xsd2Wsdl(
+                    tempSources + "${biz.softfor.ws.wsdl}"
+                  , biz.softfor.user.spring.ws.UserWs.LOCATION
+                  , biz.softfor.user.spring.ws.UserWs.PORT_TYPE_NAME
+                  , biz.softfor.user.spring.ws.UserWs.NAMESPACE_URI
+                  , tempSources + "${biz.softfor.ws.schema0}"
+                  );
+                ]]></script>
+              </scripts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.sun.xml.ws</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>wsimport</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <wsdlFiles>
+            <wsdlFile>${project.tempSources}/${biz.softfor.ws.wsdl}</wsdlFile>
+          </wsdlFiles>
+          <!-- running the biz.softfor.spring.ws.demo required
+          <wsdlUrls>
+            <wsdlUrl>http://127.0.0.1:8080/ws/wsdl/userApi.wsdl</wsdlUrl>
+          </wsdlUrls>
+          -->
+          <packageName>biz.softfor.user.ws.client</packageName>
+          <extension>true</extension>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-tools</artifactId>
+            <version>${jaxws-tools.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>repackage</id>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- spring -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web-services</artifactId>
+    </dependency>
+
+    <!-- biz.softfor -->
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.util</artifactId>
+    </dependency>
+
+    <!-- third party -->
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.xml.ws</groupId>
+      <artifactId>jakarta.xml.ws-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+  </dependencies>
+</project>

@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+  http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>biz.softfor</groupId>
+  <artifactId>biz.softfor.vaadin.demo</artifactId>
+  <version>0.0.0</version>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>biz.softfor</groupId>
+    <artifactId>biz.softfor.bom</artifactId>
+    <version>0.0.0</version>
+    <relativePath/>
+  </parent>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>central</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>vaadin-prereleases</id>
+      <url>https://maven.vaadin.com/vaadin-prereleases/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <profiles>
+    <profile>
+      <id>production</id>
+      <dependencies>
+        <dependency>
+          <groupId>com.vaadin</groupId>
+          <artifactId>vaadin-core</artifactId>
+          <version>${vaadin.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>com.vaadin</groupId>
+              <artifactId>vaadin-dev</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-maven-plugin</artifactId>
+            <version>${vaadin.version}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>build-frontend</goal>
+                </goals>
+                <phase>compile</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${project.testResources}</directory>
+              <includes>
+                <include>messages*.properties</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>biz.softfor</groupId>
+                  <artifactId>biz.softfor.user.jpa</artifactId>
+                  <overWrite>false</overWrite>
+                  <includes>${project.dbsources}/${spring.sql.init.platform}/0_0__user.sql</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>biz.softfor</groupId>
+                  <artifactId>biz.softfor.partner.jpa</artifactId>
+                  <overWrite>false</overWrite>
+                  <includes>
+                    ${project.dbsources}/${spring.sql.init.platform}/0_0__address.sql
+                    ,${project.dbsources}/${spring.sql.init.platform}/0_0__partner.sql
+                  </includes>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.tempSources}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+          <!--
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeScope>runtime</includeScope>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+          </execution>
+          -->
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.bekioui.maven.plugin</groupId>
+        <artifactId>merge-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>merge-files</id>
+            <goals>
+              <goal>merge</goal>
+            </goals>
+            <configuration>
+              <merges>
+                <merge>
+                  <sources>
+                    <source>${project.tempSources}/dbsources/${spring.sql.init.platform}/0_0__user.sql</source>
+                    <source>${project.tempSources}/dbsources/${spring.sql.init.platform}/0_0__address.sql</source>
+                    <source>${project.tempSources}/dbsources/${spring.sql.init.platform}/0_0__partner.sql</source>
+                  </sources>
+                  <target>${project.build.outputDirectory}/db/${spring.sql.init.platform}/0_0__init.sql</target>
+                  <override>true</override>
+                </merge>
+              </merges>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.reflectionsutil</artifactId>
+            <version>${biz.softfor.reflectionsutil.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>generate-resources</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <scripts>
+                <script><![CDATA[
+                  String resourcesDir = project.properties.getProperty('project.resources').replace('\\','/');
+                  String locales = biz.softfor.util.PropertiesUtil.get(
+                    resourcesDir + "/application.properties"
+                  , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY
+                  , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY_DEFAULT_VALUE
+                  );
+                  biz.softfor.i18nutil.I18nUtil.genMessages(
+                    resourcesDir
+                  , locales
+                  , "biz.softfor.util.i18n"
+                  , "biz.softfor.util.partner.i18n"
+                  , "biz.softfor.util.security.i18n"
+                  , "biz.softfor.user.i18n"
+                  , "biz.softfor.address.i18n"
+                  , "biz.softfor.partner.i18n"
+                  , "biz.softfor.vaadin.i18n"
+                  , "biz.softfor.vaadin.demo.i18n"
+                  )
+                  biz.softfor.reflectionsutil.ReflectionsUtil.scan(
+                    resourcesDir
+                  , org.springframework.stereotype.Service.class
+                  , new String[] {
+                      "biz.softfor.user.spring"
+                    , "biz.softfor.address.spring"
+                    , "biz.softfor.partner.spring"
+                  }
+                  , null
+                  );
+                ]]></script>
+              </scripts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>      
+      <plugin>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-maven-plugin</artifactId>
+        <version>${vaadin.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-frontend</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+            </exclude>
+          </excludes>
+          <!--Clean build and startup time for Vaadin apps sometimes may exceed the default Spring Boot's 30sec timeout.-->
+          <jvmArguments>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5895</jvmArguments>
+          <wait>500</wait>
+          <maxAttempts>240</maxAttempts>
+        </configuration>
+        <executions>
+          <execution>
+            <id>repackage</id>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- spring -->
+    <!--
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <optional>true</optional>
+    </dependency>
+    -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-oauth2-resource-server</artifactId>
+    </dependency>
+
+    <!-- biz.softfor -->
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.logback</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.partner.api.filter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.partner.i18n</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.partner.spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.jpa.properties</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.sqllog</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.user.api.filter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.user.i18n</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.util.i18n</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.vaadin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.vaadin.demo.i18n</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.vaadin.i18n</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- third party -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.microsoft.playwright</groupId>
+      <artifactId>playwright</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.bonigarcia</groupId>
+      <artifactId>webdrivermanager</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.parttio</groupId>
+      <artifactId>line-awesome</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

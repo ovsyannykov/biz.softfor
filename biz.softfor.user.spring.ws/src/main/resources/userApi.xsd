@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified"
+  targetNamespace="biz.softfor.user.api"
+  xmlns:tns="biz.softfor.user.api"
+  xmlns:types="biz.softfor.user.types"
+>
+
+  <import namespace="biz.softfor.user.types" schemaLocation="userTypes.xsd"/>
+
+  <element name="UserReadRequest">
+    <complexType>
+      <sequence>
+        <element name="filter" type="types:UserFilter" nillable="true"/>
+        <element ref="types:fields" minOccurs="0" maxOccurs="unbounded"/>
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="UserReadResponse">
+    <complexType>
+      <sequence>
+        <element name="data" type="types:User" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+      </sequence>
+    </complexType>
+  </element>
+
+</schema>

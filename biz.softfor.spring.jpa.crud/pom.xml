@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>biz.softfor</groupId>
+  <artifactId>biz.softfor.spring.jpa.crud</artifactId>
+  <version>0.0.0</version>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>biz.softfor</groupId>
+    <artifactId>biz.softfor.bom</artifactId>
+    <version>0.0.0</version>
+    <relativePath/>
+  </parent>
+
+  <build>
+    <filters>
+      <filter>${project.testResources}/application.properties</filter>
+    </filters>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>biz.softfor</groupId>
+                  <artifactId>biz.softfor.user.jpa</artifactId>
+                  <version>${biz.softfor.user.jpa.version}</version>
+                  <overWrite>false</overWrite>
+                  <includes>${project.dbsources}/${spring.sql.init.platform}/0_0__user.sql</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>biz.softfor</groupId>
+                  <artifactId>biz.softfor.partner.jpa</artifactId>
+                  <version>${biz.softfor.partner.jpa.version}</version>
+                  <overWrite>false</overWrite>
+                  <includes>
+                    ${project.dbsources}/${spring.sql.init.platform}/0_0__address.sql
+                    ,${project.dbsources}/${spring.sql.init.platform}/0_0__partner.sql
+                  </includes>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.tempSources}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.bekioui.maven.plugin</groupId>
+        <artifactId>merge-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>merge-files</id>
+            <goals>
+              <goal>merge</goal>
+            </goals>
+            <configuration>
+              <merges>
+                <merge>
+                  <sources>
+                    <source>${project.tempSources}/dbsources/${spring.sql.init.platform}/0_0__user.sql</source>
+                    <source>${project.tempSources}/dbsources/${spring.sql.init.platform}/0_0__address.sql</source>
+                    <source>${project.tempSources}/dbsources/${spring.sql.init.platform}/0_0__partner.sql</source>
+                  </sources>
+                  <target>${project.build.testOutputDirectory}/db/${spring.sql.init.platform}/0_0__init.sql</target>
+                  <override>true</override>
+                </merge>
+              </merges>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- annotation processors -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- spring -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- biz.softfor -->
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.logback</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.partner.jpa</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.partner.jpa.withoutrelations</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.jpa.properties</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.sqllog</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.testutil.jpa</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.testutil.spring</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.user.jpa</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.user.jpa.withoutrelations</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- third party -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

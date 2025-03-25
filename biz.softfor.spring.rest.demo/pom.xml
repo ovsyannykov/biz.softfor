@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>biz.softfor</groupId>
+  <artifactId>biz.softfor.spring.rest.demo</artifactId>
+  <version>0.0.0</version>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>biz.softfor</groupId>
+    <artifactId>biz.softfor.bom</artifactId>
+    <version>0.0.0</version>
+    <relativePath/>
+  </parent>
+
+  <profiles>
+    <profile>
+      <id>vault</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <spring.profiles.active>vault</spring.profiles.active>
+      </properties>
+    </profile>
+  </profiles>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${project.resources}</directory>
+              <includes>
+                <include>messages*.properties</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>biz.softfor</groupId>
+                  <artifactId>biz.softfor.user.jpa</artifactId>
+                  <version>${biz.softfor.user.jpa.version}</version>
+                  <overWrite>false</overWrite>
+                  <includes>${project.dbsources}/${spring.sql.init.platform}/0_0__user.sql</includes>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>biz.softfor</groupId>
+                  <artifactId>biz.softfor.partner.jpa</artifactId>
+                  <version>${biz.softfor.partner.jpa.version}</version>
+                  <overWrite>false</overWrite>
+                  <includes>
+                    ${project.dbsources}/${spring.sql.init.platform}/0_0__address.sql
+                    ,${project.dbsources}/${spring.sql.init.platform}/0_0__partner.sql
+                  </includes>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.tempSources}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+          <!--
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeScope>runtime</includeScope>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+            </configuration>
+          </execution>
+          -->
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.bekioui.maven.plugin</groupId>
+        <artifactId>merge-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>merge-files</id>
+            <goals>
+              <goal>merge</goal>
+            </goals>
+            <configuration>
+              <merges>
+                <merge>
+                  <sources>
+                    <source>${project.tempSources}/dbsources/${spring.sql.init.platform}/0_0__user.sql</source>
+                    <source>${project.tempSources}/dbsources/${spring.sql.init.platform}/0_0__address.sql</source>
+                    <source>${project.tempSources}/dbsources/${spring.sql.init.platform}/0_0__partner.sql</source>
+                  </sources>
+                  <target>${project.build.outputDirectory}/db/${spring.sql.init.platform}/0_0__init.sql</target>
+                  <override>true</override>
+                </merge>
+              </merges>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.reflectionsutil</artifactId>
+            <version>${biz.softfor.reflectionsutil.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>generate-resources</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <scripts>
+                <script><![CDATA[
+                  String resourcesDir = project.properties.getProperty('project.resources').replace('\\','/');
+                  String locales = biz.softfor.util.PropertiesUtil.get(
+                    resourcesDir + "/application.properties"
+                  , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY
+                  , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY_DEFAULT_VALUE
+                  );
+                  biz.softfor.i18nutil.I18nUtil.genMessages(
+                    resourcesDir
+                  , locales
+                  , "biz.softfor.util.i18n"
+                  , "biz.softfor.util.partner.i18n"
+                  , "biz.softfor.util.security.i18n"
+                  , "biz.softfor.user.i18n"
+                  , "biz.softfor.address.i18n"
+                  , "biz.softfor.partner.i18n"
+                  );
+                  biz.softfor.reflectionsutil.ReflectionsUtil.scan(
+                    resourcesDir
+                  , org.springframework.web.bind.annotation.RestController.class
+                  , new String[] { "biz.softfor" }
+                  , new String[] { "biz.softfor.user.spring.rest.testassets" }
+                  );
+                  biz.softfor.reflectionsutil.ReflectionsUtil.scan(
+                    resourcesDir
+                  , org.springframework.stereotype.Service.class
+                  , new String[] { "biz.softfor" }
+                  , new String[] { "biz.softfor.user.spring.rest.testassets" }
+                  );
+                ]]></script>
+              </scripts>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-test-resources</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <scripts>
+                <script><![CDATA[
+                  String resourcesDir = project.properties.getProperty('project.testResources').replace('\\','/');
+                  biz.softfor.reflectionsutil.ReflectionsUtil.scan(
+                    resourcesDir
+                  , org.springframework.web.bind.annotation.RestController.class
+                  , new String[] { "biz.softfor" }
+                  , null
+                  );
+                  biz.softfor.reflectionsutil.ReflectionsUtil.scan(
+                    resourcesDir
+                  , org.springframework.stereotype.Service.class
+                  , new String[] { "biz.softfor" }
+                  , null
+                  );
+                ]]></script>
+              </scripts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>      
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+            </exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>repackage</id>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- annotation processors -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- spring -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- biz.softfor -->
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.logback</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.partner.api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.partner.i18n</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.partner.spring.rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.i18nrest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.jpa.properties</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.rest.pingdb.jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.sqllog</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.testutil.spring</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.user.api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.user.i18n</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.user.spring.rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.util.i18n</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- third party -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+</project>

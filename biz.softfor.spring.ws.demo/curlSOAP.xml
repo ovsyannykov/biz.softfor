@@ -1,0 +1,21 @@
+﻿<soapenv:Envelope
+  xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+  xmlns="biz.softfor.user.api"
+  xmlns:types="biz.softfor.user.types"
+>
+  <soapenv:Header/>
+  <soapenv:Body>
+    <UserReadRequest>
+      <filter>
+        <types:id>51</types:id>
+        <types:username xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <types:password xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+        <types:email xsi:nil="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>
+      </filter>
+      <types:fields>username</types:fields>
+      <types:fields>password</types:fields>
+      <types:fields>email</types:fields>
+      <types:fields>groups</types:fields>
+    </UserReadRequest>
+  </soapenv:Body>
+</soapenv:Envelope>
