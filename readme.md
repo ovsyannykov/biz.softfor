@@ -1,8 +1,8 @@
-<h1 align="center">biz.softfor</h1>
-<p align="right">
+<p>
   <a href="readme.ua.md">UA</a>
   <a href="readme.ru.md">RU</a>
 </p>
+<h1 align="center">biz.softfor</h1>
 
 ![Demo](biz.softfor.vaadin.demo/doc/images/readme.png)
 

@@ -27,7 +27,7 @@ public class VaadinTestUtil {
     screenshot.get(page);
     add.click();
     String dialogSlctId = ToManyField.gridId(name);
-    page.locator("#" + dialogSlctId).waitFor();
+    page.locator("#" + dialogSlctId).waitFor(DriverHlpr.wait);
     screenshot.get(page);
     page.locator("#" + DbGrid.clearId(gridClass)).click();
     Locator fieldFilter = page.locator
@@ -87,11 +87,11 @@ public class VaadinTestUtil {
     page.locator("#" + MainLayout.loginId).waitFor(DriverHlpr.lwait);
   }
 
-  public static void sideNavSectionClick(Page page, String name) {
+  public static Locator sideNavSection(Page page, String name) {
     String sectXp = "//vaadin-side-nav/vaadin-side-nav-item[text()='" + name + "']";
     Locator sectLctr = page.locator(sectXp);
     Locator toggle = sectLctr.locator("button[part='toggle-button']");
-    toggle.all().getFirst().click();
+    return toggle.all().getFirst();
   }
 
   public static String gridColumnHeaderXp(String gridId, String column) {
