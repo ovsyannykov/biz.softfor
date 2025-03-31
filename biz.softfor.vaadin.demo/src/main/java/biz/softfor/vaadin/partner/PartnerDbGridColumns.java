@@ -18,14 +18,14 @@ import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.Order;
 import biz.softfor.util.api.filter.FilterId;
 import biz.softfor.util.partner.PartnerType;
+import biz.softfor.vaadin.VaadinUtil;
+import biz.softfor.vaadin.address.PostcodesDbGrid;
+import biz.softfor.vaadin.dbgrid.ComboBoxDbGridColumn;
 import biz.softfor.vaadin.dbgrid.DateDbGridColumn;
 import biz.softfor.vaadin.dbgrid.DbGridColumn;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
-import biz.softfor.vaadin.dbgrid.ListDbGridColumn;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
-import biz.softfor.vaadin.VaadinUtil;
-import biz.softfor.vaadin.address.PostcodesDbGrid;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.Renderer;
@@ -50,7 +50,7 @@ public class PartnerDbGridColumns extends DbGridColumns<Long, Partner> {
   <Partner, ?, ? extends AbstractField, ?, ? extends FilterId<Long>>[] columns
   (PostcodesDbGrid postcodesDbGrid, LocationTypesDbGrid locationTypesDbGrid) {
     return new DbGridColumn[] {
-      new ListDbGridColumn<>
+      new ComboBoxDbGridColumn<>
       (Partner_.TYP, PartnerType.VALUES, Partner::getTyp, PartnerFltr::setTyp)
     , new TextDbGridColumn<>(Partner_.PARTNER_NAME, PartnerFltr::setPartnerName)
     , new TextDbGridColumn<>(Partner_.PARTNER_FULLNAME, PartnerFltr::setPartnerFullname)

@@ -84,14 +84,13 @@
     <!-- third party -->
     <dependency>
       <groupId>com.vaadin</groupId>
-      <artifactId>vaadin</artifactId>
-      <!--<artifactId>vaadin-core</artifactId>-->
-      <!--<exclusions>
+      <artifactId>vaadin-core</artifactId>
+      <exclusions>
         <exclusion>
           <groupId>com.vaadin</groupId>
           <artifactId>copilot</artifactId>
         </exclusion>
-      </exclusions>-->
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>

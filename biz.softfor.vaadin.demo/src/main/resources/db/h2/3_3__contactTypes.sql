@@ -3,6 +3,6 @@ insert into contactTypes(name,descr) values
 ,('fax','fax')--2
 ,('email','email')--3
 ,('website','website')--4
-,('skype','skype')--5
-,('viber','viber')--6
+,('Signal','Signal')--5
+,('Viber','Viber')--6
 ;

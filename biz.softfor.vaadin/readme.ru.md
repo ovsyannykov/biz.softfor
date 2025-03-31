@@ -1,30 +1,34 @@
-<h1 align="center">biz.softfor.vaadin</h1>
-<p align="right">
+<p>
   <a href="readme.ua.md">UA</a>
   <a href="readme.md">EN</a>
 </p>
+<h1 align="center">biz.softfor.vaadin</h1>
 
 ![Demo](doc/images/readme.png)
 
-— это фреймворк на базе компонентов [Vaadin](https://vaadin.com/components) для
-построения CRUD-интерфейсов корпоративных приложений. Он предоставляет следующие
+— это фреймворк на базе компонентов [Vaadin](https://vaadin.com/components) и
+базового классе CRUD-сервиса
+[biz.softfor.spring.jpa.crud](../biz.softfor.spring.jpa.crud) для построения
+CRUD-интерфейсов корпоративных приложений. Он предоставляет следующие
 уникальные возможности:
-- **не требует высокой квалификации** программистов для создания сложных интерфейсов; 
+- **не требует высокой квалификации** программистов для создания сложных
+интерфейсов; 
 - **минимальное количество необходимого кода** для отображения и редактирования
 сложных данных, включая ManyToMany, OneToMany, ManyToOne и OneToOne отношения;
-- гибкое **разграничение доступа** к пунктам меню, просмотру и редактированию полей
-данных;
+- гибкое **разграничение доступа** к пунктам меню, просмотру и редактированию
+полей данных;
 - табличные компоненты с фильтрами и сортировкой;
 - сквозная **локализация** приложения;
-- готовые страницы логина, **регистрации и профиля** пользователя.
+- готовые страницы логина, **регистрации** и **профиля** пользователя.
 
 ## Пример
 
-Давайте создадим интерфейс для работы со справочником должностей:
+Давайте создадим интерфейс для работы со **справочником должностей**
 
 ![Contact Types](doc/images/Appointments.png)
 
-Имеем Entity-класс:
+Имеем Entity-класс
+**[Appointment](../biz.softfor.partner.jpa/src/main/java/biz/softfor/partner/jpa/Appointment.java)**:
 ```java
 @Entity
 @Table(name = Appointment.TABLE)
@@ -53,16 +57,24 @@ public class Appointment extends IdEntity<Short> implements Serializable {
 ```
 
 и сервис для работы с БД:
+**[AppointmentSvc](../biz.softfor.partner.spring/src/main/java/biz/softfor/partner/spring/AppointmentSvc.java)**
 ```java
 @Service
 public class AppointmentSvc
 extends CrudSvc<Short, Appointment, AppointmentWor, AppointmentFltr> {}
 ```
+где ***AppointmentWor*** и ***AppointmentFltr*** - классы, сгенерированные
+процессорами аннотаций
+[biz.softfor.jpa.withoutrelationsgen](../biz.softfor.jpa.withoutrelationsgen) и
+[biz.softfor.jpa.filtergen](../biz.softfor.jpa.filtergen) соответственно в
+проектах [biz.softfor.partner.jpa.withoutrelations](../biz.softfor.partner.jpa.withoutrelations)
+и [biz.softfor.partner.api.filter](../biz.softfor.partner.api.filter).
 
 Для реализации полноценного CRUD-интерфейса нам понадобятся следующие
 компоненты Spring.
 
-Форма для создания/редактирования/просмотра:
+Форма для создания/редактирования/просмотра
+**[AppointmentForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/AppointmentForm.java)**:
 ```java
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -89,15 +101,9 @@ extends EntityForm<Short, Appointment, AppointmentWor> {
 
 }
 ```
-Базовый класс **EntityForm** реализует всю логику контроля доступа к полям,
-отображения и валидации изменённых значений переданного списка компонентов
-элементов управлени с метками, соответствующими именам полей редактируемого
-объекта. **AppointmentWor** - класс без отношений (Without Relations),
-созданный специальным працессором аннотаций.
-В данном случае, т.к. исходный класс не содержит отношений, то
-**AppointmentWor** практически идентичен исходному.
 
-Далее зададим список колонок для табличного отображения:
+Далее зададим список колонок для табличного отображения
+**[AppointmentDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/AppointmentDbGridColumns.java)**:
 ```java
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -124,13 +130,8 @@ public class AppointmentDbGridColumns extends DbGridColumns<Short, Appointment> 
 }
 ```
 
-DbGridColumn-компоненты - это элементы управления для задания значений фильтров
-по колонкам. Класс AppointmentFltr генерируется из Appointment специальным
-процессором аннотаций. Предусмотрена также возможность фильтрации по более
-сложным выражениям, чем по колонкам. Для этого конструктор DbGrid имеет параметр
-filters, элементы которого располаются над компонентом Grid.
-
-Компонент для отображения табличных данных:
+Компонент для отображения табличных данных
+**[AppointmentsDbGrid](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/AppointmentsDbGrid.java)**:
 ```java
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -142,11 +143,11 @@ extends DbGrid<Short, Appointment, AppointmentWor> {
     super(service, AppointmentRequest.Read.class, columns, DbGridColumns.EMPTY);
   }
 
-
 }
 ```
 
-И, наконец, то, что Вы видите на скриншоте:
+И, наконец, то, что Вы видите на скриншоте, класс
+**[AppointmentsView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/AppointmentsView.java)**:
 ```java
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -172,91 +173,227 @@ extends EntityView<Short, Appointment, AppointmentWor> {
 }
 ```
 Здесь второй и третий параметры - классы для создания объектов соответствующих
-запросов, а четвёртый - список элементов для отображения ManyToMany и OneToMany
-отношений.
+запросов, сгенерированные процессором аннотаций в проекте
+[biz.softfor.partner.jpa.withoutrelations](../biz.softfor.partner.jpa.withoutrelations),
+а четвёртый - список элементов для отображения отношений ***ManyToMany*** и
+***OneToMany***.
 
 ## Компоненты пакета biz.softfor.vaadin
 
-- **BasicView** - базовый View-класс, реализующий  отображение заголовка текущей
-страницы в браузере в зависимости от выбранного языка.
-- **EntityForm** - отображает форму для создания и редактирования записи в
-соответствии с заданными правами доступа и обеспечивает валидацию введённых
-данных в соотвествии с аннотациями Java Bean Validation.
-- **EntityFormColumns** - Map компонентов, разрешённых к просмотру и
-редактированию.
-- **EntityView** - отображает данные в табличной форме, включая ManyToMany и
-OneToMany отношения, в соответствии с заданными правами доступа. Данные могут
-быть отсортированы по нескольким колонкам, отфильтрованы как по колонке, так и
-по содержимому нескольких колонок либо по отличному от используемого по
-умолчанию методу.
-- **LangSelector** - выбор языка интерфейса из списка, задаваемого в настройках.
-- **MainLayout** - включает в себя меню, заголовок приложения, переключатель
-языка, кнопки входа/выхода и регистрации/профиля.
-- **MenuItemData** - содержит данные для создания иерархического меню.
-- **NotFoundView** - компонент с сообщением, что запрашиваемая страница не найдена.
-- **SideNavLocalized** - боковое меню.
-- **Text** - общеупотребительные слова и фразы в корпоративных приложениях. Эти
-строки используются как ключи для подсистемы интернационализации.
+- [BasicView](src/main/java/biz/softfor/vaadin/BasicView.java) - базовый
+View-класс, реализующий отображение заголовка текущей страницы в браузере в
+зависимости от выбранного языка. Пример использования:
+[NotFoundView](src/main/java/biz/softfor/vaadin/NotFoundView.java).
+
+![NotFoundView](doc/images/NotFoundView.png)
+
+- [EntityForm](src/main/java/biz/softfor/vaadin/EntityForm.java) - отображает
+форму для создания и редактирования записи в соответствии с заданными правами
+доступа и обеспечивает валидацию введённых данных в соотвествии с аннотациями
+Java Bean Validation. Помимо приведённого выше, вот пример посложнее:
+[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java).
+
+![EntityForm](doc/images/EntityForm.png)
+
+- [EntityFormColumns](src/main/java/biz/softfor/vaadin/EntityFormColumns.java) -
+Map компонентов, разрешённых к просмотру и редактированию. Пример использования:
+[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L97).
+
+- [EntityView](src/main/java/biz/softfor/vaadin/EntityView.java) - отображает
+данные в табличной форме, включая **ManyToMany** и **OneToMany** отношения, в
+соответствии с заданными правами доступа. Данные могут быть отсортированы
+по нескольким колонкам, отфильтрованы как по колонке, так и по содержимому
+нескольких колонок либо по отличному от используемого по умолчанию методу.
+Пример использования:
+[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java).
+
+![EntityView](doc/images/EntityView.png)
+
+- [LangSelector](src/main/java/biz/softfor/vaadin/LangSelector.java) - выбор
+языка интерфейса из списка, задаваемого в **application.properties**:
+```properties
+biz.softfor.locales=en,uk
+```
+При этом у Вас должны быть добавлены переведённые значения для соответствующих
+языков в исходный код файлов локализации. Иначе в процессе сборки приложения при
+генерации ***.messages** файлов недостающие значения будут заменены значениями
+по умолчанию, соответствующими первому языку в этом списке. Также в логах Вы
+найдёте предупреждения о каждой такой замене. Подробнее об этом смотрите в
+[biz.softfor.i18nutil](../biz.softfor.i18nutil)
+Пример использования:
+[MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java#L51).
+
+![LangSelector](doc/images/LangSelector.png)
+
+- [MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java) - включает в
+себя меню, заголовок приложения, переключатель языка, кнопки входа/выхода и
+регистрации/профиля. Пример использования:
+[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L27).
+
+- [MenuItemData](src/main/java/biz/softfor/vaadin/MenuItemData.java) - содержит
+данные для создания иерархического меню. Пример использования:
+[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/demo/App.java#L61).
+
+- [NotFoundView](src/main/java/biz/softfor/vaadin/NotFoundView.java) - компонент
+с сообщением, что запрашиваемая страница не найдена.
+
+- [SideNavLocalized](src/main/java/biz/softfor/vaadin/SideNavLocalized.java) -
+боковое меню. Пример использования как наследника SideNav:
+[MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java#L42).
+
+- [Text](src/main/java/biz/softfor/vaadin/Text.java) - общеупотребительные слова
+и фразы в корпоративных приложениях. Эти строки используются как ключи для
+подсистемы интернационализации.
 
 ## Компоненты пакета biz.softfor.vaadin.dbgrid
 
-- **DbGrid** - содержит табличное отображение данных с возможностями сортировки
-и фильтрации, возможности удаления, создания и редактирования записей.
-- **DbGridColumn** - базовый класс для компонентов, описывающих колонку DbGrid,
-реализующих методы отображения и фильтрации данных.
-- **DbGridColumns** - отфильтрованный в соответствии с правами доступа список
-колонок для DbGrid.
-- **BoolDbGridColumn** - компонент для отображения булевых значений, может иметь
-состояние "не определено", необходимое для отображения и фильтрации
-NULL-значений.
-ComboBoxDbGridColumn
-- **DateDbGridColumn** - компонент для отображения дат и фильтрации по диапазону.
-- **ListDbGridColumn** - ComboBox для отображения и фильтрации наборов
-значений, может иметь состояние "не определено", необходимое для отображения и
-фильтрации NULL-значений.
-- **ManyToOneDbGridColumn** - компонент для отображения и фильтрации
-ManyToOne-колонки, иными словами - значения из справочника по идентификатору.
-- **NumberDbGridColumn** - компонент для отображения и фильтрации Short, Integer
-и Long значений.
-- **TextDbGridColumn** - компонент для отображения и фильтрации строковых
-значений.
+- [DbGrid](src/main/java/biz/softfor/vaadin/dbgrid/DbGrid.java) - содержит
+табличное отображение данных с возможностями сортировки и фильтрации,
+возможности удаления, создания и редактирования записей. Пример использования:
+[PartnersDbGrid](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersDbGrid.java).
+
+- [DbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/DbGridColumn.java) -
+базовый класс для компонентов, описывающих колонку DbGrid, реализующих методы
+отображения и фильтрации данных. Так как фильтрация данных требует обращения к
+базе данных, то она выполняется по нажатию кнопки "Filtrate".
+
+- [DbGridColumns](src/main/java/biz/softfor/vaadin/dbgrid/DbGridColumns.java) -
+отфильтрованный в соответствии с правами доступа список колонок для DbGrid.
+Пример использования:
+[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java).
+
+- [BoolDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/BoolDbGridColumn.java) -
+компонент для отображения булевых значений, может иметь состояние
+"не определено", необходимое для отображения и фильтрации NULL-значений.
+Пример использования:
+[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L35).
+<p align="center"><img src="doc/images/BoolDbGridColumn.png" alt="BoolDbGridColumn"></p>
+
+- [DateDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/DateDbGridColumn.java) -
+компонент для отображения дат и фильтрации по диапазону. Пример использования:
+[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L57)
+<p align="center"><img src="doc/images/DateDbGridColumn.png" alt="DateDbGridColumn"></p>
+
+- [ComboBoxDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/ComboBoxDbGridColumn.java) -
+ComboBox для отображения и фильтрации наборов значений, может иметь состояние
+"не определено", необходимое для отображения и фильтрации NULL-значений.
+Пример использования:
+[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L53)
+<p align="center"><img src="doc/images/ComboBoxDbGridColumn.png" alt="ComboBoxDbGridColumn"></p>
+
+- [ManyToOneDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/ManyToOneDbGridColumn.java) -
+компонент для отображения и фильтрации ManyToOne-колонки, иными словами -
+значения из справочника по идентификатору. Пример использования:
+[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L60)
+
+![ManyToOneDbGridColumn](doc/images/ManyToOneDbGridColumn.png)
+
+- [NumberDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/NumberDbGridColumn.java) -
+компонент для отображения и фильтрации Short, Integer и Long значений.
+Пример использования:
+[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L64).
+<p align="center"><img src="doc/images/NumberDbGridColumn.png" alt="NumberDbGridColumn"></p>
+
+- [TextDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/TextDbGridColumn.java) -
+компонент для отображения и фильтрации строковых значений. Пример использования:
+[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L34).
+<p align="center"><img src="doc/images/TextDbGridColumn.png" alt="TextDbGridColumn"></p>
 
 ## Компоненты пакета biz.softfor.vaadin.field
 
-- **DateRangePicker** - выбор диапазона дат.
-- **ManyToOneField** - выбор значения из справочника.
-- **ToManyField** - отображение и редактирование списка OneToMany и ManyToMany
-связей.
+- [DateRangePicker](src/main/java/biz/softfor/vaadin/field/DateRangePicker.java) -
+выбор диапазона дат. Пример использования:
+[DateDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/DateDbGridColumn.java#L31)
+
+- [ManyToOneField](src/main/java/biz/softfor/vaadin/field/ManyToOneField.java) -
+выбор значения из справочника. Пример использования:
+[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L117).
+
+![ManyToOneField](doc/images/ManyToOneField.png)
+
+- [ToManyField](src/main/java/biz/softfor/vaadin/field/ToManyField.java) -
+отображение и редактирование списка **OneToMany** и **ManyToMany** связей.
+Пример использования для OneToMany (Contacts):
+[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L141).
+
+![OneToManyField](doc/images/OneToManyField.png)
+
+И для ManyToMany (Groups):
+[UserForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/UserForm.java#L31).
+
+![ManyToManyField](doc/images/ManyToManyField.png)
+В режиме "только для чтения" недоступны кнопки удаления и добавления.
 
 ## Компоненты пакета biz.softfor.vaadin.field.grid
 
-- **GridField** - содержит табличное отображение данных с возможностями
-сортировки и фильтрации. В отличие от DbGrid работает с предварительно
-считанными данными.
-- **GridFields** - список полей GridField для отображения связанных *ToMany
-записей совместно с DbGrid в составе EntityView.
-- **GridFieldColumn** - базовый класс для компонентов, описывающих колонку
-GridField, реализующих методы отображения и фильтрации данных.
-- **GridFieldColumns** - отфильтрованный в соответствии с правами доступа список
-колонок для GridField.
-- **BoolGridFieldColumn** - компонент для отображения булевых значений, может
-иметь состояние "не определено", необходимое для отображения и фильтрации
-NULL-значений.
-- **ListGridFieldColumn** - ComboBox для отображения и фильтрации наборов
-значений, может иметь состояние "не определено", необходимое для отображения и
-фильтрации NULL-значений.
-- **NumberGridFieldColumn** - компонент для отображения и фильтрации Short,
-Integer и Long значений.
-- **TextGridFieldsColumn** - компонент для отображения и фильтрации строковых
-значений.
+- [GridField](src/main/java/biz/softfor/vaadin/field/grid/GridField.java) -
+содержит табличное отображение данных с возможностями сортировки и фильтрации.
+В отличие от DbGrid работает с предварительно загруженными в память данными.
+И поэтому фильтрация содержимого Grid выполняется сразу по мере ввода.
+Пример использования (Contacts, Partner files, Users):
+[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L47).
+
+![GridField](doc/images/GridField.png)
+
+- [GridFields](src/main/java/biz/softfor/vaadin/field/grid/GridFields.java) -
+список полей GridField для отображения связанных ***ToMany** записей совместно с
+DbGrid в составе EntityView. Пример использования:
+[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L44).
+
+- [GridFieldColumn](src/main/java/biz/softfor/vaadin/field/grid/GridFieldColumn.java) -
+базовый класс для компонентов, описывающих колонку GridField и реализующих методы
+отображения и фильтрации данных. Пример использования:
+[ContactGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/ContactGridFieldColumns.java#L31).
+
+- [GridFieldColumns](src/main/java/biz/softfor/vaadin/field/grid/GridFieldColumns.java) -
+отфильтрованный в соответствии с правами доступа список колонок для GridField.
+Пример использования:
+[ContactGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/ContactGridFieldColumns.java).
+
+- [BoolGridFieldColumn](src/main/java/biz/softfor/vaadin/field/grid/BoolGridFieldColumn.java) -
+компонент для отображения булевых значений, может иметь состояние
+"не определено", необходимое для отображения и фильтрации NULL-значений.
+Пример использования:
+[ContactGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/ContactGridFieldColumns.java#L47).
+<p align="center"><img src="doc/images/BoolGridFieldColumn.png" alt="BoolGridFieldColumn"></p>
+
+- [ComboBoxGridFieldColumn](src/main/java/biz/softfor/vaadin/field/grid/ComboBoxGridFieldColumn.java) -
+ComboBox для отображения и фильтрации наборов значений, может иметь состояние
+"не определено", необходимое для отображения и фильтрации NULL-значений.
+
+- [NumberGridFieldColumn](src/main/java/biz/softfor/vaadin/field/grid/NumberGridFieldColumn.java) -
+компонент для отображения и фильтрации Short, Integer и Long значений. Пример
+использования:
+[RoleGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleGridFieldColumns.java#L47).
+<p align="center"><img src="doc/images/NumberGridFieldColumn.png" alt="NumberGridFieldColumn"></p>
+
+- [TextGridFieldsColumn](src/main/java/biz/softfor/vaadin/field/grid/TextGridFieldsColumn.java) -
+компонент для отображения и фильтрации строковых значений. Пример использования:
+[RoleGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleGridFieldColumns.java#L25).
+<p align="center"><img src="doc/images/TextGridFieldsColumn.png" alt="TextGridFieldsColumn"></p>
 
 ## Компоненты пакета biz.softfor.vaadin.security
 
-- **LoginView** - страница входа в приложение, собрана на базе Vaadin LoginForm
-с добавлением локализации и возврата на исходную страницу, с которой
-пользователь попытался войти.
-- **ProfileView** - даёт возможность пользователю просмотривать и редактировать
-собственные (и только собственные) данные. При этом пароль увидеть невозможно,
-можно лишь ввести новый.
-- **RegistrationView** - форма регистрации нового пользователя. При этом он
-получает права доступа по умолчанию, изменить которые может администратор.
+- [LoginView](src/main/java/biz/softfor/vaadin/security/LoginView.java) -
+страница входа в приложение, собрана на базе Vaadin LoginForm с добавлением
+локализации и перехода на исходную страницу, с которой пользователь осуществил
+вход.
+
+![LoginView](doc/images/LoginView.png)
+
+- [ProfileView](src/main/java/biz/softfor/vaadin/security/ProfileView.java) -
+даёт возможность пользователю просмотривать и редактировать собственные
+(и только собственные) данные. При этом пароль увидеть невозможно, можно лишь
+ввести новый.
+
+![ProfileView](doc/images/ProfileView.png)
+
+- [RegistrationView](src/main/java/biz/softfor/vaadin/security/RegistrationView.java) -
+форма регистрации нового пользователя. При этом он получает права доступа по
+умолчанию, изменить которые может лишь администратор.
+
+![RegistrationView](doc/images/RegistrationView.png)
+
+## Лицензия
+
+Этот проект имеет лицензию MIT - подробности смотрите в файле [license.md](license.md).

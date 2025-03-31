@@ -4,6 +4,7 @@ import biz.softfor.util.api.Identifiable;
 import biz.softfor.vaadin.DbNamedColumn;
 import biz.softfor.vaadin.Text;
 import biz.softfor.vaadin.dbgrid.DbGrid;
+import static biz.softfor.vaadin.field.ToManyField.gridId;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.customfield.CustomField;
@@ -42,6 +43,7 @@ implements DbNamedColumn {
   ) {
     this.dbName = name;
     this.dbGrid = dbGrid;
+    dbGrid.grid.setId(gridId(this.dbName));
     this.label = label;
     this.detail = detail;
     this.involvedFields = involvedFields;
@@ -65,8 +67,10 @@ implements DbNamedColumn {
         updateModel();
         dialog.close();
       });
+      select.setId(ToManyField.selectId());
 
       Button cancel = new Button(getTranslation(Text.Cancel), ev -> dialog.close());
+      cancel.setId(ToManyField.cancelId());
 
       dialog.getFooter().add(select, cancel);
       dialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);

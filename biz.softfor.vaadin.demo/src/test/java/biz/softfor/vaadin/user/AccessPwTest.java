@@ -29,8 +29,6 @@ import org.springframework.test.context.ContextConfiguration;
 @UsePlaywright
 public class AccessPwTest {
 
-  private final static String SCREENSHOT_DIR = "./screenlog/";
-  private final static String ADMIN_ROLE = "ADMIN";
   private final static String ADMIN_USER = "admin";
   private final static String ADMIN_PWD = "admin";
 
@@ -39,9 +37,9 @@ public class AccessPwTest {
 
   @Test
   public void access(TestInfo testInfo, Page page) throws Exception {
-    //city -> country, postcode -> state
+    page.setViewportSize(1280, 800);
     DriverHlpr drvHlpr = new DriverHlpr(page, port);
-    String screenshotDir = SCREENSHOT_DIR + AccessPwTest.class.getSimpleName()
+    String screenshotDir = Screenshot.SCREENSHOT_DIR + AccessPwTest.class.getSimpleName()
     + "/" + testInfo.getTestMethod().get().getName() + "/";
     Screenshot screenshot = new Screenshot(screenshotDir, Screenshot.sequencer(screenshotDir, new Holder<>(0)));
     String sectXpath = "//vaadin-side-nav-item[text()='Address']";
@@ -50,7 +48,7 @@ public class AccessPwTest {
     String checkItemXpath = sectXpath + "/vaadin-side-nav-item[text()='" + checkItem + "']";
     String sectItem = "States";
     Class<?> sectItemClass = State.class;
-    String sectPath = StdPath.locationUri(port) + "/" + StatesView.PATH;
+    String sectPath = StdPath.locationUri(port, StatesView.PATH);
     String sectViewId = EntityView.gridId(sectItemClass);
     String gridColumnHeaderXpath = VaadinTestUtil.gridColumnHeaderXp(EntityView.gridId(sectItemClass), "Country");
     String checkItemDsc = "Address -> " + checkItem + " menu item";
@@ -74,7 +72,7 @@ public class AccessPwTest {
     assertThat(page.locator(gridColumnHeaderXpath).all()).as(checkColumnDsc).isEmpty();
 
     //go to User Groups View and add the user "admin" to the EDITORS group
-    page.navigate(StdPath.locationUri(port) + "/" + UserGroupsView.PATH);
+    page.navigate(StdPath.locationUri(port, UserGroupsView.PATH));
     page.locator("#" + groupsViewId).waitFor(DriverHlpr.lwait);
     screenshot.get(page);
     Locator groupBy = page.locator("//*[@id='" + groupsViewId + "']"

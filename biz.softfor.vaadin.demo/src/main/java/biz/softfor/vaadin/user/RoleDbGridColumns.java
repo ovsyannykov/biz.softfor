@@ -8,8 +8,8 @@ import biz.softfor.util.BooleansEnum;
 import biz.softfor.util.api.Order;
 import biz.softfor.util.security.DefaultAccess;
 import biz.softfor.vaadin.dbgrid.BoolDbGridColumn;
+import biz.softfor.vaadin.dbgrid.ComboBoxDbGridColumn;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
-import biz.softfor.vaadin.dbgrid.ListDbGridColumn;
 import biz.softfor.vaadin.dbgrid.NumberDbGridColumn;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
 import com.vaadin.flow.component.textfield.LongField;
@@ -28,8 +28,7 @@ public class RoleDbGridColumns extends DbGridColumns<Long, Role> {
   );
 
   public RoleDbGridColumns(SecurityMgr securityMgr) {
-    super(
-      Role.TABLE
+    super(Role.TABLE
     , securityMgr
     , Role.class
     , new TextDbGridColumn<>(Role_.NAME, RoleFltr::setName)
@@ -48,7 +47,7 @@ public class RoleDbGridColumns extends DbGridColumns<Long, Role> {
       , BooleansEnum.DEFINED_VALUES
       , Role::getDisabled
       )
-    , new ListDbGridColumn<>(
+    , new ComboBoxDbGridColumn<>(
         Role_.DEFAULT_ACCESS
       , DefaultAccess.VALUES
       , Role::getDefaultAccess

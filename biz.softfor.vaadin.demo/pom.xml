@@ -36,19 +36,6 @@
   <profiles>
     <profile>
       <id>production</id>
-      <dependencies>
-        <dependency>
-          <groupId>com.vaadin</groupId>
-          <artifactId>vaadin-core</artifactId>
-          <version>${vaadin.version}</version>
-          <exclusions>
-            <exclusion>
-              <groupId>com.vaadin</groupId>
-              <artifactId>vaadin-dev</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-      </dependencies>
       <build>
         <plugins>
           <plugin>

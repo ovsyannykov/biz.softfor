@@ -36,7 +36,7 @@ public class UsersView extends EntityView<Long, User, UserWor> {
     super(dbGrid
     , UserRequest.Update.class
     , UserRequest.Delete.class
-    , new GridFields<Long, User>(
+    , new GridFields<>(
         securityMgr
       , User.class
       , new GridField<>(

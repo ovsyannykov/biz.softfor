@@ -27,9 +27,11 @@ import org.springframework.context.annotation.Scope;
 
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@Route(value = Text.PROFILE, layout = MainLayout.class)
+@Route(value = ProfileView.PATH, layout = MainLayout.class)
 @PermitAll
 public class ProfileView extends BasicView {
+
+  public final static String PATH = Text.PROFILE;
 
   private final SecurityMgr securityMgr;
   private final UserSvc service;

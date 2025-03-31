@@ -4,7 +4,7 @@ import biz.softfor.jpa.crud.querygraph.ColumnDescr;
 import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.Identifiable;
 import biz.softfor.util.api.ServerError;
-import biz.softfor.vaadin.dbgrid.ComboBoxDbGridColumn;
+import biz.softfor.vaadin.dbgrid.BasicComboBoxDbGridColumn;
 import biz.softfor.vaadin.field.grid.GridField;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -62,6 +62,10 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
     return name + VaadinUtil.INPUT_ID_OBJ + VaadinUtil.FORM_ID_SFX;
   }
 
+  public static String fieldGridId(String name) {
+    return name + VaadinUtil.FORM_ID_SFX;
+  }
+
   public static String id(Class<?> clazz) {
     return clazz.getSimpleName() + VaadinUtil.FORM_ID_SFX;
   }
@@ -93,7 +97,7 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
         binder.bind(fieldCtl, fieldName);
         if(fieldCtl instanceof GridField gridField) {
           DbNamedColumn.fields(fields, gridField.columns, fieldName);
-          gridField.grid.setId(gridField.dbName() + VaadinUtil.FORM_ID_SFX);
+          gridField.grid.setId(fieldGridId(gridField.dbName()));
           grids.add(gridField);
         } else {
           fields.add(fieldName);
@@ -188,7 +192,7 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
         hl.setLabel(getTranslation(StringUtil.fieldToName(me.getKey())));
       }
       if(c instanceof ComboBoxBase cb) {
-        ComboBoxDbGridColumn.localeChange(cb);
+        BasicComboBoxDbGridColumn.localeChange(cb);
       }
     }
   }
