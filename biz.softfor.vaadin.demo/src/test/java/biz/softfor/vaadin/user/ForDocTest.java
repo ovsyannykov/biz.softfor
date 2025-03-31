@@ -1,6 +1,8 @@
 package biz.softfor.vaadin.user;
 
 import biz.softfor.address.jpa.State;
+import biz.softfor.partner.jpa.Partner;
+import biz.softfor.partner.jpa.Partner_;
 import biz.softfor.playwrightutil.DriverHlpr;
 import biz.softfor.playwrightutil.Screenshot;
 import biz.softfor.playwrightutil.VaadinTestUtil;
@@ -8,15 +10,19 @@ import biz.softfor.user.jpa.User;
 import biz.softfor.user.jpa.UserGroup;
 import biz.softfor.user.jpa.UserGroup_;
 import biz.softfor.user.jpa.User_;
-import biz.softfor.util.Holder;
 import biz.softfor.util.api.StdPath;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityView;
+import biz.softfor.vaadin.GridColumn;
+import biz.softfor.vaadin.NotFoundView;
 import biz.softfor.vaadin.address.StatesView;
+import biz.softfor.vaadin.dbgrid.DbGrid;
 import biz.softfor.vaadin.demo.App;
+import biz.softfor.vaadin.partner.PartnersView;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.junit.UsePlaywright;
+import com.microsoft.playwright.options.WaitForSelectorState;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
@@ -27,7 +33,7 @@ import org.springframework.test.context.ContextConfiguration;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = { App.class })
 @UsePlaywright
-public class AccessPwTest {
+public class ForDocTest {
 
   private final static String SCREENSHOT_DIR = "./screenlog/";
   private final static String ADMIN_ROLE = "ADMIN";
@@ -38,12 +44,52 @@ public class AccessPwTest {
   private int port;
 
   @Test
-  public void access(TestInfo testInfo, Page page) throws Exception {
-    //city -> country, postcode -> state
+  public void forDoc(TestInfo testInfo, Page page) throws Exception {
+    page.setViewportSize(1280, 720);
     DriverHlpr drvHlpr = new DriverHlpr(page, port);
-    String screenshotDir = SCREENSHOT_DIR + AccessPwTest.class.getSimpleName()
+    String screenshotDir = SCREENSHOT_DIR + ForDocTest.class.getSimpleName()
     + "/" + testInfo.getTestMethod().get().getName() + "/";
-    Screenshot screenshot = new Screenshot(screenshotDir, Screenshot.sequencer(screenshotDir, new Holder<>(0)));
+    Screenshot screenshot = new Screenshot(screenshotDir);
+    VaadinTestUtil.login(drvHlpr, ADMIN_USER, ADMIN_PWD, null);
+
+    String name = "NotFoundView";
+if(true) {
+    page.navigate(StdPath.locationUri(port, NotFoundView.PATH));
+    String langSelectorXp = "//vaadin-app-layout/vaadin-horizontal-layout/vaadin-horizontal-layout/vaadin-combo-box";
+    page.locator(langSelectorXp).waitFor(DriverHlpr.lwait);
+    screenshot.get(page, name + 0);
+    page.click(langSelectorXp);
+    page.click("#vaadin-combo-box-item-1");
+    screenshot.get(page, name + 1);
+    page.click(langSelectorXp);
+    page.click("#vaadin-combo-box-item-0");
+  }
+  
+    name = "EntityView";
+    page.navigate(StdPath.locationUri(port, PartnersView.PATH));
+    String entityViewGridId = EntityView.gridId(Partner.class);
+    page.locator("#" + entityViewGridId).waitFor(DriverHlpr.lwait);
+    screenshot.get(page, name + 0);
+    page.click("//*[@id='" + entityViewGridId + "']//vaadin-grid-sorter[text()='Registration date/Birthdate']");
+    screenshot.get(page, name + 1);
+    String filterTypeXp = "//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content/*[@id='"
+    + GridColumn.columnFilterId(Partner_.TYP) + "']/input";
+    page.click(filterTypeXp);
+    page.click("#vaadin-multi-select-combo-box-item-3");
+    page.click("#vaadin-multi-select-combo-box-item-4");
+    screenshot.get(page, name + 2);
+    page.press("body", "Escape");
+    page.click("#" + DbGrid.filtrateId(Partner.class));
+    page.locator("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='Person']")
+    .waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.DETACHED));
+    screenshot.get(page, name + 3);
+
+    name = "EntityForm";
+    page.dblclick("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='Legal entity']");
+    page.locator("#" + EntityForm.id(Partner.class)).waitFor(DriverHlpr.wait);
+    screenshot.get(page, name);
+    
+  if(false) {
     String sectXpath = "//vaadin-side-nav-item[text()='Address']";
     String EDITORS = "COUNTRIES_EDITORS";
     String checkItem = "Countries";
@@ -106,6 +152,7 @@ public class AccessPwTest {
     screenshot.get(page);
     assertThat(page.locator(checkItemXpath).all()).as(checkItemDsc).isNotEmpty();
     assertThat(page.locator(gridColumnHeaderXpath).all()).as(checkColumnDsc).isNotEmpty();
+  }
   }
 
 }

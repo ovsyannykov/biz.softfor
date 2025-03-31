@@ -59,14 +59,7 @@ public class PartnerForm extends EntityForm<Long, Partner, PartnerWor> {
   private final DatePicker passportDate;
   private final TextArea passportIssued;
   private final Checkbox married;
-  private final TextField address;
-  private final ManyToOneField<Long, Partner> parentField;
-  private final ManyToOneField<Integer, Postcode> postcodeField;
-  private final ManyToOneField<Short, LocationType> locTypeField;
   private final TextArea note;
-  private final ToManyField<Long, Contact, Partner, List<Contact>> contacts;
-  private final ToManyField<Long, PartnerFile, Partner, List<PartnerFile>> partnerFiles;
-  private final ToManyField<Long, User, Partner, List<User>> users;
 
   private static final String NOTE_KEY
   = StringUtil.field(Partner_.PARTNER_DETAILS, PartnerDetails_.NOTE);
@@ -188,19 +181,7 @@ public class PartnerForm extends EntityForm<Long, Partner, PartnerWor> {
     passportDate = (DatePicker)columns.get(PASSPORT_DATE_KEY);
     passportIssued = (TextArea)columns.get(PASSPORT_ISSUED_KEY);
     married = (Checkbox)columns.get(MARRIED_KEY);
-    address = (TextField)columns.get(Partner_.ADDRESS);
-    parentField = (ManyToOneField<Long, Partner>)columns.get(Partner_.PARENT);
-    postcodeField
-    = (ManyToOneField<Integer, Postcode>)columns.get(Partner_.POSTCODE);
-    locTypeField
-    = (ManyToOneField<Short, LocationType>)columns.get(Partner_.LOCATION_TYPE);
     note = (TextArea)columns.get(NOTE_KEY);
-    contacts = (ToManyField<Long, Contact, Partner, List<Contact>>)
-    columns.get(Partner_.CONTACTS);
-    partnerFiles = (ToManyField<Long, PartnerFile, Partner, List<PartnerFile>>)
-    columns.get(Partner_.PARTNER_FILES);
-    users = (ToManyField<Long, User, Partner, List<User>>)
-    columns.get(Partner_.USERS);
   }
 
   @Override

@@ -71,7 +71,7 @@ public class AccessSeTest {
     By checkItemMenuBy = By.xpath(sectXpath + "/vaadin-side-nav-item[text()='" + checkItem + "']");
     String sectItem = "Postcodes";
     Class<?> sectItemClass = Postcode.class;
-    String sectPath = StdPath.locationUri(port) + "/" + PostcodesView.PATH;
+    String sectPath = StdPath.locationUri(port, PostcodesView.PATH);
     By sectViewBy = By.id(EntityView.gridId(sectItemClass));
     By gridColumnHeaderBy = By.xpath(VaadinTestUtil.gridColumnHeaderXp(EntityView.gridId(sectItemClass), "City"));
     String checkItemDsc = "Address -> " + checkItem + " menu item";
@@ -100,7 +100,7 @@ public class AccessSeTest {
     .as(checkColumnDsc).isEmpty();
 
     //go to User Groups View and add the user "admin" to the EDITORS group
-    drvHlpr.driver.get(StdPath.locationUri(port) + "/" + UserGroupsView.PATH);
+    drvHlpr.driver.get(StdPath.locationUri(port, UserGroupsView.PATH));
     drvHlpr.lwait.until(drv -> !drv.findElements(groupsViewBy).isEmpty());
     screenshot.get();
     By groupBy = By.xpath("//*[@id='" + groupsViewId + "']"

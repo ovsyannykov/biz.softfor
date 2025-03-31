@@ -68,7 +68,7 @@ public class VaadinTestUtil {
   public static void login
   (DriverHlpr drvHlpr, String username, String password, Screenshot screenshot)
   throws IOException {
-    drvHlpr.driver.get(StdPath.locationUri(drvHlpr.port) + "/" + StdPath.LOGIN);
+    drvHlpr.driver.get(StdPath.locationUri(drvHlpr.port, StdPath.LOGIN));
     By submitBy = By.xpath("//vaadin-button[@slot='submit']");
     drvHlpr.lwait.until(drv -> drv.findElement(submitBy) != null);
     WebElement usernameCtl = drvHlpr.driver.findElement

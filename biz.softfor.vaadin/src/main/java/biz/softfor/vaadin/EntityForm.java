@@ -4,7 +4,7 @@ import biz.softfor.jpa.crud.querygraph.ColumnDescr;
 import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.Identifiable;
 import biz.softfor.util.api.ServerError;
-import biz.softfor.vaadin.dbgrid.ComboBoxDbGridColumn;
+import biz.softfor.vaadin.dbgrid.BasicComboBoxDbGridColumn;
 import biz.softfor.vaadin.field.grid.GridField;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -188,7 +188,7 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
         hl.setLabel(getTranslation(StringUtil.fieldToName(me.getKey())));
       }
       if(c instanceof ComboBoxBase cb) {
-        ComboBoxDbGridColumn.localeChange(cb);
+        BasicComboBoxDbGridColumn.localeChange(cb);
       }
     }
   }

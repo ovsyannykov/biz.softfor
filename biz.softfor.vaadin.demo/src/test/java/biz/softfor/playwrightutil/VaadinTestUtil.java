@@ -66,7 +66,7 @@ public class VaadinTestUtil {
 
   public static void login
   (DriverHlpr drvHlpr, String username, String password, Screenshot screenshot) {
-    drvHlpr.page.navigate(StdPath.locationUri(drvHlpr.port) + "/" + StdPath.LOGIN);
+    drvHlpr.page.navigate(StdPath.locationUri(drvHlpr.port, StdPath.LOGIN));
     Locator submit = drvHlpr.page.locator("//vaadin-button[@slot='submit']");
     submit.waitFor(DriverHlpr.lwait);
     drvHlpr.page.locator("//input[@name='username']").fill(username);
