@@ -15,21 +15,26 @@ import org.springframework.context.annotation.Scope;
 
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ProfileFormColumns extends EntityFormColumns {
+public class ProfileFormColumns extends EntityFormColumns<Long, User, UserWor> {
 
-  public final static LinkedHashMap<String, Component> columns() {
+  public final static LinkedHashMap<String, Component> basic() {
     return new LinkedHashMap<String, Component>() {{
+      put(User_.USERNAME, new TextField(User_.USERNAME));
       EmailField email = new EmailField(User_.EMAIL);
       email.setRequiredIndicatorVisible(true);
       put(User_.EMAIL, email);
-      put(User_.USERNAME, new TextField(User_.USERNAME));
-      PasswordField passwordField = new PasswordField(User_.PASSWORD);
-      passwordField.setRequiredIndicatorVisible(true);
-      passwordField.setMaxLength(User.PASSWORD_MAX_LENGTH);
-      passwordField.setMinLength(User.PASSWORD_MIN_LENGTH);
-      passwordField.setPattern(User.PASSWORD_PATTERN);
-      put(User_.PASSWORD, passwordField);
     }};
+  }
+
+  public final static LinkedHashMap<String, Component> columns() {
+    LinkedHashMap<String, Component> result = basic();
+    PasswordField passwordField = new PasswordField(User_.PASSWORD);
+    passwordField.setRequiredIndicatorVisible(true);
+    passwordField.setMaxLength(User.PASSWORD_MAX_LENGTH);
+    passwordField.setMinLength(User.PASSWORD_MIN_LENGTH);
+    passwordField.setPattern(User.PASSWORD_PATTERN);
+    result.put(User_.PASSWORD, passwordField);
+    return result;
   }
 
   public ProfileFormColumns() {

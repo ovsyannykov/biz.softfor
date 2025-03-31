@@ -15,9 +15,11 @@ import biz.softfor.vaadin.VaadinUtil;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 
-@Route(value = StdPath.REGISTRATION, layout = MainLayout.class)
+@Route(value = RegistrationView.PATH, layout = MainLayout.class)
 @AnonymousAllowed
 public class RegistrationView extends BasicView {
+
+  public final static String PATH = StdPath.REGISTRATION;
 
   private final UserSvc service;
 

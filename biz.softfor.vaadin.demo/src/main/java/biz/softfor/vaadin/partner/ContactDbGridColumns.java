@@ -10,11 +10,11 @@ import biz.softfor.partner.jpa.Contact_;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.util.BooleansEnum;
 import biz.softfor.util.api.Order;
+import biz.softfor.vaadin.VaadinUtil;
 import biz.softfor.vaadin.dbgrid.BoolDbGridColumn;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
-import biz.softfor.vaadin.VaadinUtil;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.List;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -40,7 +40,7 @@ public class ContactDbGridColumns extends DbGridColumns<Long, Contact> {
     , new TextDbGridColumn<>(Contact_.DESCR, ContactFltr::setDescr)
     , new BoolDbGridColumn<>
       (Contact_.IS_PUBLIC, BooleansEnum.DEFINED_VALUES, Contact::getIsPublic)
-    , new ManyToOneDbGridColumn<Contact, ContactFltr, Short, ContactType>(
+    , new ManyToOneDbGridColumn<>(
         Contact_.CONTACT_TYPE
       , VaadinUtil.defaultRenderer(m -> {
           ContactType e = m.getContactType();
@@ -58,7 +58,7 @@ public class ContactDbGridColumns extends DbGridColumns<Long, Contact> {
       , ContactFltr::setPartnerId
       , partners
       )
-    , new ManyToOneDbGridColumn<Contact, ContactFltr, Short, Appointment>(
+    , new ManyToOneDbGridColumn<>(
         Contact_.APPOINTMENT
       , VaadinUtil.defaultRenderer(m -> {
           Appointment e = m.getAppointment();

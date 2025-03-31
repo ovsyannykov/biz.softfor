@@ -8,9 +8,9 @@ import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.util.BooleansEnum;
 import biz.softfor.util.api.Order;
 import biz.softfor.vaadin.VaadinUtil;
-import biz.softfor.vaadin.field.grid.BoolGridFieldColumn;
-import biz.softfor.vaadin.field.grid.ListGridFieldColumn;
 import biz.softfor.vaadin.dbgrid.ManyToOneGridColumnComponent;
+import biz.softfor.vaadin.field.grid.BasicComboBoxGridFieldColumn;
+import biz.softfor.vaadin.field.grid.BoolGridFieldColumn;
 import biz.softfor.vaadin.field.grid.GridFieldColumn;
 import biz.softfor.vaadin.field.grid.GridFieldColumns;
 import biz.softfor.vaadin.field.grid.TextGridFieldsColumn;
@@ -25,7 +25,8 @@ public class ContactGridFieldColumns extends GridFieldColumns<Long, Contact> {
 
   public ContactGridFieldColumns
   (SecurityMgr securityMgr, ContactTypesDbGrid dbGrid) {
-    super(securityMgr
+    super(
+      securityMgr
     , Contact.class
     , new GridFieldColumn<>(
         Contact_.CONTACT_TYPE
@@ -40,7 +41,7 @@ public class ContactGridFieldColumns extends GridFieldColumns<Long, Contact> {
         ContactType e = m.getContactType();
         return e == null ? "" : e.getName();
       })
-      , ListGridFieldColumn.defaultFilter(Contact::getContactType)
+      , BasicComboBoxGridFieldColumn.defaultFilter(Contact::getContactType)
       )
     , new TextGridFieldsColumn<>(Contact_.DESCR, Contact::getDescr)
     , new BoolGridFieldColumn<>

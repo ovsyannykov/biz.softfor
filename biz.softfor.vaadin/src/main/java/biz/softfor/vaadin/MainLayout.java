@@ -1,8 +1,10 @@
 package biz.softfor.vaadin;
 
 import biz.softfor.spring.security.SecurityUtil;
-import biz.softfor.util.api.StdPath;
 import biz.softfor.vaadin.security.AuthSvc;
+import biz.softfor.vaadin.security.LoginView;
+import biz.softfor.vaadin.security.ProfileView;
+import biz.softfor.vaadin.security.RegistrationView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -31,6 +33,10 @@ public class MainLayout extends AppLayout implements LocaleChangeObserver {
   = Text.Login + VaadinUtil.BUTTON_ID_OBJ + VaadinUtil.MAIN_ID_SFX;
   public final static String logoutId
   = Text.Logout + VaadinUtil.BUTTON_ID_OBJ + VaadinUtil.MAIN_ID_SFX;
+  public final static String profileId
+  = Text.PROFILE + VaadinUtil.BUTTON_ID_OBJ + VaadinUtil.MAIN_ID_SFX;
+  public final static String registrationId
+  = Text.REGISTRATION + VaadinUtil.BUTTON_ID_OBJ + VaadinUtil.MAIN_ID_SFX;
 
   private final H3 logo;
   private final LangSelector langCtl;
@@ -58,13 +64,15 @@ public class MainLayout extends AppLayout implements LocaleChangeObserver {
       });
       login.setId(logoutId);
       registration = new Button(new Icon(VaadinIcon.USER)
-      , e -> VaadinUtil.navigateWithRetPath(Text.PROFILE));
+      , e -> VaadinUtil.navigateWithRetPath(ProfileView.PATH));
+      registration.setId(profileId);
     } else {
       login = new Button(new Icon(VaadinIcon.SIGN_IN)
-      , e -> VaadinUtil.navigateWithRetPath(StdPath.LOGIN));
+      , e -> VaadinUtil.navigateWithRetPath(LoginView.PATH));
       login.setId(loginId);
       registration = new Button(new Icon(VaadinIcon.USER_CARD)
-      , e -> VaadinUtil.navigateWithRetPath(StdPath.REGISTRATION));
+      , e -> VaadinUtil.navigateWithRetPath(RegistrationView.PATH));
+      registration.setId(registrationId);
     }
     var header = new HorizontalLayout(toggle, logo, langCtl, login, registration);
     header.add(registration);

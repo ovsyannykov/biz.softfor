@@ -16,10 +16,11 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 
-@Route(value = StdPath.LOGIN, layout = MainLayout.class)
+@Route(value = LoginView.PATH, layout = MainLayout.class)
 @AnonymousAllowed
 public class LoginView extends BasicView implements BeforeEnterObserver {
 
+  public final static String PATH = StdPath.LOGIN;
   public final static String Username = "Username";
   public final static String Password = "Password";
   public final static String Forgot_password_ = "Forgot_password_";

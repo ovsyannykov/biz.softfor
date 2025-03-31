@@ -29,4 +29,8 @@ public class StdPath {
     return LOCATION_HOST + ":" + port;
   }
 
+  public static String locationUri(int port, String page) {
+    return locationUri(port) + "/" + page;
+  }
+
 }

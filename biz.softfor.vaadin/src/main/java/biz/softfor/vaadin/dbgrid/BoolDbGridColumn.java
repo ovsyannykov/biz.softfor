@@ -12,7 +12,7 @@ import java.util.function.Function;
 import org.apache.commons.collections4.CollectionUtils;
 
 public class BoolDbGridColumn<E, F extends FilterId>
-extends ComboBoxDbGridColumn<E, Boolean, BooleansEnum, F> {
+extends BasicComboBoxDbGridColumn<E, Boolean, BooleansEnum, F> {
 
   public static <F extends FilterId>
   BiConsumer<F, MultiSelectComboBox<BooleansEnum>> defaultFilter(String dbName) {

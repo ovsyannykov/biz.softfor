@@ -48,7 +48,7 @@ public class UserWsTest {
     marshaller.marshal(readReq, requestSr);
     System.out.println(requestSr.toString());
 
-    UserReadResponse response = (UserReadResponse)ws.marshalSendAndReceive(StdPath.locationUri(port) + wsRootPath, readReq);
+    UserReadResponse response = (UserReadResponse)ws.marshalSendAndReceive(StdPath.locationUri(port, wsRootPath), readReq);
 
     StringResult responseSr = new StringResult();
     marshaller.marshal(response, responseSr);

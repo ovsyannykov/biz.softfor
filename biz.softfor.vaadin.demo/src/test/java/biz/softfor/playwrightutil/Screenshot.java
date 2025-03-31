@@ -12,22 +12,28 @@ import org.apache.commons.io.FileUtils;
 
 public class Screenshot {
 
+  public final static String SCREENSHOT_DIR = "./screenlog/";
+
+  private final static String EXT = ".png";
+
   public static Supplier<String> dateTimeMs(String dir) {
     return () -> dir + new SimpleDateFormat("yyyyMMdd_HHmmss_SSS")
-    .format(new Date()) + ".png";
+    .format(new Date()) + EXT;
   }
 
   public static Supplier<String> sequencer(String dir, Holder<Integer> counter) {
-    return () -> dir + counter.value++ + ".png";
+    return () -> dir + counter.value++ + EXT;
   }
 
+  private final String dir;
   private final Supplier<String> dirSupplier;
   private final Page.ScreenshotOptions so;
 
   public Screenshot(String dir, Supplier<String> dirSupplier) throws IOException {
+    this.dir = dir;
     this.dirSupplier = dirSupplier;
     so = new Page.ScreenshotOptions();
-    File dirFile = new File(dir);
+    File dirFile = new File(this.dir);
     if(dirFile.exists()) {
       FileUtils.cleanDirectory(dirFile);
     } else {
@@ -35,8 +41,16 @@ public class Screenshot {
     }
   }
 
+  public Screenshot(String dir) throws IOException {
+    this(dir, null);
+  }
+
   public void get(Page page) {
     page.screenshot(so.setPath(Paths.get(dirSupplier.get())));
+  }
+
+  public void get(Page page, String name) {
+    page.screenshot(so.setPath(Paths.get(dir + name + EXT)));
   }
 
 }
