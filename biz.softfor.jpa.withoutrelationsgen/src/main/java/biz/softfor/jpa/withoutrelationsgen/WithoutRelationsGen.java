@@ -45,6 +45,7 @@ import jakarta.validation.constraints.AssertTrue;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Objects;
@@ -58,15 +59,21 @@ import org.hibernate.annotations.Fetch;
 
 public class WithoutRelationsGen extends CodeGen {
 
-  private final static Class<?>[] WOR_EXCLUDED_ANNOTATIONS
-  = { ActionAccess.class, JsonFilter.class };
-  private final static Package[] WOR_FIELD_EXCLUDED_PACKAGES
-  = { Column.class.getPackage() };
-  private final static Class<?>[] WOR_FIELD_EXCLUDED_ANNOTATIONS
-  = { ActionAccess.class, Column.class, Fetch.class };
-  private final static String SERIAL_VERSION_UID = "serialVersionUID";
-
   private final static boolean DEBUG = false;
+  private final static String[] ONE_TO_MANY_FIELD_EXCLUDED_ANNOTATIONS
+  = { Fetch.class.getName() };
+  private final static String[] RELATION_FIELD_EXCUDED_PACKAGES = {
+    Column.class.getPackageName()
+  , ToString.class.getPackageName()
+  , JsonIgnoreProperties.class.getPackageName()
+  };
+  private final static String[] WOR_EXCLUDED_ANNOTATIONS
+  = { ActionAccess.class.getName(), JsonFilter.class.getName() };
+  private final static String[] WOR_FIELD_EXCLUDED_PACKAGES
+  = { Column.class.getPackageName() };
+  private final static String[] WOR_FIELD_EXCLUDED_ANNOTATIONS
+  = { ActionAccess.class.getName(), Column.class.getName(), Fetch.class.getName() };
+  private final static String SERIAL_VERSION_UID = "serialVersionUID";
 
   protected WithoutRelationsGen(Class<?> classWithProcessingEntities) {
     super(GenWithoutRelations.class.getName(), classWithProcessingEntities);
@@ -74,7 +81,8 @@ public class WithoutRelationsGen extends CodeGen {
 
   @Override
   public void process(Class<?> clazz) throws IllegalAccessException
-  , IllegalArgumentException, NoSuchFieldException, SecurityException {
+  , IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+  , NoSuchMethodException, SecurityException {
     Class<?> idClass = Reflection.idClass(clazz);
     TypeName idTypeName = TypeName.get(idClass);
     String clazzPackageName = clazz.getPackageName();
@@ -186,11 +194,7 @@ public class WithoutRelationsGen extends CodeGen {
             dclField
           , fieldName
           , fieldType
-          , new Package[] {
-              Column.class.getPackage()
-            , ToString.class.getPackage()
-            , JsonIgnoreProperties.class.getPackage()
-            }
+          , RELATION_FIELD_EXCUDED_PACKAGES
           , null
           );
           fieldBldr.addAnnotation(Transient.class);
@@ -220,17 +224,13 @@ public class WithoutRelationsGen extends CodeGen {
           , CodeGenUtil.getterName(dclName)
           );
         } else if(dclField.isAnnotationPresent(ManyToOne.class)) {
-          fieldName = ColumnDescr.manyToOneKeyName(dclField);
+          fieldName = CodeGenUtil.manyToOneKeyName(dclField);
           fieldType = ClassName.get(Reflection.idClass(dclClass));
           fieldBldr = CodeGenUtil.fieldBuilder(
             dclField
           , fieldName
           , fieldType
-          , new Package[] {
-              Column.class.getPackage()
-            , ToString.class.getPackage()
-            , JsonIgnoreProperties.class.getPackage()
-            }
+          , RELATION_FIELD_EXCUDED_PACKAGES
           , null
           );
           fieldBldr.addAnnotation(Column.class);
@@ -249,12 +249,8 @@ public class WithoutRelationsGen extends CodeGen {
             dclField
           , fieldName
           , fieldType
-          , new Package[] {
-              Column.class.getPackage()
-            , ToString.class.getPackage()
-            , JsonIgnoreProperties.class.getPackage()
-            }
-          , new Class<?>[] { Fetch.class }
+          , RELATION_FIELD_EXCUDED_PACKAGES
+          , ONE_TO_MANY_FIELD_EXCLUDED_ANNOTATIONS
           );
           fieldBldr.addAnnotation(Transient.class);
           ctor1.addStatement("$N = $T.idList($N.$N())"
@@ -273,11 +269,7 @@ public class WithoutRelationsGen extends CodeGen {
             dclField
           , fieldName
           , fieldType
-          , new Package[] {
-              Column.class.getPackage()
-            , ToString.class.getPackage()
-            , JsonIgnoreProperties.class.getPackage()
-            }
+          , RELATION_FIELD_EXCUDED_PACKAGES
           , null
           );
           fieldBldr.addAnnotation(Transient.class);

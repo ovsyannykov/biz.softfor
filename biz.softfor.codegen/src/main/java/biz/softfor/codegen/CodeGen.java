@@ -1,6 +1,7 @@
 package biz.softfor.codegen;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
@@ -44,14 +45,16 @@ public abstract class CodeGen extends AbstractProcessor {
       }
     }
     catch(IllegalAccessException | IllegalArgumentException
-    | NoSuchFieldException | SecurityException ex) {
-      processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR
-      , ex.getMessage());
+    | InvocationTargetException | NoSuchFieldException | NoSuchMethodException
+    | SecurityException ex) {
+      processingEnv.getMessager()
+      .printMessage(Diagnostic.Kind.ERROR, ex.getMessage());
     }
     return false;
   }
 
-  protected abstract void process(Class<?> clazz)
-  throws IllegalAccessException, IllegalArgumentException, NoSuchFieldException, SecurityException;
+  protected abstract void process(Class<?> clazz) throws IllegalAccessException
+  , IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+  , NoSuchMethodException, SecurityException;
 
 }

@@ -23,12 +23,15 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import jakarta.persistence.Entity;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
 import jakarta.validation.constraints.NotNull;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +45,6 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.type.Type;
 
 public class CodeGenUtil {
 
@@ -59,18 +61,25 @@ public class CodeGenUtil {
   public final static String REST_CONTROLLERS_FIELD_NAME = "restcontrollers";
   public final static String REST_CONTROLLERS_OPTION = REST_CONTROLLERS_FIELD_NAME;
   public final static String RESULT_NAME = "result";
-  public final static Package VALIDATION_ANNOTATIONS_PKG = NotNull.class.getPackage();
+  public final static String VALIDATION_ANNOTATIONS_PKG = NotNull.class.getPackageName();
+  public final static String[] API_EXCLUDED_ANNOTATIONS
+  = { ActionAccess.class.getName(), JsonFilter.class.getName() };
+  public final static String[] API_EXCLUDED_PACKAGES
+  = { Entity.class.getPackageName() };
 
-  public final static Class<?>[] API_EXCLUDED_ANNOTATIONS
-  = { ActionAccess.class, JsonFilter.class };
-  public final static Package[] API_EXCLUDED_PACKAGES
-  = { Entity.class.getPackage() };
-  public final static Class<?>[] API_FIELD_EXCLUDED_ANNOTATIONS
-  = { ActionAccess.class, Type.class };
-  public final static Package[] FILTER_EXCLUDED_PACKAGES
-  = { Entity.class.getPackage(), VALIDATION_ANNOTATIONS_PKG };
-  public final static Class<?>[] FILTER_FIELD_EXCLUDED_ANNOTATIONS
-  = { ActionAccess.class, Type.class };
+  private final static Set<String> created = new HashSet();
+  private final static Consumer<TypeSpec.Builder> noConstructors = reqBldr -> {};
+  private final static BiConsumer<TypeSpec.Builder, TypeName>
+  addConstructors4Create = (reqBldr, dataCN) -> {
+    MethodSpec.Builder ctor
+    = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
+    reqBldr.addMethod(ctor.build());
+    MethodSpec.Builder dataCtor
+    = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)
+    .addParameter(dataCN, AbstractRequest.DATA)
+    .addStatement("super($N)", AbstractRequest.DATA);
+    reqBldr.addMethod(dataCtor.build());
+  };
 
   public static void addField(
     TypeSpec.Builder classBldr
@@ -319,23 +328,23 @@ public class CodeGenUtil {
 
   public static List<AnnotationSpec> copyAnnotations(
     Annotation[] srcAnnotations
-  , Package[] excludePackages
-  , Class<?>[] excludeAnnotations
-  , String validatableField
+  , String[] excludePackages
+  , String[] excludeAnnotations
+  , String validatedField
   ) {
     List<AnnotationSpec> result = new ArrayList<>();
     for(Annotation a : srcAnnotations) {
       Class<?> aClass = a.annotationType().getNestHost();
-      Package aPackage = aClass.getPackage();
-      if(!ArrayUtils.contains(excludePackages, aPackage)
-      && !ArrayUtils.contains(excludeAnnotations, aClass)) {
+      String aPackageName = aClass.getPackageName();
+      if(!ArrayUtils.contains(excludePackages, aPackageName)
+      && !ArrayUtils.contains(excludeAnnotations, aClass.getName())) {
         AnnotationSpec as = AnnotationSpec.get(a);
-        if(aPackage.equals(VALIDATION_ANNOTATIONS_PKG)) {
+        if(VALIDATION_ANNOTATIONS_PKG.equals(aPackageName)) {
           as = as.toBuilder().addMember(
             "groups"
           , "{ $T.class, $L.class }"
           , Create.class
-          , StringUtils.capitalize(validatableField)
+          , StringUtils.capitalize(validatedField)
           ).build();
         }
         result.add(as);
@@ -355,8 +364,8 @@ public class CodeGenUtil {
     Field dclField
   , String fieldName
   , TypeName fieldType
-  , Package[] excludePackages
-  , Class<?>[] excludeAnnotations
+  , String[] excludePackages
+  , String[] excludeAnnotations
   ) {
     FieldSpec.Builder result = FieldSpec.builder(fieldType, fieldName)
     .addAnnotations(copyAnnotations(
@@ -403,6 +412,69 @@ public class CodeGenUtil {
     return srcPath;
   }
 
+  public static Annotation getAnnotation
+  (Class clazz, Class<? extends Annotation> annotationClass) {
+    Annotation result = null;
+    String name = annotationClass.getName();
+    for(Annotation a : clazz.getAnnotations()) {
+      if(name.equals(a.annotationType().getName())) {
+        result = a;
+        break;
+      }
+    }
+    return result;
+  }
+
+  public static Annotation getAnnotation
+  (Field field, Class<? extends Annotation> annotationClass) {
+    Annotation result = null;
+    String name = annotationClass.getName();
+    for(Annotation a : field.getAnnotations()) {
+      if(name.equals(a.annotationType().getName())) {
+        result = a;
+        break;
+      }
+    }
+    return result;
+  }
+
+  public static Annotation getAnnotation
+  (Method method, Class<? extends Annotation> annotationClass) {
+    Annotation result = null;
+    String name = annotationClass.getName();
+    for(Annotation a : method.getAnnotations()) {
+      if(name.equals(a.annotationType().getName())) {
+        result = a;
+        break;
+      }
+    }
+    return result;
+  }
+
+  public static Object getAnnotationProperty
+  (Class clazz, Class<? extends Annotation> annotationClass, String property)
+  throws IllegalAccessException, InvocationTargetException
+  , NoSuchMethodException, SecurityException {
+    Annotation a = getAnnotation(clazz, annotationClass);
+    return a == null ? null : a.getClass().getMethod(property).invoke(a);
+  }
+
+  public static Object getAnnotationProperty
+  (Field field, Class<? extends Annotation> annotationClass, String property)
+  throws IllegalAccessException, InvocationTargetException
+  , NoSuchMethodException, SecurityException {
+    Annotation a = getAnnotation(field, annotationClass);
+    return a.getClass().getMethod(property).invoke(a);
+  }
+
+  public static Object getAnnotationProperty
+  (Method method, Class<? extends Annotation> annotationClass, String property)
+  throws IllegalAccessException, InvocationTargetException
+  , NoSuchMethodException, SecurityException {
+    Annotation a = getAnnotation(method, annotationClass);
+    return a.getClass().getMethod(property).invoke(a);
+  }
+
   public static String getterName(String fieldName) {
     return fieldMethodName("get", fieldName);
   }
@@ -411,9 +483,33 @@ public class CodeGenUtil {
     return fieldMethodName("set", fieldName);
   }
 
-  public static boolean isLinkClass(Class<?> clazz) {
-    IdClass idClass = clazz.getAnnotation(IdClass.class);
-    return idClass != null && idClass.value().getSimpleName().endsWith(ID_SUFFIX);
+  public static boolean isAnnotationPresent(Field field, Class<?> anno) {
+    boolean result = false;
+    String annoName = anno.getName();
+    for(Annotation a : field.getAnnotations()) {
+      if(annoName.equals(a.annotationType().getName())) {
+        result = true;
+        break;
+      }
+    }
+    return result;
+  }
+
+  public static boolean isLinkClass(Class<?> clazz)
+  throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    Class<?> v
+    = (Class<?>)getAnnotationProperty(clazz, IdClass.class, ANNOTATION_VALUE);
+    return v != null && v.getSimpleName().endsWith(ID_SUFFIX);
+  }
+
+  public static boolean isWorClass(Class<?> clazz) {
+    return clazz.getSimpleName().endsWith(Reflection.WOR);
+  }
+
+  public static String manyToOneKeyName(Field field)
+  throws IllegalAccessException, InvocationTargetException
+  , NoSuchMethodException, SecurityException {
+    return (String)getAnnotationProperty(field, JoinColumn.class, "name");
   }
 
   public static TypeSpec.Builder newCrudRequests
@@ -481,6 +577,22 @@ public class CodeGenUtil {
     return result;
   }
 
+  private static void request(
+    TypeSpec.Builder bldr
+  , String name
+  , Consumer<TypeSpec.Builder> addConstructors
+  , Class<?> superClass
+  , TypeName... params
+  ) {
+    ClassName superCN = ClassName.get(superClass);
+    TypeSpec.Builder reqBldr = TypeSpec.classBuilder(name)
+    .superclass(ParameterizedTypeName.get(superCN, params))
+    .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+    addToStringAndEqualsAndHashCode(reqBldr, true);
+    addConstructors.accept(reqBldr);
+    bldr.addType(reqBldr.build());
+  }
+
   public static void setModifiers(FieldSpec.Builder fieldBldr, int modifiers) {
     if(java.lang.reflect.Modifier.isPublic(modifiers)) {
       fieldBldr.addModifiers(Modifier.PUBLIC);
@@ -510,15 +622,11 @@ public class CodeGenUtil {
       created.add(fileName);
       try {
         JavaFileObject fileObject = processingEnv.getFiler().createSourceFile(fileName);
-        try( Writer writer = fileObject.openWriter()) {
-          try( Writer out = new BufferedWriter(writer)) {
-            JavaFile.builder(packageName, classSpec)
-            .addFileComment("Automatically generated. Don't modify!")
-            .build().writeTo(out);
-          }
-          catch(IOException ex) {
-            throw new RuntimeException(ex);
-          }
+        try(Writer writer = fileObject.openWriter();
+        Writer out = new BufferedWriter(writer)) {
+          JavaFile.builder(packageName, classSpec)
+          .addFileComment("Automatically generated. Don't modify!").build()
+          .writeTo(out);
         }
         catch(IOException ex) {
           throw new RuntimeException(ex);
@@ -528,39 +636,6 @@ public class CodeGenUtil {
         throw new RuntimeException(ex);
       }
     }
-  }
-
-  private final static Set<String> created = new HashSet();
-
-  private final static Consumer<TypeSpec.Builder>
-  noConstructors = reqBldr -> {};
-
-  private final static BiConsumer<TypeSpec.Builder, TypeName>
-  addConstructors4Create = (reqBldr, dataCN) -> {
-    MethodSpec.Builder ctor
-    = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
-    reqBldr.addMethod(ctor.build());
-    MethodSpec.Builder dataCtor
-    = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)
-    .addParameter(dataCN, AbstractRequest.DATA)
-    .addStatement("super($N)", AbstractRequest.DATA);
-    reqBldr.addMethod(dataCtor.build());
-  };
-
-  private static void request(
-    TypeSpec.Builder bldr
-  , String name
-  , Consumer<TypeSpec.Builder> addConstructors
-  , Class<?> superClass
-  , TypeName... params
-  ) {
-    ClassName superCN = ClassName.get(superClass);
-    TypeSpec.Builder reqBldr = TypeSpec.classBuilder(name)
-    .superclass(ParameterizedTypeName.get(superCN, params))
-    .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
-    addToStringAndEqualsAndHashCode(reqBldr, true);
-    addConstructors.accept(reqBldr);
-    bldr.addType(reqBldr.build());
   }
 
 }

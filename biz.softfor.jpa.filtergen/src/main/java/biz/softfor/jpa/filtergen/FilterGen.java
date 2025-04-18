@@ -7,6 +7,7 @@ import biz.softfor.util.Range;
 import biz.softfor.util.Reflection;
 import biz.softfor.util.api.Identifiable;
 import biz.softfor.util.api.filter.FilterId;
+import biz.softfor.util.security.ActionAccess;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -14,27 +15,36 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import javax.lang.model.element.Modifier;
+import org.hibernate.type.Type;
 
 public class FilterGen extends CodeGen {
 
+  private final static String[] FILTER_EXCLUDED_PACKAGES
+  = { Entity.class.getPackageName(), CodeGenUtil.VALIDATION_ANNOTATIONS_PKG };
+  private final static String[] FILTER_FIELD_EXCLUDED_ANNOTATIONS
+  = { ActionAccess.class.getName(), Type.class.getName() };
   private final static String RESET_METHOD = "reset";
 
-  protected FilterGen(Class<?> classWithProcessingEntities) {
+  public FilterGen(Class<?> classWithProcessingEntities) {
     super(GenFilter.class.getName(), classWithProcessingEntities);
   }
 
   @Override
-  public void process(Class<?> clazz) {
+  public void process(Class<?> clazz) throws IllegalAccessException
+  , IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+  , NoSuchMethodException, SecurityException {
     if(!CodeGenUtil.isLinkClass(clazz)) {
       Class<?> idClass = Reflection.idClass(clazz);
       String clazzSimpleName = clazz.getSimpleName();
@@ -53,7 +63,7 @@ public class FilterGen extends CodeGen {
       CodeGenUtil.addToStringAndEqualsAndHashCode(classBldr, true);
 
       MethodSpec.Builder resetMethod = MethodSpec.methodBuilder(RESET_METHOD)
-      .addStatement("super.reset()")
+      .addStatement("super." + RESET_METHOD + "()")
       .addModifiers(Modifier.PUBLIC);
 
       for(Field dclField : clazz.getDeclaredFields()) {
@@ -66,26 +76,26 @@ public class FilterGen extends CodeGen {
           TypeName keyTypeName;
           FieldSpec.Builder keyBldr;
           resetMethod.addStatement("$N = null", fieldName);
-          if(dclField.isAnnotationPresent(OneToOne.class)) {
+          if(CodeGenUtil.isAnnotationPresent(dclField, OneToOne.class)) {
             fieldType = CodeGenUtil.filterTypeName(dclClass);
-          } else if(dclField.isAnnotationPresent(ManyToOne.class)) {
+          } else if(CodeGenUtil.isAnnotationPresent(dclField, ManyToOne.class)) {
             fieldType = CodeGenUtil.filterTypeName(dclClass);
             Class idDeclClass = Reflection.idClass(dclClass);
-            keyName = ColumnDescr.manyToOneKeyName(dclField);
+            keyName = CodeGenUtil.manyToOneKeyName(dclField);
             keyTypeName = addAssignMethod
             (classBldr, TypeName.get(idDeclClass), keyName, Set.class);
             keyBldr = FieldSpec.builder(keyTypeName, keyName)
             .addModifiers(Modifier.PRIVATE);
             CodeGenUtil.addField(classBldr, keyBldr, keyTypeName, keyName, false);
             resetMethod.addStatement("$N = null", keyName);
-          } else if(dclField.isAnnotationPresent(OneToMany.class)
-          || dclField.isAnnotationPresent(ManyToMany.class)) {
+          } else if(CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)
+          || CodeGenUtil.isAnnotationPresent(dclField, ManyToMany.class)) {
             Class<?> joinClass = Reflection.genericParameter(dclField);
             fieldType = CodeGenUtil.filterTypeName(joinClass);
             Class<?> joinIdClass = Reflection.idClass(joinClass);
             keyName = ColumnDescr.toManyKeyName(fieldName);
             Class<?> collectionClass
-            = dclField.isAnnotationPresent(OneToMany.class)
+            = CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)
             ? List.class : Set.class;
             keyTypeName = addAssignMethod
             (classBldr, TypeName.get(joinIdClass), keyName, collectionClass);
@@ -109,8 +119,8 @@ public class FilterGen extends CodeGen {
             dclField
           , fieldName
           , fieldType
-          , CodeGenUtil.FILTER_EXCLUDED_PACKAGES
-          , CodeGenUtil.FILTER_FIELD_EXCLUDED_ANNOTATIONS
+          , FILTER_EXCLUDED_PACKAGES
+          , FILTER_FIELD_EXCLUDED_ANNOTATIONS
           );
           CodeGenUtil.addField(classBldr, fieldBldr, fieldType, fieldName, false);
         }

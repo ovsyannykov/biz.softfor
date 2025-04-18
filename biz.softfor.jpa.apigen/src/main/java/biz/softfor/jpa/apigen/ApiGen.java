@@ -3,13 +3,13 @@ package biz.softfor.jpa.apigen;
 import biz.softfor.codegen.CodeGen;
 import biz.softfor.codegen.CodeGenUtil;
 import biz.softfor.jpa.crud.querygraph.ColumnDescr;
-import biz.softfor.jpa.crud.querygraph.ManyToManyInf;
 import biz.softfor.util.Inflector;
 import biz.softfor.util.Reflection;
 import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.CommonResponse;
 import biz.softfor.util.api.HaveId;
 import biz.softfor.util.api.Identifiable;
+import biz.softfor.util.security.ActionAccess;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
@@ -17,43 +17,99 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.tools.Diagnostic;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.type.Type;
+import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 public class ApiGen extends CodeGen {
 
-  private final static boolean DEBUG = false;
+  private Set<Class<?>> restControllers;
 
-  private final Class<?> classWithProcessingControllers;
+  private final static String[] API_FIELD_EXCLUDED_ANNOTATIONS
+  = { ActionAccess.class.getName(), Type.class.getName() };
+  private final static AnnotationSpec SUPPRESS_WARNINGS
+  = AnnotationSpec.builder(SuppressWarnings.class)
+  .addMember("value", "$S", "empty-statement")
+  .build();
+
+  private final static boolean DEBUG = false;
 
   protected ApiGen
   (Class<?> classWithProcessingEntities, Class<?> classWithProcessingControllers) {
     super(GenApi.class.getName(), classWithProcessingEntities);
-    this.classWithProcessingControllers = classWithProcessingControllers;
+  }
+
+  public ApiGen() {
+    super(GenApi.class.getName(), null);
   }
 
   @Override
-  public void process(Class<?> clazz)
-  throws IllegalAccessException, IllegalArgumentException, NoSuchFieldException, SecurityException {
+  public boolean process
+  (Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    Set<? extends Element> annotatedElements
+    = roundEnv.getElementsAnnotatedWith(GenApi.class);
+    for(Element e : annotatedElements) {
+      String[] packages = e.getAnnotation(GenApi.class).value();
+      FilterBuilder fb = new FilterBuilder();
+      for(String p : packages) {
+        fb.includePackage(p);
+      }
+      ConfigurationBuilder cb = new ConfigurationBuilder().forPackages(packages)
+      .filterInputsBy(fb).setScanners(Scanners.TypesAnnotated);
+      Reflections reflections = new Reflections(cb);
+      Set<Class<?>> types = reflections.getTypesAnnotatedWith(Entity.class);
+      restControllers = reflections.getTypesAnnotatedWith(RestController.class);
+      try {
+        for(Class<?> t : types) {
+          if(!CodeGenUtil.isWorClass(t)) {
+            process(t);
+          }
+        }
+      }
+      catch(IllegalAccessException | IllegalArgumentException
+      | InvocationTargetException | NoSuchFieldException | NoSuchMethodException
+      | SecurityException ex) {
+        processingEnv.getMessager()
+        .printMessage(Diagnostic.Kind.ERROR, ex.getMessage());
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public void process(Class<?> clazz) throws IllegalAccessException
+  , IllegalArgumentException, InvocationTargetException, NoSuchFieldException
+  , NoSuchMethodException, SecurityException {
     if(!CodeGenUtil.isLinkClass(clazz)) {
       String clazzSimpleName = clazz.getSimpleName();
       String apiPackageName = Reflection.apiPackageName(clazz.getPackageName());
       String dtoSimpleName = Reflection.dtoClassName(clazzSimpleName);
       ClassName dtoClassName = ClassName.get(apiPackageName, dtoSimpleName);
       Class<?> superIdClass = Reflection.idClass(clazz);
-
       TypeSpec.Builder classBldr = TypeSpec.classBuilder(dtoClassName)
       .addAnnotations(CodeGenUtil.copyAnnotations(
         clazz.getAnnotations()
@@ -66,25 +122,25 @@ public class ApiGen extends CodeGen {
 
       for(Field dclField : clazz.getDeclaredFields()) {
         int mods = dclField.getModifiers();
+        String fieldName = dclField.getName();
         if(Reflection.isProperty(mods)
-        && !dclField.getName().equals(Identifiable.ID)) {
+        && !Identifiable.ID.equals(fieldName)) {
           Class<?> dclClass = dclField.getType();
-          String fieldName = dclField.getName();
           TypeName fieldType;
           CodeGenUtil.SetterCode setterCode = CodeGenUtil.SetterCode.SIMPLE;
           String mappedByName = null;
           boolean unidirectional = false;
-          if(dclField.isAnnotationPresent(OneToOne.class)) {
+          if(CodeGenUtil.isAnnotationPresent(dclField, OneToOne.class)) {
             setterCode = CodeGenUtil.SetterCode.ONE_TO_ONE;
             fieldType = CodeGenUtil.dtoTypeName(dclClass);
-          } else if(dclField.isAnnotationPresent(ManyToOne.class)) {
+          } else if(CodeGenUtil.isAnnotationPresent(dclField, ManyToOne.class)) {
             fieldType = CodeGenUtil.dtoTypeName(dclClass);
             TypeName keyTypeName = TypeName.get(Reflection.idClass(dclClass));
-            String keyName = ColumnDescr.manyToOneKeyName(dclField);
+            String keyName = CodeGenUtil.manyToOneKeyName(dclField);
             FieldSpec.Builder keyBldr = FieldSpec.builder(keyTypeName, keyName);
             CodeGenUtil.setModifiers(keyBldr, mods);
             CodeGenUtil.addField(classBldr, keyBldr, keyTypeName, keyName, true);
-          } else if(dclField.isAnnotationPresent(OneToMany.class)) {
+          } else if(CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)) {
             setterCode = CodeGenUtil.SetterCode.ONE_TO_MANY;
             Class<?> dclJoinClass = Reflection.genericParameter(dclField);
             TypeName joinClass = CodeGenUtil.dtoTypeName(dclJoinClass);
@@ -100,10 +156,11 @@ public class ApiGen extends CodeGen {
             , joinClass
             );
 
-            mappedByName = dclField.getAnnotation(OneToMany.class).mappedBy();
+            mappedByName = (String)CodeGenUtil.getAnnotationProperty
+            (dclField, OneToMany.class, "mappedBy");
             unidirectional = StringUtils.isEmpty(mappedByName);
             if(unidirectional) {
-              mappedByName = ColumnDescr.manyToOneKeyName(dclField);
+              mappedByName = CodeGenUtil.manyToOneKeyName(dclField);
             }
             String mappedBySetter = CodeGenUtil.setterName(mappedByName);
 
@@ -146,7 +203,7 @@ public class ApiGen extends CodeGen {
             .endControlFlow()
             ;
             classBldr.addMethod(removeAll.build());
-          } else if(dclField.isAnnotationPresent(ManyToMany.class)) {
+          } else if(CodeGenUtil.isAnnotationPresent(dclField, ManyToMany.class)) {
             setterCode = CodeGenUtil.SetterCode.MANY_TO_MANY;
             String itemName = Inflector.getInstance().singularize(fieldName);
             Class<?> dclJoinClass = Reflection.genericParameter(dclField);
@@ -163,7 +220,7 @@ public class ApiGen extends CodeGen {
             , joinClass
             );
 
-            Field dclMappedByField = ManyToManyInf.mappedField(dclField);
+            Field dclMappedByField = manyToManyMappedField(dclField);
             unidirectional = dclMappedByField == null;
             String dclMappedByName;
             String mappedByGetter;
@@ -263,7 +320,7 @@ public class ApiGen extends CodeGen {
           , fieldName
           , fieldType
           , CodeGenUtil.API_EXCLUDED_PACKAGES
-          , CodeGenUtil.API_FIELD_EXCLUDED_ANNOTATIONS
+          , API_FIELD_EXCLUDED_ANNOTATIONS
           );
           CodeGenUtil.addField(
             classBldr
@@ -295,24 +352,25 @@ public class ApiGen extends CodeGen {
       (clazzSimpleName, idClazzName, dtoClazzName, filterClazzName);
 
       String ctlrName = clazzSimpleName + "Ctlr";
-      for(Class<?> ctlrClass : (Class<?>[])classWithProcessingControllers
-      .getField(CodeGenUtil.REST_CONTROLLERS_FIELD_NAME).get(null)) {
+      for(Class<?> ctlrClass : restControllers) {
         if(ctlrName.equals(ctlrClass.getSimpleName())) {
           for(Method method : ctlrClass.getMethods()) {
-            RequestMapping requestMapping
-            = method.getAnnotation(RequestMapping.class);
+            Annotation requestMapping
+            = CodeGenUtil.getAnnotation(method, RequestMapping.class);
             if(requestMapping != null) {
-              String[] requestMappingPath = requestMapping.path();
+              String[] requestMappingPath = (String[])CodeGenUtil
+              .getAnnotationProperty(method, RequestMapping.class, "path");
               if(requestMappingPath == null) {
-                requestMappingPath = requestMapping.value();
+                requestMappingPath = (String[])CodeGenUtil.getAnnotationProperty
+                (method, RequestMapping.class, CodeGenUtil.ANNOTATION_VALUE);
               }
-              RequestMapping ctlrMapping
-              = ctlrClass.getAnnotation(RequestMapping.class);
               String[] ctlrMappingPath = { "" };
-              if(ctlrMapping != null) {
-                ctlrMappingPath = ctlrMapping.path();
+              if(CodeGenUtil.getAnnotation(ctlrClass, RequestMapping.class) != null) {
+                ctlrMappingPath = (String[])CodeGenUtil
+                .getAnnotationProperty(ctlrClass, RequestMapping.class, "path");
                 if(ctlrMappingPath == null) {
-                  ctlrMappingPath = ctlrMapping.value();
+                  ctlrMappingPath = (String[])CodeGenUtil.getAnnotationProperty
+                  (ctlrClass, RequestMapping.class, CodeGenUtil.ANNOTATION_VALUE);
                 }
               }
               String ucaseMethodName
@@ -327,7 +385,8 @@ public class ApiGen extends CodeGen {
               , ucaseMethodName + "_METHOD"
               , Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC
               )
-              .initializer("$S", requestMapping.method()[0].toString());
+              .initializer("$S", ((Object[])CodeGenUtil.getAnnotationProperty
+              (method, RequestMapping.class, "method"))[0].toString());
               request
               .addField(pathFieldBldr.build())
               .addField(httpMethodFieldBldr.build());
@@ -339,11 +398,6 @@ public class ApiGen extends CodeGen {
       CodeGenUtil.writeSrc(request, apiPackageName, processingEnv);
     }
   }
-
-  private final static AnnotationSpec SUPPRESS_WARNINGS
-  = AnnotationSpec.builder(SuppressWarnings.class)
-  .addMember("value", "$S", "empty-statement")
-  .build();
 
   private static void addFieldIds(
     String fieldIdsName
@@ -388,6 +442,45 @@ public class ApiGen extends CodeGen {
     .endControlFlow()
     .addStatement("return $N", CodeGenUtil.RESULT_NAME);
     dtoBldr.addMethod(getIdsMethod.build());
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<Field> annotatedFields(Class clazz, Class... annotations) {
+    List<Field> result = new ArrayList<>();
+    for(; clazz != null; clazz = clazz.getSuperclass()) {
+      for(Field field : clazz.getDeclaredFields()) {
+        for(Class a : annotations) {
+          if(CodeGenUtil.isAnnotationPresent(field, a)) {
+            result.add(field);
+            break;
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  private static Field manyToManyMappedField(Field field)
+  throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    Field result = null;
+    Class joinClass = Reflection.genericParameter(field);
+    String mappedBy = (String)CodeGenUtil
+    .getAnnotationProperty(field, ManyToMany.class, "mappedBy");
+    if(StringUtils.isBlank(mappedBy)) {
+      Class<?> fieldClass = field.getDeclaringClass();
+      for(Field f : annotatedFields(joinClass, ManyToMany.class)) {
+        mappedBy = (String)CodeGenUtil
+        .getAnnotationProperty(f, ManyToMany.class, "mappedBy");
+        if(mappedBy.equals(field.getName())
+        && fieldClass == Reflection.genericParameter(f)) {
+          result = f;
+          break;
+        }
+      }
+    } else {
+      result = Reflection.declaredField(joinClass, mappedBy);
+    }
+    return result;
   }
 
 }

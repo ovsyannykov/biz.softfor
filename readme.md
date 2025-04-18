@@ -52,9 +52,6 @@ generated filter classes for entities from
 - [biz.softfor.partner.jpa](biz.softfor.partner.jpa) - contains classes of JPA
 entities of the demonstration subject area "Partner", such as positions,
 contacts, personal data, etc.
-- [biz.softfor.partner.jpa.apigen](biz.softfor.partner.jpa.apigen) - annotation
-processor that generates CRUD API (request and response) classes for entities
-from the [biz.softfor.partner.jpa](biz.softfor.partner.jpa) project packages.
 - [biz.softfor.partner.jpa.filtergen](biz.softfor.partner.jpa.filtergen) -
 annotation processor that generates query filter classes for entities from the
 [biz.softfor.partner.jpa](biz.softfor.partner.jpa) project packages.
@@ -115,9 +112,6 @@ generated filter classes for entities from
 localization [biz.softfor.user.jpa](biz.softfor.user.jpa) package.
 - [biz.softfor.user.jpa](biz.softfor.user.jpa) - contains classes of JPA
 entities of the "User" subject area - users, user groups, roles and tokens.
-- [biz.softfor.user.jpa.apigen](biz.softfor.user.jpa.apigen) - annotation
-processor that generates CRUD API (request and response) classes for entities
-from the [biz.softfor.user.jpa](biz.softfor.user.jpa) project packages.
 - [biz.softfor.user.jpa.filtergen](biz.softfor.user.jpa.filtergen) - annotation
 processor that generates filter classes in queries for entities from the
 [biz.softfor.user.jpa](biz.softfor.user.jpa) project packages.

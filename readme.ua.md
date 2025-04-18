@@ -50,9 +50,6 @@ CRUD-сервісів на основі JPA та Hibernate.
 - [biz.softfor.partner.jpa](biz.softfor.partner.jpa) - містить класи
 JPA-сутностей демонстраційної предметної області "Партнер", такі як посади,
 контакти, персональні дані та ін.
-- [biz.softfor.partner.jpa.apigen](biz.softfor.partner.jpa.apigen) - процесор
-анотацій, що генерує класи CRUD API (запитів та відповідей) для сутностей з
-пакетів проекту [biz.softfor.partner.jpa](biz.softfor.partner.jpa).
 - [biz.softfor.partner.jpa.filtergen](biz.softfor.partner.jpa.filtergen) -
 процесор анотацій, що генерує класи фільтрів у запитах для сутностей
 пакетів проекту [biz.softfor.partner.jpa](biz.softfor.partner.jpa).
@@ -115,9 +112,6 @@ API (DTO, запитів та відповідей) для сутностей і
 - [biz.softfor.user.jpa](biz.softfor.user.jpa) - містить класи JPA-сутностей
 предметної області "Користувач" - користувачі, групи користувачів, ролі та
 токени.
-- [biz.softfor.user.jpa.apigen](biz.softfor.user.jpa.apigen) - процесор
-анотацій, що генерує класи CRUD API (запитів та відповідей) для сутностей з
-пакетів проекту [biz.softfor.user.jpa](biz.softfor.user.jpa).
 - [biz.softfor.user.jpa.filtergen](biz.softfor.user.jpa.filtergen) - процесор
 анотацій, що генерує класи фільтрів у запитах для сутностей із пакетів
 проекту [biz.softfor.user.jpa](biz.softfor.user.jpa).

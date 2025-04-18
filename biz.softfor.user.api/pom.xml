@@ -18,11 +18,34 @@
     <relativePath/>
   </parent>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.user.jpa</artifactId>
+            <version>${biz.softfor.user.jpa.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.user.spring.rest</artifactId>
+            <version>${biz.softfor.user.spring.rest.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <!-- annotation processors -->
     <dependency>
       <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.user.jpa.apigen</artifactId>
+      <artifactId>biz.softfor.jpa.apigen</artifactId>
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>
@@ -31,6 +54,16 @@
       <artifactId>lombok</artifactId>
       <optional>true</optional>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- biz.softfor -->
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.user.api.filter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.util</artifactId>
     </dependency>
 
     <!-- third party -->
@@ -54,15 +87,10 @@
       <artifactId>junit-jupiter-params</artifactId>
       <scope>test</scope>
     </dependency>
-
-    <!-- biz.softfor -->
     <dependency>
-      <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.user.api.filter</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.util</artifactId>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <type>jar</type>
     </dependency>
   </dependencies>
 </project>

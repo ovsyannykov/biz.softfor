@@ -25,7 +25,7 @@
 
     <!--<project.build.outputTimestamp>1</project.build.outputTimestamp>-->
     <project.dbsources>/dbsources</project.dbsources>
-    <project.generated.sources>${project.build.directory}/generated-sources</project.generated.sources>
+    <project.generated.sources>${project.build.directory}/generated-sources/annotations</project.generated.sources>
     <project.resources>${project.basedir}/src/main/resources</project.resources>
     <project.tempSources>${project.build.directory}/tempSources</project.tempSources>
     <project.testResources>${project.basedir}/src/test/resources</project.testResources>
@@ -42,8 +42,10 @@
 
     <biz.softfor.jpa.annotatedclassesgen.version>0.0.0</biz.softfor.jpa.annotatedclassesgen.version>
     <biz.softfor.partner.jpa.version>0.0.0</biz.softfor.partner.jpa.version>
+    <biz.softfor.partner.spring.rest.version>0.0.0</biz.softfor.partner.spring.rest.version>
     <biz.softfor.reflectionsutil.version>0.0.0</biz.softfor.reflectionsutil.version>
     <biz.softfor.user.jpa.version>0.0.0</biz.softfor.user.jpa.version>
+    <biz.softfor.user.spring.rest.version>0.0.0</biz.softfor.user.spring.rest.version>
     <biz.softfor.user.spring.ws.version>0.0.0</biz.softfor.user.spring.ws.version>
   </properties>
 
@@ -269,11 +271,6 @@
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
-        <artifactId>biz.softfor.partner.jpa.apigen</artifactId>
-        <version>0.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.partner.jpa.filtergen</artifactId>
         <version>0.0.0</version>
       </dependency>
@@ -391,11 +388,6 @@
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.user.jpa</artifactId>
         <version>${biz.softfor.user.jpa.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>biz.softfor</groupId>
-        <artifactId>biz.softfor.user.jpa.apigen</artifactId>
-        <version>0.0.0</version>
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
