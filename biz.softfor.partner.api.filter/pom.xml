@@ -18,11 +18,28 @@
     <relativePath/>
   </parent>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.partner.jpa</artifactId>
+            <version>${biz.softfor.partner.jpa.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <!-- annotation processors -->
     <dependency>
       <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.partner.jpa.filtergen</artifactId>
+      <artifactId>biz.softfor.jpa.filtergen</artifactId>
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>

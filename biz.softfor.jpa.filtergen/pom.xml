@@ -54,5 +54,11 @@
       <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.jpa</artifactId>
     </dependency>
+
+    <!-- third party -->
+    <dependency>
+      <groupId>org.hibernate.validator</groupId>
+      <artifactId>hibernate-validator</artifactId>
+    </dependency>
   </dependencies>
 </project>

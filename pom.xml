@@ -29,7 +29,6 @@
     <module>${modulesPath}/biz.softfor.partner.api.filter</module>
     <module>${modulesPath}/biz.softfor.partner.i18n</module>
     <module>${modulesPath}/biz.softfor.partner.jpa</module>
-    <module>${modulesPath}/biz.softfor.partner.jpa.filtergen</module>
     <module>${modulesPath}/biz.softfor.partner.jpa.withoutrelations</module>
     <module>${modulesPath}/biz.softfor.partner.jpa.withoutrelationsgen</module>
     <module>${modulesPath}/biz.softfor.partner.spring</module>
@@ -54,7 +53,6 @@
     <module>${modulesPath}/biz.softfor.user.api.filter</module>
     <module>${modulesPath}/biz.softfor.user.i18n</module>
     <module>${modulesPath}/biz.softfor.user.jpa</module>
-    <module>${modulesPath}/biz.softfor.user.jpa.filtergen</module>
     <module>${modulesPath}/biz.softfor.user.jpa.withoutrelations</module>
     <module>${modulesPath}/biz.softfor.user.jpa.withoutrelationsgen</module>
     <module>${modulesPath}/biz.softfor.user.spring</module>

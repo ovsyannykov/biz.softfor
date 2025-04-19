@@ -52,9 +52,6 @@ CRUD-сервисов на основе JPA и Hibernate.
 - [biz.softfor.partner.jpa](biz.softfor.partner.jpa) - содержит классы
 JPA-сущностей демонстрационной предметной области "Партнер", такие как должности,
 контакты, персональные данные и пр.
-- [biz.softfor.partner.jpa.filtergen](biz.softfor.partner.jpa.filtergen) -
-процессор аннотаций, генерирующий классы фильтров в запросах для сущностей из
-пакетов проекта [biz.softfor.partner.jpa](biz.softfor.partner.jpa).
 - [biz.softfor.partner.jpa.withoutrelations](biz.softfor.partner.jpa.withoutrelations) -
 содержит классы JPA-сущностей без отношений (relations) демонстрационной
 предметной области "Партнер".
@@ -115,9 +112,6 @@ SOAP-сервер.
 - [biz.softfor.user.jpa](biz.softfor.user.jpa) - содержит классы JPA-сущностей
 предметной области "Пользователь" - пользователи, группы пользователей, роли и
 токены.
-- [biz.softfor.user.jpa.filtergen](biz.softfor.user.jpa.filtergen) - процессор
-аннотаций, генерирующий классы фильтров в запросах для сущностей из пакетов
-проекта [biz.softfor.user.jpa](biz.softfor.user.jpa).
 - [biz.softfor.user.jpa.withoutrelations](biz.softfor.user.jpa.withoutrelations) -
 содержит классы JPA-сущностей без отношений (relations) предметной области
 "Пользователь".

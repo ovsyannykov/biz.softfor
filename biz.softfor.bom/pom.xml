@@ -271,11 +271,6 @@
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
-        <artifactId>biz.softfor.partner.jpa.filtergen</artifactId>
-        <version>0.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.partner.jpa.withoutrelations</artifactId>
         <version>0.0.0</version>
       </dependency>
@@ -388,11 +383,6 @@
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.user.jpa</artifactId>
         <version>${biz.softfor.user.jpa.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>biz.softfor</groupId>
-        <artifactId>biz.softfor.user.jpa.filtergen</artifactId>
-        <version>0.0.0</version>
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
