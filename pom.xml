@@ -20,7 +20,6 @@
     <module>${modulesPath}/biz.softfor.codegen</module>
     <module>${modulesPath}/biz.softfor.i18nutil</module>
     <module>${modulesPath}/biz.softfor.jpa</module>
-    <module>${modulesPath}/biz.softfor.jpa.annotatedclassesgen</module>
     <module>${modulesPath}/biz.softfor.jpa.apigen</module>
     <module>${modulesPath}/biz.softfor.jpa.filtergen</module>
     <module>${modulesPath}/biz.softfor.jpa.withoutrelationsgen</module>
@@ -30,7 +29,6 @@
     <module>${modulesPath}/biz.softfor.partner.i18n</module>
     <module>${modulesPath}/biz.softfor.partner.jpa</module>
     <module>${modulesPath}/biz.softfor.partner.jpa.withoutrelations</module>
-    <module>${modulesPath}/biz.softfor.partner.jpa.withoutrelationsgen</module>
     <module>${modulesPath}/biz.softfor.partner.spring</module>
     <module>${modulesPath}/biz.softfor.partner.spring.rest</module>
     <module>${modulesPath}/biz.softfor.reflectionsutil</module>
@@ -54,7 +52,6 @@
     <module>${modulesPath}/biz.softfor.user.i18n</module>
     <module>${modulesPath}/biz.softfor.user.jpa</module>
     <module>${modulesPath}/biz.softfor.user.jpa.withoutrelations</module>
-    <module>${modulesPath}/biz.softfor.user.jpa.withoutrelationsgen</module>
     <module>${modulesPath}/biz.softfor.user.spring</module>
     <module>${modulesPath}/biz.softfor.user.spring.rest</module>
     <module>${modulesPath}/biz.softfor.user.spring.ws</module>

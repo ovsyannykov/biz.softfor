@@ -26,9 +26,6 @@ annotation processors.
 localization messages files.
 - [biz.softfor.jpa](biz.softfor.jpa) - class library for creating CRUD services
 based on JPA and Hibernate.
-- [biz.softfor.jpa.annotatedclassesgen](biz.softfor.jpa.annotatedclassesgen) -
-annotation processor for generating a list of classes annotated with a given
-annotation.
 - [biz.softfor.jpa.apigen](biz.softfor.jpa.apigen) - base class for annotation
 processors that generate classes for working with CRUD API: DTOs, requests, and
 responses.
@@ -55,9 +52,6 @@ contacts, personal data, etc.
 - [biz.softfor.partner.jpa.withoutrelations](biz.softfor.partner.jpa.withoutrelations) -
 contains generated JPA entity classes without relations of the "Partner" demo
 subject area.
-- [biz.softfor.partner.jpa.withoutrelationsgen](biz.softfor.partner.jpa.withoutrelationsgen) -
-annotation processor that generates classes without relations for entities of
-the "Partner" demo subject area.
 - [biz.softfor.partner.spring](biz.softfor.partner.spring) - Spring Boot starter,
 containing Spring CRUD services working with entities of the demo subject area
 "Partner".
@@ -111,9 +105,6 @@ localization [biz.softfor.user.jpa](biz.softfor.user.jpa) package.
 entities of the "User" subject area - users, user groups, roles and tokens.
 - [biz.softfor.user.jpa.withoutrelations](biz.softfor.user.jpa.withoutrelations) -
 contains classes of JPA entities without relations of the subject area "User".
-- [biz.softfor.user.jpa.withoutrelationsgen](biz.softfor.user.jpa.withoutrelationsgen) -
-annotation processor that generates classes without relations for entities of
-the "User" domain.
 - [biz.softfor.user.spring](biz.softfor.user.spring) - contains classes of JPA
 entities without relations of the "User" domain.
 - [biz.softfor.user.spring.rest](biz.softfor.user.spring.rest) - Spring Boot

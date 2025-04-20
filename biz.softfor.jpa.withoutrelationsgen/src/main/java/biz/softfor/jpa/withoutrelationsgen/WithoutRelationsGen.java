@@ -75,8 +75,8 @@ public class WithoutRelationsGen extends CodeGen {
   = { ActionAccess.class.getName(), Column.class.getName(), Fetch.class.getName() };
   private final static String SERIAL_VERSION_UID = "serialVersionUID";
 
-  protected WithoutRelationsGen(Class<?> classWithProcessingEntities) {
-    super(GenWithoutRelations.class.getName(), classWithProcessingEntities);
+  public WithoutRelationsGen() {
+    super(GenWithoutRelations.class);
   }
 
   @Override
@@ -163,7 +163,7 @@ public class WithoutRelationsGen extends CodeGen {
       ctor2.addStatement("super($N)", CodeGenUtil.PARAM_NAME);
     }
     addSerializable(classBldr, processingEnv, clazz);
-    if(clazz.isAnnotationPresent(JsonFilter.class)) {
+    if(CodeGenUtil.isAnnotationPresent(clazz, JsonFilter.class)) {
       classBldr.addAnnotation(AnnotationSpec.builder(JsonFilter.class)
       .addMember(CodeGenUtil.ANNOTATION_VALUE, "$S", worSimpleName).build());
     }
@@ -183,7 +183,7 @@ public class WithoutRelationsGen extends CodeGen {
         String fieldName;
         TypeName fieldType;
         FieldSpec.Builder fieldBldr;
-        if(dclField.isAnnotationPresent(OneToOne.class)) {
+        if(CodeGenUtil.isAnnotationPresent(dclField, OneToOne.class)) {
           setterCode = SetterCode.ONE_TO_ONE;
           fieldName = dclName;
           fieldType = ClassName.get(
@@ -223,7 +223,7 @@ public class WithoutRelationsGen extends CodeGen {
           , CodeGenUtil.PARAM_NAME
           , CodeGenUtil.getterName(dclName)
           );
-        } else if(dclField.isAnnotationPresent(ManyToOne.class)) {
+        } else if(CodeGenUtil.isAnnotationPresent(dclField, ManyToOne.class)) {
           fieldName = CodeGenUtil.manyToOneKeyName(dclField);
           fieldType = ClassName.get(Reflection.idClass(dclClass));
           fieldBldr = CodeGenUtil.fieldBuilder(
@@ -240,7 +240,7 @@ public class WithoutRelationsGen extends CodeGen {
           , CodeGenUtil.PARAM_NAME
           , CodeGenUtil.getterName(dclName)
           );
-        } else if(dclField.isAnnotationPresent(OneToMany.class)) {
+        } else if(CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)) {
           fieldName = ColumnDescr.toManyKeyName(dclName);
           Class<?> joinClass = Reflection.genericParameter(dclField);
           Class<?> joinIdClass = Reflection.idClass(joinClass);
@@ -259,7 +259,7 @@ public class WithoutRelationsGen extends CodeGen {
           , CodeGenUtil.PARAM_NAME
           , CodeGenUtil.getterName(dclName)
           );
-        } else if(dclField.isAnnotationPresent(ManyToMany.class)) {
+        } else if(CodeGenUtil.isAnnotationPresent(dclField, ManyToMany.class)) {
           ManyToManyInf m2mInf = new ManyToManyInf(dclField);
           Class<?> joinClass = Reflection.genericParameter(dclField);
           Class<?> joinIdClass = Reflection.idClass(joinClass);
@@ -336,7 +336,7 @@ public class WithoutRelationsGen extends CodeGen {
           CodeGenUtil.writeSrc
           (linkIdClassBldr, m2mInf.packageName, processingEnv);
 
-          boolean haveJoinTable = dclField.isAnnotationPresent(JoinTable.class);
+          boolean haveJoinTable = CodeGenUtil.isAnnotationPresent(dclField, JoinTable.class);
 
           AnnotationSpec.Builder joinManyToOne
           = AnnotationSpec.builder(ManyToOne.class)
@@ -417,8 +417,10 @@ public class WithoutRelationsGen extends CodeGen {
           , WOR_FIELD_EXCLUDED_PACKAGES
           , WOR_FIELD_EXCLUDED_ANNOTATIONS
           );
-          fieldBldr.addAnnotation
-          (dclField.isAnnotationPresent(Id.class) ? Id.class : Column.class);
+          fieldBldr.addAnnotation(
+            CodeGenUtil.isAnnotationPresent(dclField, Id.class)
+            ? Id.class : Column.class
+          );
           ctor1.addStatement("$N = $N.$N()"
           , fieldName, CodeGenUtil.PARAM_NAME, CodeGenUtil.getterName(fieldName));
           ctor2.addStatement("$N = $N.$N()"

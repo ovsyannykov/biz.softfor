@@ -40,7 +40,6 @@
     <vaadin.version>24.7.0</vaadin.version>
     <xmlschema-core.version>2.3.1</xmlschema-core.version>
 
-    <biz.softfor.jpa.annotatedclassesgen.version>0.0.0</biz.softfor.jpa.annotatedclassesgen.version>
     <biz.softfor.partner.jpa.version>0.0.0</biz.softfor.partner.jpa.version>
     <biz.softfor.partner.spring.rest.version>0.0.0</biz.softfor.partner.spring.rest.version>
     <biz.softfor.reflectionsutil.version>0.0.0</biz.softfor.reflectionsutil.version>
@@ -231,11 +230,6 @@
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
-        <artifactId>biz.softfor.jpa.annotatedclassesgen</artifactId>
-        <version>0.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.jpa.apigen</artifactId>
         <version>0.0.0</version>
       </dependency>
@@ -272,11 +266,6 @@
       <dependency>
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.partner.jpa.withoutrelations</artifactId>
-        <version>0.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>biz.softfor</groupId>
-        <artifactId>biz.softfor.partner.jpa.withoutrelationsgen</artifactId>
         <version>0.0.0</version>
       </dependency>
       <dependency>
@@ -387,11 +376,6 @@
       <dependency>
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.user.jpa.withoutrelations</artifactId>
-        <version>0.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>biz.softfor</groupId>
-        <artifactId>biz.softfor.user.jpa.withoutrelationsgen</artifactId>
         <version>0.0.0</version>
       </dependency>
       <dependency>

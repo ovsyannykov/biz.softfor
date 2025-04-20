@@ -10,5 +10,6 @@ import java.lang.annotation.Target;
 public @interface GenApi {
 
   public String[] value() default {};
+  public String[] restControllers() default {};
 
 }

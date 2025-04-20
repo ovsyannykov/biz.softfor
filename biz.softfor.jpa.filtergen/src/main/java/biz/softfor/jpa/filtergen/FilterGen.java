@@ -26,17 +26,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 import org.hibernate.type.Type;
 import org.hibernate.validator.constraints.URL;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
 
 public class FilterGen extends CodeGen {
 
@@ -46,44 +38,8 @@ public class FilterGen extends CodeGen {
   = { ActionAccess.class.getName(), Type.class.getName(), URL.class.getName() };
   private final static String RESET_METHOD = "reset";
 
-  public FilterGen(Class<?> classWithProcessingEntities) {
-    super(GenFilter.class.getName(), classWithProcessingEntities);
-  }
-
   public FilterGen() {
-    super(GenFilter.class.getName(), null);
-  }
-
-  @Override
-  public boolean process
-  (Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    Set<? extends Element> annotatedElements
-    = roundEnv.getElementsAnnotatedWith(GenFilter.class);
-    for(Element e : annotatedElements) {
-      String[] packages = e.getAnnotation(GenFilter.class).value();
-      FilterBuilder fb = new FilterBuilder();
-      for(String p : packages) {
-        fb.includePackage(p);
-      }
-      ConfigurationBuilder cb = new ConfigurationBuilder().forPackages(packages)
-      .filterInputsBy(fb).setScanners(Scanners.TypesAnnotated);
-      Reflections reflections = new Reflections(cb);
-      Set<Class<?>> types = reflections.getTypesAnnotatedWith(Entity.class);
-      try {
-        for(Class<?> t : types) {
-          if(!CodeGenUtil.isWorClass(t)) {
-            process(t);
-          }
-        }
-      }
-      catch(IllegalAccessException | IllegalArgumentException
-      | InvocationTargetException | NoSuchFieldException | NoSuchMethodException
-      | SecurityException ex) {
-        processingEnv.getMessager()
-        .printMessage(Diagnostic.Kind.ERROR, ex.getMessage());
-      }
-    }
-    return false;
+    super(GenFilter.class);
   }
 
   @Override

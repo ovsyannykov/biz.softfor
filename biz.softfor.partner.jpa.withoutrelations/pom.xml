@@ -22,7 +22,7 @@
     <!-- annotation processors -->
     <dependency>
       <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.partner.jpa.withoutrelationsgen</artifactId>
+      <artifactId>biz.softfor.jpa.withoutrelationsgen</artifactId>
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>

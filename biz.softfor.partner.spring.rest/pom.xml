@@ -17,25 +17,11 @@
     <relativePath/>
   </parent>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArgs>
-            <arg>-Aorg.springframework.web.bind.annotation.RestController=biz.softfor.partner.spring.rest.RestControllers.restcontrollers</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
     <!-- annotation processors -->
     <dependency>
-      <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.jpa.annotatedclassesgen</artifactId>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>

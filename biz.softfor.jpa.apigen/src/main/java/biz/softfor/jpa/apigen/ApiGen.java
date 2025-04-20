@@ -17,7 +17,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -31,11 +30,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.type.Type;
 import org.reflections.Reflections;
@@ -58,46 +54,22 @@ public class ApiGen extends CodeGen {
 
   private final static boolean DEBUG = false;
 
-  protected ApiGen
-  (Class<?> classWithProcessingEntities, Class<?> classWithProcessingControllers) {
-    super(GenApi.class.getName(), classWithProcessingEntities);
-  }
-
   public ApiGen() {
-    super(GenApi.class.getName(), null);
+    super(GenApi.class);
   }
 
   @Override
-  public boolean process
-  (Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    Set<? extends Element> annotatedElements
-    = roundEnv.getElementsAnnotatedWith(GenApi.class);
-    for(Element e : annotatedElements) {
-      String[] packages = e.getAnnotation(GenApi.class).value();
-      FilterBuilder fb = new FilterBuilder();
-      for(String p : packages) {
-        fb.includePackage(p);
-      }
-      ConfigurationBuilder cb = new ConfigurationBuilder().forPackages(packages)
-      .filterInputsBy(fb).setScanners(Scanners.TypesAnnotated);
-      Reflections reflections = new Reflections(cb);
-      Set<Class<?>> types = reflections.getTypesAnnotatedWith(Entity.class);
-      restControllers = reflections.getTypesAnnotatedWith(RestController.class);
-      try {
-        for(Class<?> t : types) {
-          if(!CodeGenUtil.isWorClass(t)) {
-            process(t);
-          }
-        }
-      }
-      catch(IllegalAccessException | IllegalArgumentException
-      | InvocationTargetException | NoSuchFieldException | NoSuchMethodException
-      | SecurityException ex) {
-        processingEnv.getMessager()
-        .printMessage(Diagnostic.Kind.ERROR, ex.getMessage());
-      }
+  protected void preProcess(Element element) {
+    Annotation a = element.getAnnotation(RestController.class);
+    String[] packages = element.getAnnotation(GenApi.class).restControllers();
+    FilterBuilder fb = new FilterBuilder();
+    for(String p : packages) {
+      fb.includePackage(p);
     }
-    return false;
+    ConfigurationBuilder cb = new ConfigurationBuilder().forPackages(packages)
+    .filterInputsBy(fb).setScanners(Scanners.TypesAnnotated);
+    Reflections reflections = new Reflections(cb);
+    restControllers = reflections.getTypesAnnotatedWith(RestController.class);
   }
 
   @Override

@@ -29,9 +29,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -49,19 +49,13 @@ import org.apache.commons.lang3.StringUtils;
 public class CodeGenUtil {
 
   public final static String ANNOTATION_VALUE = "value";
-  public final static String PROCESSED_FIELD_NAME = "processed";
-  public final static String ENTITIES_CLASS_NAME = "Entities";
-  public final static String ENTITIES_FIELD_NAME = "entities";
-  public final static String ENTITIES_OPTION = ENTITIES_FIELD_NAME;
   public final static String ID_GETTER_NAME = getterName(Identifiable.ID);
   public final static String ID_SETTER_NAME = setterName(Identifiable.ID);
   public final static String ID_SUFFIX = "_Id";
   public final static String PARAM_NAME = "v";
-  public final static String REST_CONTROLLERS_CLASS_NAME = "RestControllers";
-  public final static String REST_CONTROLLERS_FIELD_NAME = "restcontrollers";
-  public final static String REST_CONTROLLERS_OPTION = REST_CONTROLLERS_FIELD_NAME;
   public final static String RESULT_NAME = "result";
-  public final static String VALIDATION_ANNOTATIONS_PKG = NotNull.class.getPackageName();
+  public final static String VALIDATION_ANNOTATIONS_PKG
+  = NotNull.class.getPackageName();
   public final static String[] API_EXCLUDED_ANNOTATIONS
   = { ActionAccess.class.getName(), JsonFilter.class.getName() };
   public final static String[] API_EXCLUDED_PACKAGES
@@ -395,54 +389,11 @@ public class CodeGenUtil {
     .build();
   }
 
-  private static String srcPath;
-  private final static String SAMPLE = "sample_";
-
-  synchronized public static
-  String generatedSourcesPath(ProcessingEnvironment processingEnv) {
-    if(srcPath == null) {
-      try {
-        String samplePath = processingEnv.getFiler().createSourceFile(SAMPLE).getName();
-        srcPath = samplePath.substring(0, samplePath.indexOf(SAMPLE) - 1);
-      }
-      catch(IOException ex) {
-        throw new RuntimeException("Can't get access to generated sources path.", ex);
-      }
-    }
-    return srcPath;
-  }
-
   public static Annotation getAnnotation
-  (Class clazz, Class<? extends Annotation> annotationClass) {
+  (AnnotatedElement element, Class<? extends Annotation> annotationClass) {
     Annotation result = null;
     String name = annotationClass.getName();
-    for(Annotation a : clazz.getAnnotations()) {
-      if(name.equals(a.annotationType().getName())) {
-        result = a;
-        break;
-      }
-    }
-    return result;
-  }
-
-  public static Annotation getAnnotation
-  (Field field, Class<? extends Annotation> annotationClass) {
-    Annotation result = null;
-    String name = annotationClass.getName();
-    for(Annotation a : field.getAnnotations()) {
-      if(name.equals(a.annotationType().getName())) {
-        result = a;
-        break;
-      }
-    }
-    return result;
-  }
-
-  public static Annotation getAnnotation
-  (Method method, Class<? extends Annotation> annotationClass) {
-    Annotation result = null;
-    String name = annotationClass.getName();
-    for(Annotation a : method.getAnnotations()) {
+    for(Annotation a : element.getAnnotations()) {
       if(name.equals(a.annotationType().getName())) {
         result = a;
         break;
@@ -452,27 +403,11 @@ public class CodeGenUtil {
   }
 
   public static Object getAnnotationProperty
-  (Class clazz, Class<? extends Annotation> annotationClass, String property)
+  (AnnotatedElement element, Class<? extends Annotation> annotationClass, String property)
   throws IllegalAccessException, InvocationTargetException
   , NoSuchMethodException, SecurityException {
-    Annotation a = getAnnotation(clazz, annotationClass);
+    Annotation a = getAnnotation(element, annotationClass);
     return a == null ? null : a.getClass().getMethod(property).invoke(a);
-  }
-
-  public static Object getAnnotationProperty
-  (Field field, Class<? extends Annotation> annotationClass, String property)
-  throws IllegalAccessException, InvocationTargetException
-  , NoSuchMethodException, SecurityException {
-    Annotation a = getAnnotation(field, annotationClass);
-    return a.getClass().getMethod(property).invoke(a);
-  }
-
-  public static Object getAnnotationProperty
-  (Method method, Class<? extends Annotation> annotationClass, String property)
-  throws IllegalAccessException, InvocationTargetException
-  , NoSuchMethodException, SecurityException {
-    Annotation a = getAnnotation(method, annotationClass);
-    return a.getClass().getMethod(property).invoke(a);
   }
 
   public static String getterName(String fieldName) {
@@ -483,10 +418,11 @@ public class CodeGenUtil {
     return fieldMethodName("set", fieldName);
   }
 
-  public static boolean isAnnotationPresent(Field field, Class<?> anno) {
+  public static boolean isAnnotationPresent
+  (AnnotatedElement element, Class<?> anno) {
     boolean result = false;
     String annoName = anno.getName();
-    for(Annotation a : field.getAnnotations()) {
+    for(Annotation a : element.getAnnotations()) {
       if(annoName.equals(a.annotationType().getName())) {
         result = true;
         break;
@@ -533,47 +469,6 @@ public class CodeGenUtil {
     }, UpdateRequest.class, idCN, filterCN, dataCN);
     request(result, "Delete", noConstructors, DeleteRequest.class
     , idCN, filterCN);
-    return result;
-  }
-
-  public static TypeSpec.Builder newCrudRequests
-  (String requestName, TypeName[][] genericClassParameters) {
-    TypeSpec.Builder result = TypeSpec.classBuilder(requestName);
-    String[] names = new String[] { "Create", "Read", "Update", "Delete" };
-    TypeSpec.Builder[] requests = new TypeSpec.Builder[4];
-    for(int i = 0; i < names.length; ++i) {
-      TypeName[] genericParameters = new TypeName[genericClassParameters[i].length - 1];
-      for(int p = 1; p < genericClassParameters[i].length; ++p) {
-        genericParameters[p - 1] = genericClassParameters[i][p];
-      }
-      requests[i] = TypeSpec.classBuilder(names[i])
-      .superclass(ParameterizedTypeName.get((ClassName)genericClassParameters[i][0], genericParameters))
-      .addModifiers(Modifier.PUBLIC, Modifier.STATIC);
-      if(i == 0 || i == 2) {//Create or Update
-        MethodSpec.Builder ctor
-        = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC);
-        requests[i].addMethod(ctor.build());
-        MethodSpec.Builder dataCtor
-        = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)
-        .addParameter(genericParameters[1], AbstractRequest.DATA)
-        .addStatement("super($N)", AbstractRequest.DATA);
-        requests[i].addMethod(dataCtor.build());
-        if(i == 2) {
-          MethodSpec.Builder updateCtor
-          = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)
-          .addParameter(genericParameters[1], AbstractRequest.DATA)
-          .addParameter(
-            ParameterizedTypeName.get(List.class, String.class)
-          , AbstractRequest.FIELDS
-          )
-          .addStatement
-          ("super($N, $N)", AbstractRequest.DATA, AbstractRequest.FIELDS);
-          requests[i].addMethod(updateCtor.build());
-        }
-      }
-      addToStringAndEqualsAndHashCode(requests[i], true);
-      result.addType(requests[i].build());
-    }
     return result;
   }
 
