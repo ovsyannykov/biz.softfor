@@ -11,10 +11,10 @@ import biz.softfor.user.jpa.User_;
 import biz.softfor.user.spring.RoleSvc;
 import biz.softfor.user.spring.rest.testassets.HttpRequestsMgrUrlByClassTestCtlr;
 import biz.softfor.user.spring.rest.testassets.HttpRequestsMgrUrlTestCtlr;
-import biz.softfor.user.spring.rest.testassets.TestEntity;
-import biz.softfor.user.spring.rest.testassets.TestEntityDto;
-import biz.softfor.user.spring.rest.testassets.TestEntityRequest;
-import biz.softfor.user.spring.rest.testassets.TestEntityResponse;
+import biz.softfor.user.spring.rest.testassets.TeztEntity;
+import biz.softfor.user.spring.rest.testassets.TeztEntityDto;
+import biz.softfor.user.spring.rest.testassets.TeztEntityRequest;
+import biz.softfor.user.spring.rest.testassets.TeztEntityResponse;
 import biz.softfor.util.Json;
 import biz.softfor.util.api.AbstractRequest;
 import biz.softfor.util.api.BasicResponse;
@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @SpringBootTest(classes = { ConfigUserRest.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
-@EntityScan(basePackageClasses = { TestEntity.class })
+@EntityScan(basePackageClasses = { TeztEntity.class })
 @Log
 public class SecurityMgrUpdateTest {
 
@@ -80,18 +80,18 @@ public class SecurityMgrUpdateTest {
 
   @Test
   public void addRemoveRole() throws Exception {
-    Field everybodyField = TestEntity.class.getDeclaredField(TestEntityDto.EVERYBODY);
-    long ROLE_ID = new FieldRoleCalc(TestEntity.class, everybodyField).id();
+    Field everybodyField = TeztEntity.class.getDeclaredField(TeztEntityDto.EVERYBODY);
+    long ROLE_ID = new FieldRoleCalc(TeztEntity.class, everybodyField).id();
     int GROUP_ID = 1;
     RoleWor data = new RoleWor();
     RoleRequest.Update roleReq = new RoleRequest.Update(data);
     roleReq.filter.setId(set(ROLE_ID));
-    TestEntityRequest.Read req = new TestEntityRequest.Read();
+    TeztEntityRequest.Read req = new TeztEntityRequest.Read();
     req.filter.assignId(1);
-    req.fields = list(TestEntityDto.EVERYBODY);
+    req.fields = list(TeztEntityDto.EVERYBODY);
     {
-      TestEntityResponse res = testSvc.call(TestEntityResponse.class
-      , TestEntityRequest.METHOD, TestEntityRequest.TEST_SECURITY + StdPath.READ
+      TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
+      , TeztEntityRequest.METHOD, TeztEntityRequest.TEST_SECURITY + StdPath.READ
       , req);
       Supplier<String> msg = msgr.apply(res);
       assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.OK);
@@ -102,8 +102,8 @@ public class SecurityMgrUpdateTest {
       roleReq.data.setGroupIds(set(GROUP_ID));
       roleSvc.update(roleReq);
     } {
-      TestEntityResponse res = testSvc.call(TestEntityResponse.class
-      , TestEntityRequest.METHOD, TestEntityRequest.TEST_SECURITY + StdPath.READ
+      TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
+      , TeztEntityRequest.METHOD, TeztEntityRequest.TEST_SECURITY + StdPath.READ
       , req);
       assertThat(res.getStatus()).as(msgr.apply(res))
       .isEqualTo(BasicResponse.ACCESS_DENIED);
@@ -111,8 +111,8 @@ public class SecurityMgrUpdateTest {
       roleReq.data.setGroupIds(set());
       roleSvc.update(roleReq);
     } {
-      TestEntityResponse res = testSvc.call(TestEntityResponse.class
-      , TestEntityRequest.METHOD, TestEntityRequest.TEST_SECURITY + StdPath.READ
+      TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
+      , TeztEntityRequest.METHOD, TeztEntityRequest.TEST_SECURITY + StdPath.READ
       , req);
       Supplier<String> msg = msgr.apply(res);
       assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.OK);
@@ -161,17 +161,17 @@ public class SecurityMgrUpdateTest {
 
   @Test
   public void defaultAccess() throws Exception {
-    Field everybodyField = TestEntity.class.getDeclaredField(TestEntityDto.EVERYBODY);
-    long ROLE_ID = new FieldRoleCalc(TestEntity.class, everybodyField).id();
+    Field everybodyField = TeztEntity.class.getDeclaredField(TeztEntityDto.EVERYBODY);
+    long ROLE_ID = new FieldRoleCalc(TeztEntity.class, everybodyField).id();
     RoleWor data = new RoleWor();
     RoleRequest.Update roleReq = new RoleRequest.Update(data);
     roleReq.filter.setId(set(ROLE_ID));
-    TestEntityRequest.Read req = new TestEntityRequest.Read();
+    TeztEntityRequest.Read req = new TeztEntityRequest.Read();
     req.filter.assignId(1);
-    req.fields = list(TestEntityDto.EVERYBODY);
+    req.fields = list(TeztEntityDto.EVERYBODY);
     {
-      TestEntityResponse res = testSvc.call(TestEntityResponse.class
-      , TestEntityRequest.METHOD, TestEntityRequest.TEST_SECURITY + StdPath.READ
+      TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
+      , TeztEntityRequest.METHOD, TeztEntityRequest.TEST_SECURITY + StdPath.READ
       , req);
       Supplier<String> msg = msgr.apply(res);
       assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.OK);
@@ -182,8 +182,8 @@ public class SecurityMgrUpdateTest {
       roleReq.data.setDefaultAccess(DefaultAccess.AUTHORIZED);
       roleSvc.update(roleReq);
     } {
-      TestEntityResponse res = testSvc.call(TestEntityResponse.class
-      , TestEntityRequest.METHOD, TestEntityRequest.TEST_SECURITY + StdPath.READ
+      TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
+      , TeztEntityRequest.METHOD, TeztEntityRequest.TEST_SECURITY + StdPath.READ
       , req);
       assertThat(res.getStatus()).as(msgr.apply(res))
       .isEqualTo(BasicResponse.ACCESS_DENIED);
@@ -191,8 +191,8 @@ public class SecurityMgrUpdateTest {
       roleReq.data.setDefaultAccess(DefaultAccess.EVERYBODY);
       roleSvc.update(roleReq);
     } {
-      TestEntityResponse res = testSvc.call(TestEntityResponse.class
-      , TestEntityRequest.METHOD, TestEntityRequest.TEST_SECURITY + StdPath.READ
+      TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
+      , TeztEntityRequest.METHOD, TeztEntityRequest.TEST_SECURITY + StdPath.READ
       , req);
       Supplier<String> msg = msgr.apply(res);
       assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.OK);
@@ -205,7 +205,7 @@ public class SecurityMgrUpdateTest {
   @Test
   public void url() throws Exception {
     String HTTP_METHOD = RequestMethod.GET.name();
-    String ENDPOINT = TestEntityRequest.TEST_SECURITY
+    String ENDPOINT = TeztEntityRequest.TEST_SECURITY
     + HttpRequestsMgrUrlTestCtlr.DEFAULT_ACCESS;
     long ACTION_ID = new UrlRoleCalc(
       HttpRequestsMgrUrlTestCtlr.class
@@ -247,7 +247,7 @@ public class SecurityMgrUpdateTest {
     RoleRequest.Update roleReq = new RoleRequest.Update(data);
     roleReq.filter.setId(set(ACTION_ID));
     String HTTP_METHOD = RequestMethod.GET.name();
-    String ENDPOINT = TestEntityRequest.TEST_SECURITY
+    String ENDPOINT = TeztEntityRequest.TEST_SECURITY
     + HttpRequestsMgrUrlByClassTestCtlr.URL_BY_CLASS;
     AbstractRequest req = new AbstractRequest();
     {

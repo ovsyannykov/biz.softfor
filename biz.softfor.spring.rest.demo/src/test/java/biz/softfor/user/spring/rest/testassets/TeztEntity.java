@@ -17,13 +17,13 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = TestEntity.TABLE)
+@Table(name = TeztEntity.TABLE)
 @Getter
 @Setter
 @ToString(callSuper = true)
-@JsonFilter("TestEntity")
+@JsonFilter("TeztEntity")
 @NoArgsConstructor
-public class TestEntity extends IdEntity<Integer> implements Serializable {
+public class TeztEntity extends IdEntity<Integer> implements Serializable {
 
   public final static String TABLE = "testentities";
 

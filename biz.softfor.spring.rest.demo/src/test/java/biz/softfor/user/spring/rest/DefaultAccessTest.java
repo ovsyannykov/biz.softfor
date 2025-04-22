@@ -3,11 +3,11 @@ package biz.softfor.user.spring.rest;
 import biz.softfor.testutil.spring.RestAssuredCall;
 import biz.softfor.user.api.UserDto;
 import biz.softfor.user.spring.SecurityMgr;
-import biz.softfor.user.spring.rest.testassets.TestEntity;
-import biz.softfor.user.spring.rest.testassets.TestEntityDto;
-import biz.softfor.user.spring.rest.testassets.TestEntityRequest;
-import biz.softfor.user.spring.rest.testassets.TestEntityResponse;
-import biz.softfor.user.spring.rest.testassets.TestEntityWor;
+import biz.softfor.user.spring.rest.testassets.TeztEntity;
+import biz.softfor.user.spring.rest.testassets.TeztEntityDto;
+import biz.softfor.user.spring.rest.testassets.TeztEntityRequest;
+import biz.softfor.user.spring.rest.testassets.TeztEntityResponse;
+import biz.softfor.user.spring.rest.testassets.TeztEntityWor;
 import biz.softfor.util.Json;
 import biz.softfor.util.api.AbstractRequest;
 import biz.softfor.util.api.BasicResponse;
@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @SpringBootTest(classes = { ConfigUserRest.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
-@EntityScan(basePackageClasses = { TestEntity.class })
+@EntityScan(basePackageClasses = { TeztEntity.class })
 @ExtendWith(OutputCaptureExtension.class)
 @Log
 public class DefaultAccessTest {
@@ -50,11 +50,11 @@ public class DefaultAccessTest {
   private RestAssuredCall testSvc;
 
   private final static String CREATE
-  = TestEntityRequest.TEST_SECURITY + StdPath.CREATE;
+  = TeztEntityRequest.TEST_SECURITY + StdPath.CREATE;
   private final static String DATA_DEFAULT_ACCESS
-  = TestEntityRequest.TEST_SECURITY + TestEntityRequest.DATA_DEFAULT_ACCESS;
+  = TeztEntityRequest.TEST_SECURITY + TeztEntityRequest.DATA_DEFAULT_ACCESS;
   private final static String DATA_DEFAULT_UPDATE_ACCESS
-  = TestEntityRequest.TEST_SECURITY + TestEntityRequest.DATA_DEFAULT_UPDATE_ACCESS;
+  = TeztEntityRequest.TEST_SECURITY + TeztEntityRequest.DATA_DEFAULT_UPDATE_ACCESS;
 
   public final static UserDto DEFAULT_ACCESS_USER_DTO = new UserDto();
   static {
@@ -63,16 +63,16 @@ public class DefaultAccessTest {
     DEFAULT_ACCESS_USER_DTO.setEmail("testDefaultAccess@t.co");
   };
 
-  private final static TestEntityWor TEST_ENTITY_WOR = new TestEntityWor();
+  private final static TeztEntityWor TEST_ENTITY_WOR = new TeztEntityWor();
   static {
     TEST_ENTITY_WOR.setEverybody("everybody");
     TEST_ENTITY_WOR.setAuthorized("authorized");
     TEST_ENTITY_WOR.setNobody("nobody");
   };
-  private final static TestEntityRequest.Create CREATE_REQ
-  = new TestEntityRequest.Create(TEST_ENTITY_WOR);
+  private final static TeztEntityRequest.Create CREATE_REQ
+  = new TeztEntityRequest.Create(TEST_ENTITY_WOR);
   private final static List<String> ALL_FIELDS = list
-  (TestEntityDto.NOBODY, TestEntityDto.AUTHORIZED, TestEntityDto.EVERYBODY);
+  (TeztEntityDto.NOBODY, TeztEntityDto.AUTHORIZED, TeztEntityDto.EVERYBODY);
 
   @BeforeEach
   public void beforeEach() {
@@ -85,11 +85,11 @@ public class DefaultAccessTest {
   @Test
   public void dataDefaultAccess() throws Exception {
     Integer id = createTestData();
-    TestEntityRequest.Read req = new TestEntityRequest.Read();
+    TeztEntityRequest.Read req = new TeztEntityRequest.Read();
     req.filter.assignId(id);
 
-    req.fields = list(TestEntityDto.EVERYBODY);
-    TestEntityResponse res = testSvc.call(TestEntityResponse.class
+    req.fields = list(TeztEntityDto.EVERYBODY);
+    TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_ACCESS, req);
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
     assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.OK);
@@ -97,31 +97,31 @@ public class DefaultAccessTest {
     .isEqualTo(TEST_ENTITY_WOR.getEverybody());
 
     req.fields = ALL_FIELDS;
-    TestEntityResponse res2 = testSvc.call(TestEntityResponse.class
+    TeztEntityResponse res2 = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_ACCESS, req);
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
     assertThat(res2.getStatus()).as(msg2).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res2.getDescr()).as(msg2)
     .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TestEntityDto.AUTHORIZED, TestEntityDto.NOBODY).toString()));
+    , list(TeztEntityDto.AUTHORIZED, TeztEntityDto.NOBODY).toString()));
   }
 
   @Test
   public void dataDefaultAccessAuthorized() throws Exception {
     Integer id = createTestData();
-    TestEntityRequest.Read req = new TestEntityRequest.Read();
+    TeztEntityRequest.Read req = new TeztEntityRequest.Read();
     req.filter.assignId(id);
-    req.fields = list(TestEntityDto.AUTHORIZED, TestEntityDto.EVERYBODY);
-    TestEntityResponse res = testSvc.call(TestEntityResponse.class
+    req.fields = list(TeztEntityDto.AUTHORIZED, TeztEntityDto.EVERYBODY);
+    TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_ACCESS, req);
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
     assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res.getDescr()).as(msg)
     .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TestEntityDto.AUTHORIZED).toString()));
+    , list(TeztEntityDto.AUTHORIZED).toString()));
 
     req.token = SecurityTest.authorize(DEFAULT_ACCESS_USER_DTO, testSvc, om);
-    TestEntityResponse res2 = testSvc.call(TestEntityResponse.class
+    TeztEntityResponse res2 = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_ACCESS, req);
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
     assertThat(res2.getStatus()).as(msg2).isEqualTo(BasicResponse.OK);
@@ -129,62 +129,62 @@ public class DefaultAccessTest {
     .isEqualTo(TEST_ENTITY_WOR.getAuthorized());
 
     req.fields = ALL_FIELDS;
-    TestEntityResponse res3 = testSvc.call(TestEntityResponse.class
+    TeztEntityResponse res3 = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_ACCESS, req);
     Supplier<String> msg3 = () -> "res3=" + Json.serializep(om, res3);
     assertThat(res3.getStatus()).as(msg3).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res3.getDescr()).as(msg3)
     .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TestEntityDto.NOBODY).toString()));
+    , list(TeztEntityDto.NOBODY).toString()));
   }
 
   @Test
   public void dataDefaultAccessNobody() throws Exception {
     Integer id = createTestData();
-    TestEntityRequest.Read req = new TestEntityRequest.Read();
+    TeztEntityRequest.Read req = new TeztEntityRequest.Read();
     req.filter.assignId(id);
     req.fields = ALL_FIELDS;
 
-    TestEntityResponse res = testSvc.call(TestEntityResponse.class
+    TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_ACCESS, req);
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
     assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res.getDescr()).as(msg)
     .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TestEntityDto.AUTHORIZED, TestEntityDto.NOBODY).toString()));
+    , list(TeztEntityDto.AUTHORIZED, TeztEntityDto.NOBODY).toString()));
 
     req.token = SecurityTest.authorize(DEFAULT_ACCESS_USER_DTO, testSvc, om);
-    TestEntityResponse res2 = testSvc.call(TestEntityResponse.class
+    TeztEntityResponse res2 = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_ACCESS, req);
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
     assertThat(res2.getStatus()).as(msg2).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res2.getDescr()).as(msg2)
     .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TestEntityDto.NOBODY).toString()));
+    , list(TeztEntityDto.NOBODY).toString()));
   }
 
   @Test
   public void dataDefaultUpdateAccess(CapturedOutput output) throws Exception {
     Integer id = createTestData();
     String EXPECTED_SQL = "update testentities tew1_0 set nobody=NULL where tew1_0.id=" + id;
-    TestEntityRequest.Update req = new TestEntityRequest.Update();
+    TeztEntityRequest.Update req = new TeztEntityRequest.Update();
     req.filter.assignId(id);
 
-    req.fields = list(TestEntityDto.NOBODY);//defaultUpdateAccess = EVERYBODY
-    TestEntityResponse res = testSvc.call(TestEntityResponse.class
+    req.fields = list(TeztEntityDto.NOBODY);//defaultUpdateAccess = EVERYBODY
+    TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_UPDATE_ACCESS, req);
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
     assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.OK);
     assertThat(output).contains(EXPECTED_SQL);
 
     req.fields = ALL_FIELDS;
-    TestEntityResponse res2 = testSvc.call(TestEntityResponse.class
+    TeztEntityResponse res2 = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_UPDATE_ACCESS, req);
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
     assertThat(res2.getStatus()).as(msg2).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res2.getDescr()).as(msg2)
     .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TestEntityDto.EVERYBODY, TestEntityDto.AUTHORIZED).toString()));
+    , list(TeztEntityDto.EVERYBODY, TeztEntityDto.AUTHORIZED).toString()));
   }
 
   @Test
@@ -192,61 +192,61 @@ public class DefaultAccessTest {
   throws Exception {
     Integer id = createTestData();
     String EXPECTED_SQL = "update testentities tew1_0 set everybody=NULL,nobody=NULL where tew1_0.id=" + id;
-    TestEntityRequest.Update req = new TestEntityRequest.Update();
+    TeztEntityRequest.Update req = new TeztEntityRequest.Update();
     req.filter.assignId(id);
 
     //defaultUpdateAccess <= AUTHORIZED
-    req.fields = list(TestEntityDto.EVERYBODY, TestEntityDto.NOBODY);
-    TestEntityResponse res = testSvc.call(TestEntityResponse.class
+    req.fields = list(TeztEntityDto.EVERYBODY, TeztEntityDto.NOBODY);
+    TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_UPDATE_ACCESS, req);
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
     assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res.getDescr()).as(msg)
     .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TestEntityDto.EVERYBODY).toString()));
+    , list(TeztEntityDto.EVERYBODY).toString()));
 
     req.token = SecurityTest.authorize(DEFAULT_ACCESS_USER_DTO, testSvc, om);
-    TestEntityResponse res2 = testSvc.call(TestEntityResponse.class
+    TeztEntityResponse res2 = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_UPDATE_ACCESS, req);
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
     assertThat(res2.getStatus()).as(msg2).isEqualTo(BasicResponse.OK);
     assertThat(output).contains(EXPECTED_SQL);
 
     req.fields = ALL_FIELDS;
-    TestEntityResponse res3 = testSvc.call(TestEntityResponse.class
+    TeztEntityResponse res3 = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_UPDATE_ACCESS, req);
     Supplier<String> msg3 = () -> "res3=" + Json.serializep(om, res3);
     assertThat(res3.getStatus()).as(msg3).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res3.getDescr()).as(msg3)
     .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TestEntityDto.AUTHORIZED).toString()));
+    , list(TeztEntityDto.AUTHORIZED).toString()));
   }
 
   @Test
   public void dataDefaultUpdateAccessNobody()
   throws Exception {
     Integer id = createTestData();
-    TestEntityRequest.Update req = new TestEntityRequest.Update();
+    TeztEntityRequest.Update req = new TeztEntityRequest.Update();
     req.filter.assignId(id);
 
     //defaultUpdateAccess <= NOBODY
     req.fields = ALL_FIELDS;
-    TestEntityResponse res = testSvc.call(TestEntityResponse.class
+    TeztEntityResponse res = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_UPDATE_ACCESS, req);
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
     assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res.getDescr()).as(msg)
     .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TestEntityDto.EVERYBODY, TestEntityDto.AUTHORIZED).toString()));
+    , list(TeztEntityDto.EVERYBODY, TeztEntityDto.AUTHORIZED).toString()));
 
     req.token = SecurityTest.authorize(DEFAULT_ACCESS_USER_DTO, testSvc, om);
-    TestEntityResponse res2 = testSvc.call(TestEntityResponse.class
+    TeztEntityResponse res2 = testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), DATA_DEFAULT_UPDATE_ACCESS, req);
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
     assertThat(res2.getStatus()).as(msg2).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res2.getDescr()).as(msg2)
     .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TestEntityDto.AUTHORIZED).toString()));
+    , list(TeztEntityDto.AUTHORIZED).toString()));
   }
 
   @Test
@@ -254,8 +254,8 @@ public class DefaultAccessTest {
     AbstractRequest req = new AbstractRequest();
     CommonResponse res = testSvc.call(CommonResponse.class
     , RequestMethod.POST.name()
-    , TestEntityRequest.TEST_SECURITY
-      + TestEntityRequest.URL_DEFAULT_ACCESS_EVERYBODY
+    , TeztEntityRequest.TEST_SECURITY
+      + TeztEntityRequest.URL_DEFAULT_ACCESS_EVERYBODY
     , req
     );
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
@@ -267,8 +267,8 @@ public class DefaultAccessTest {
     AbstractRequest req = new AbstractRequest();
     CommonResponse res = testSvc.call(CommonResponse.class
     , RequestMethod.POST.name()
-    , TestEntityRequest.TEST_SECURITY
-      + TestEntityRequest.URL_DEFAULT_ACCESS_AUTHORIZED
+    , TeztEntityRequest.TEST_SECURITY
+      + TeztEntityRequest.URL_DEFAULT_ACCESS_AUTHORIZED
     , req
     );
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
@@ -277,8 +277,8 @@ public class DefaultAccessTest {
     req.token = SecurityTest.authorize(DEFAULT_ACCESS_USER_DTO, testSvc, om);
     CommonResponse res2 = testSvc.call(CommonResponse.class
     , RequestMethod.POST.name()
-    , TestEntityRequest.TEST_SECURITY
-      + TestEntityRequest.URL_DEFAULT_ACCESS_AUTHORIZED
+    , TeztEntityRequest.TEST_SECURITY
+      + TeztEntityRequest.URL_DEFAULT_ACCESS_AUTHORIZED
     , req
     );
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
@@ -290,8 +290,8 @@ public class DefaultAccessTest {
     AbstractRequest req = new AbstractRequest();
     CommonResponse res = testSvc.call(CommonResponse.class
     , RequestMethod.POST.name()
-    , TestEntityRequest.TEST_SECURITY
-      + TestEntityRequest.URL_DEFAULT_ACCESS_NOBODY
+    , TeztEntityRequest.TEST_SECURITY
+      + TeztEntityRequest.URL_DEFAULT_ACCESS_NOBODY
     , req
     );
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
@@ -300,8 +300,8 @@ public class DefaultAccessTest {
     req.token = SecurityTest.authorize(DEFAULT_ACCESS_USER_DTO, testSvc, om);
     CommonResponse res2 = testSvc.call(CommonResponse.class
     , RequestMethod.POST.name()
-    , TestEntityRequest.TEST_SECURITY
-      + TestEntityRequest.URL_DEFAULT_ACCESS_NOBODY
+    , TeztEntityRequest.TEST_SECURITY
+      + TeztEntityRequest.URL_DEFAULT_ACCESS_NOBODY
     , req
     );
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
@@ -309,7 +309,7 @@ public class DefaultAccessTest {
   }
 
   private Integer createTestData() throws Exception {
-    return testSvc.call(TestEntityResponse.class
+    return testSvc.call(TeztEntityResponse.class
     , RequestMethod.POST.name(), CREATE, CREATE_REQ).getData(0).getId();
   }
 

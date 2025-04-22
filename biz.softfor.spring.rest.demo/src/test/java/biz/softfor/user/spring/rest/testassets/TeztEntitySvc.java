@@ -4,5 +4,5 @@ import biz.softfor.spring.jpa.crud.CrudSvc;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TestEntitySvc
-extends CrudSvc<Integer, TestEntity, TestEntityWor, TestEntityFltr> {}
+public class TeztEntitySvc
+extends CrudSvc<Integer, TeztEntity, TeztEntityWor, TeztEntityFltr> {}

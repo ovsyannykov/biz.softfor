@@ -39,12 +39,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ColumnDescr {
+
+  private final static Map<String, EntityInf> entityInfs = new HashMap<>();
+  private final static Map<String, Map<String, ColumnDescr>> relationKeys
+  = new HashMap<>();
+  private final static Map<String, Map<String, ColumnDescr>> plainCds
+  = new HashMap<>();
 
   private final static boolean DEBUG = false;
 
@@ -53,7 +58,8 @@ public class ColumnDescr {
     for(EntityType<?> et : entities) {
       Class<?> t = et.getJavaType();
       if(!t.isAnnotationPresent(Generated.class)
-      || t.isAnnotationPresent(ManyToManyGeneratedLink.class)) {
+      || t.isAnnotationPresent(ManyToManyGeneratedLink.class)
+      || t.isAnnotationPresent(TestEntity.class)) {
         Map<String, ColumnDescr> clazzCds = new HashMap<>();
         Map<String, ColumnDescr> clazzRelationKeys = new HashMap<>();
         Map<String, ColumnDescr> clazzPlainCds = new HashMap<>();
@@ -86,14 +92,15 @@ public class ColumnDescr {
           }
         }
         String tName = t.getName();
-        columnDescrs.put(tName, clazzCds);
+        entityInfs.put(tName, new EntityInf(t, clazzCds));
         relationKeys.put(tName, clazzRelationKeys);
         plainCds.put(tName, clazzPlainCds);
       }
     }
     for(EntityType<?> et : entities) {
       Class<?> t = et.getJavaType();
-      if(!t.isAnnotationPresent(ManyToManyGeneratedLink.class)) {
+      if(!t.isAnnotationPresent(ManyToManyGeneratedLink.class)
+      && !t.isAnnotationPresent(TestEntity.class)) {
         String name, src;
         Generated genAnn = t.getAnnotation(Generated.class);
         if(genAnn == null) {//is t Original or Without Relations entity
@@ -103,7 +110,7 @@ public class ColumnDescr {
           src = genAnn.value();
           name = t.getName();
         }
-        Map<String, ColumnDescr> cds = columnDescrs.get(src);
+        Map<String, ColumnDescr> cds = entityInfs.get(src).cds;
         Map<String, ColumnDescr> rks = relationKeys.get(src);
         if(genAnn != null) {
           Map<String, ColumnDescr> worCds = null;
@@ -125,7 +132,7 @@ public class ColumnDescr {
             rks = worRks;
           }
         }
-        columnDescrs.put(name, cds);
+        entityInfs.put(name, new EntityInf(Class.forName(name), cds));
         relationKeys.put(name, rks);
         plainCds.put(name, plainCds.get(src));
       }
@@ -208,7 +215,17 @@ public class ColumnDescr {
   }
 
   public static Map<String, ColumnDescr> get(Class<?> clazz) {
-    return get(columnDescrs, clazz);
+    return getInf(clazz).cds;
+  }
+
+  public static EntityInf getInf(Class<?> clazz) {
+    String className = clazz.getName();
+    EntityInf result = entityInfs.get(className);
+    if(result == null) {
+      throw new ServerError
+      ("The Entity Info for the class " + className + " not found.");
+    }
+    return result;
   }
 
   public static Collection<ColumnDescr> getCds(Class<?> clazz) {
@@ -488,13 +505,6 @@ public class ColumnDescr {
   protected Path<?> getPath(From root) {
     return root.get(name);
   }
-
-  private final static Map<String, Map<String, ColumnDescr>> columnDescrs
-  = new ConcurrentHashMap<>();
-  private final static Map<String, Map<String, ColumnDescr>> relationKeys
-  = new ConcurrentHashMap<>();
-  private final static Map<String, Map<String, ColumnDescr>> plainCds
-  = new ConcurrentHashMap<>();
 
   private static Map<String, ColumnDescr> get
   (Map<String, Map<String, ColumnDescr>> map, Class<?> clazz) {

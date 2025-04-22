@@ -438,10 +438,6 @@ public class CodeGenUtil {
     return v != null && v.getSimpleName().endsWith(ID_SUFFIX);
   }
 
-  public static boolean isWorClass(Class<?> clazz) {
-    return clazz.getSimpleName().endsWith(Reflection.WOR);
-  }
-
   public static String manyToOneKeyName(Field field)
   throws IllegalAccessException, InvocationTargetException
   , NoSuchMethodException, SecurityException {
@@ -450,12 +446,14 @@ public class CodeGenUtil {
 
   public static TypeSpec.Builder newCrudRequests
   (String entityName, TypeName idCN, TypeName dataCN, TypeName filterCN) {
-    TypeSpec.Builder result = TypeSpec.classBuilder(entityName + "Request");
-    request(result, "Create"
+    TypeSpec.Builder result
+    = TypeSpec.classBuilder(entityName + Reflection.REQUEST);
+    request(result, Reflection.CREATE
     , reqBldr -> addConstructors4Create.accept(reqBldr, dataCN)
     , CreateRequest.class, idCN, dataCN);
-    request(result, "Read", noConstructors, ReadRequest.class, idCN, filterCN);
-    request(result, "Update", reqBldr -> {
+    request
+    (result, Reflection.READ, noConstructors, ReadRequest.class, idCN, filterCN);
+    request(result, Reflection.UPDATE, reqBldr -> {
       addConstructors4Create.accept(reqBldr, dataCN);
       MethodSpec.Builder ctor
       = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)
@@ -467,8 +465,8 @@ public class CodeGenUtil {
       .addStatement("super($N, $N)", AbstractRequest.DATA, AbstractRequest.FIELDS);
       reqBldr.addMethod(ctor.build());
     }, UpdateRequest.class, idCN, filterCN, dataCN);
-    request(result, "Delete", noConstructors, DeleteRequest.class
-    , idCN, filterCN);
+    request
+    (result, Reflection.DELETE, noConstructors, DeleteRequest.class, idCN, filterCN);
     return result;
   }
 

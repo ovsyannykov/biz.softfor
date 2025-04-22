@@ -36,6 +36,7 @@ public class Reflection {
   public final static String FLTR = "Fltr";//filter
   public final static int FLTR_LEN = FLTR.length();
   public final static String WOR = "Wor";//without relations
+  public final static int WOR_LEN = WOR.length();
   public final static String HIBERNATE_PROXY = "$$_hibernate_interceptor";
 
   public final static int PROPERTY = Modifier.FINAL | Modifier.STATIC;
@@ -46,6 +47,12 @@ public class Reflection {
   public final static String EQUALS_METHOD = "equals";
   public final static String HASHCODE_METHOD = "hashCode";
   public final static String TOSTRING_METHOD = "toString";
+
+  public final static String REQUEST = "Request";
+  public final static String CREATE = "Create";
+  public final static String READ = "Read";
+  public final static String UPDATE = "Update";
+  public final static String DELETE = "Delete";
 
   @SuppressWarnings("unchecked")
   public static List<Field> annotatedFields(Class clazz, Class... annotations) {
@@ -256,6 +263,14 @@ public class Reflection {
 
   public static boolean isProperty(Field field) {
     return isProperty(field.getModifiers());
+  }
+
+  public static boolean isFltrClass(Class<?> clazz) {
+    return clazz.getSimpleName().endsWith(FLTR);
+  }
+
+  public static boolean isWorClass(Class<?> clazz) {
+    return clazz.getSimpleName().endsWith(WOR);
   }
 
   public static String methodName() {

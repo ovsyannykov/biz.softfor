@@ -16,7 +16,7 @@ import biz.softfor.user.api.UserGroupResponse;
 import biz.softfor.user.api.UserRequest;
 import biz.softfor.user.api.UserResponse;
 import biz.softfor.user.spring.SecurityMgr;
-import biz.softfor.user.spring.rest.testassets.TestEntity;
+import biz.softfor.user.spring.rest.testassets.TeztEntity;
 import biz.softfor.util.Json;
 import biz.softfor.util.Range;
 import static biz.softfor.util.StringUtil.field;
@@ -51,7 +51,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 
 @SpringBootTest(classes = { ConfigPartnerRest.class, ConfigUserRest.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
-@EntityScan(basePackageClasses = { TestEntity.class })
+@EntityScan(basePackageClasses = { TeztEntity.class })
 @ExtendWith(OutputCaptureExtension.class)
 @Log
 public class SecurityTest {

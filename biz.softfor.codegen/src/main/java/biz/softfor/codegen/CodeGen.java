@@ -1,5 +1,6 @@
 package biz.softfor.codegen;
 
+import biz.softfor.util.Reflection;
 import jakarta.persistence.Entity;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -54,7 +55,7 @@ public abstract class CodeGen extends AbstractProcessor {
         .filterInputsBy(fb).setScanners(Scanners.TypesAnnotated);
         Reflections reflections = new Reflections(cb);
         for(Class<?> entity : reflections.getTypesAnnotatedWith(Entity.class)) {
-          if(!CodeGenUtil.isWorClass(entity)) {
+          if(!Reflection.isWorClass(entity)) {
             process(entity);
           }
         }

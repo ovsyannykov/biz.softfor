@@ -1,7 +1,7 @@
 package biz.softfor.user.spring.rest;
 
 import biz.softfor.user.api.UserDto;
-import biz.softfor.user.spring.rest.testassets.TestEntity;
+import biz.softfor.user.spring.rest.testassets.TeztEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootTest(classes = { ConfigUserRest.class }, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
-@EntityScan(basePackageClasses = { TestEntity.class })
+@EntityScan(basePackageClasses = { TeztEntity.class })
 public class InitAccessActionsTest {
 
   @Autowired

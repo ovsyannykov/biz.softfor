@@ -1,18 +1,16 @@
 package biz.softfor.user.spring.rest.testassets;
 
-import biz.softfor.util.Generated;
-import biz.softfor.util.api.filter.FilterId;
+import biz.softfor.util.api.HaveId;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Generated("biz.softfor.spring.rest.security.TestEntity")
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Getter
 @Setter
-public class TestEntityFltr extends FilterId<Integer> {
+public class TeztEntityDto extends HaveId<Integer> {
 
   public final static String EVERYBODY = "everybody";
   public final static String AUTHORIZED = "authorized";

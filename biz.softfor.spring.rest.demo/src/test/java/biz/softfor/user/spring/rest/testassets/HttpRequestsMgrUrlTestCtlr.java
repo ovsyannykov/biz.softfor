@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = TestEntityRequest.TEST_SECURITY, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = TeztEntityRequest.TEST_SECURITY, produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class HttpRequestsMgrUrlTestCtlr {
 

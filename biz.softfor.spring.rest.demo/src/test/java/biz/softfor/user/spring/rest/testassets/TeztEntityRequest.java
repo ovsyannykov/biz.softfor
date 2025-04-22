@@ -1,6 +1,7 @@
 package biz.softfor.user.spring.rest.testassets;
 
 import biz.softfor.util.api.CreateRequest;
+import biz.softfor.util.api.DeleteRequest;
 import biz.softfor.util.api.ReadRequest;
 import biz.softfor.util.api.StdPath;
 import biz.softfor.util.api.UpdateRequest;
@@ -8,7 +9,7 @@ import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-public class TestEntityRequest {
+public class TeztEntityRequest {
 
   public final static String METHOD = "POST";
   public final static String TEST_SECURITY = StdPath.ROOT + "test/security/";
@@ -20,36 +21,45 @@ public class TestEntityRequest {
 
   @EqualsAndHashCode(callSuper = true)
   @ToString(callSuper = true)
-  public static class Create extends CreateRequest<Integer, TestEntityWor> {
+  public static class Create extends CreateRequest<Integer, TeztEntityWor> {
 
     public Create() {
     }
 
-    public Create(TestEntityWor data) {
+    public Create(TeztEntityWor data) {
       super(data);
     }
   }
 
   @EqualsAndHashCode(callSuper = true)
   @ToString(callSuper = true)
-  public static class Read extends ReadRequest<Integer, TestEntityFltr> {
+  public static class Read extends ReadRequest<Integer, TeztEntityFltr> {
   }
 
   @EqualsAndHashCode(callSuper = true)
   @ToString(callSuper = true)
-  public static class Update extends UpdateRequest<Integer, TestEntityFltr, TestEntityWor> {
+  public static class Update extends UpdateRequest<Integer, TeztEntityFltr, TeztEntityWor> {
 
     public Update() {
     }
 
-    public Update(TestEntityWor data) {
+    public Update(TeztEntityWor data) {
       super(data);
     }
 
-    public Update(TestEntityWor data, List<String> fields) {
+    public Update(TeztEntityWor data, List<String> fields) {
       super(data, fields);
     }
 
+  }
+
+  @ToString(
+      callSuper = true
+  )
+  @EqualsAndHashCode(
+      callSuper = true
+  )
+  public static class Delete extends DeleteRequest<Integer, TeztEntityFltr> {
   }
 
 }

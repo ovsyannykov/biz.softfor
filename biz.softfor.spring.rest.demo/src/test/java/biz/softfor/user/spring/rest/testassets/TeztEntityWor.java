@@ -11,14 +11,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Generated("biz.softfor.user.spring.rest.testassets.TestEntity")
+@Generated("biz.softfor.user.spring.rest.testassets.TeztEntity")
 @Entity
-@Table(name = TestEntity.TABLE)
+@Table(name = TeztEntity.TABLE)
 @ToString(callSuper = true)
 @Getter
 @Setter
-@JsonFilter("TestEntityWor")
-public class TestEntityWor extends IdEntity<Integer> implements Serializable {
+@JsonFilter("TeztEntityWor")
+public class TeztEntityWor extends IdEntity<Integer> implements Serializable {
 
   public final static String EVERYBODY = "everybody";
   public final static String AUTHORIZED = "authorized";
