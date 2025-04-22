@@ -15,8 +15,7 @@
  */
 package com.vaadin.flow.component.textfield;
 
-import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.HasValue;
+import biz.softfor.vaadin.VaadinUtil;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
@@ -70,9 +69,9 @@ import com.vaadin.flow.function.SerializableFunction;
  * @author Vaadin Ltd.
  */
 @Tag("vaadin-integer-field")
-@NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = "24.7.1")
+@NpmPackage(value = "@vaadin/polymer-legacy-adapter", version = VaadinUtil.VERSION)
 @JsModule("@vaadin/polymer-legacy-adapter/style-modules.js")
-@NpmPackage(value = "@vaadin/integer-field", version = "24.7.1")
+@NpmPackage(value = "@vaadin/integer-field", version = VaadinUtil.VERSION)
 @JsModule("@vaadin/integer-field/src/vaadin-integer-field.js")
 public class ShortField extends AbstractNumberField<ShortField, Short>
         implements HasThemeVariant<TextFieldVariant> {
@@ -133,7 +132,7 @@ public class ShortField extends AbstractNumberField<ShortField, Short>
      * @see #addValueChangeListener(ValueChangeListener)
      */
     public ShortField(
-            HasValue.ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<ShortField, Short>> listener) {
+            ValueChangeListener<? super ComponentValueChangeEvent<ShortField, Short>> listener) {
         this();
         addValueChangeListener(listener);
     }
@@ -151,7 +150,7 @@ public class ShortField extends AbstractNumberField<ShortField, Short>
      * @see #addValueChangeListener(ValueChangeListener)
      */
     public ShortField(String label,
-            HasValue.ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<ShortField, Short>> listener) {
+            ValueChangeListener<? super ComponentValueChangeEvent<ShortField, Short>> listener) {
         this(label);
         addValueChangeListener(listener);
     }
@@ -172,7 +171,7 @@ public class ShortField extends AbstractNumberField<ShortField, Short>
      * @see #addValueChangeListener(ValueChangeListener)
      */
     public ShortField(String label, Short initialValue,
-            HasValue.ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<ShortField, Short>> listener) {
+            ValueChangeListener<? super ComponentValueChangeEvent<ShortField, Short>> listener) {
         this(label);
         setValue(initialValue);
         addValueChangeListener(listener);

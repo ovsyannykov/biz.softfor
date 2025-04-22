@@ -16,8 +16,6 @@
 package com.vaadin.flow.component.textfield;
 
 import biz.softfor.vaadin.VaadinUtil;
-import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
@@ -134,7 +132,7 @@ public class LongField extends AbstractNumberField<LongField, Long>
      * @see #addValueChangeListener(ValueChangeListener)
      */
     public LongField(
-            HasValue.ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<LongField, Long>> listener) {
+            ValueChangeListener<? super ComponentValueChangeEvent<LongField, Long>> listener) {
         this();
         addValueChangeListener(listener);
     }
@@ -152,7 +150,7 @@ public class LongField extends AbstractNumberField<LongField, Long>
      * @see #addValueChangeListener(ValueChangeListener)
      */
     public LongField(String label,
-            HasValue.ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<LongField, Long>> listener) {
+            ValueChangeListener<? super ComponentValueChangeEvent<LongField, Long>> listener) {
         this(label);
         addValueChangeListener(listener);
     }
@@ -173,7 +171,7 @@ public class LongField extends AbstractNumberField<LongField, Long>
      * @see #addValueChangeListener(ValueChangeListener)
      */
     public LongField(String label, Long initialValue,
-            HasValue.ValueChangeListener<? super AbstractField.ComponentValueChangeEvent<LongField, Long>> listener) {
+            ValueChangeListener<? super ComponentValueChangeEvent<LongField, Long>> listener) {
         this(label);
         setValue(initialValue);
         addValueChangeListener(listener);
