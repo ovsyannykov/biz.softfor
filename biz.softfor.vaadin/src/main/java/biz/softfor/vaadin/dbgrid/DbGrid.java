@@ -1,5 +1,8 @@
 package biz.softfor.vaadin.dbgrid;
 
+import biz.softfor.jpa.crud.AbstractCrudSvc;
+import biz.softfor.jpa.crud.querygraph.ColumnDescr;
+import biz.softfor.jpa.crud.querygraph.EntityInf;
 import biz.softfor.spring.jpa.crud.CrudSvc;
 import biz.softfor.util.Reflection;
 import biz.softfor.util.api.Identifiable;
@@ -27,8 +30,8 @@ public class DbGrid
 <K extends Number, E extends Identifiable<K>, WOR extends Identifiable<K>>
 extends VerticalLayout implements LocaleChangeObserver {
 
+  public final EntityInf entityInf;
   public final CrudSvc<K, E, WOR, ?> service;
-  public final Class<? extends ReadRequest> readRequestClass;
   public final DbGridColumns<K, E> columns;
   private final DbGridColumns<K, E> filters;
   public final ReadRequest readRequest;
@@ -50,23 +53,18 @@ extends VerticalLayout implements LocaleChangeObserver {
     return Text.Filtrate + "-" + clazz.getSimpleName() + VaadinUtil.GRID_ID_OBJ;
   }
 
-  public DbGrid(
-    CrudSvc<K, E, WOR, ? extends FilterId<K>> service
-  , Class<? extends ReadRequest> readRequestClass
-  , DbGridColumns<K, E> columns
-  , DbGridColumns<K, E> filters
-  ) {
-    this.service = service;
-    this.readRequestClass = readRequestClass;
+  public DbGrid
+  (Class<E> clazz, DbGridColumns<K, E> columns, DbGridColumns<K, E> filters) {
+    entityInf = ColumnDescr.getInf(clazz);
+    service = (CrudSvc<K, E, WOR, ?>)AbstractCrudSvc.service(clazz);
     this.columns = columns;
     this.filters = filters;
 
-    readRequest = Reflection.newInstance(this.readRequestClass);
+    readRequest = Reflection.newInstance(entityInf.readRequestClass);
     readRequest.fields = new ArrayList<>();
     DbNamedColumn.fields(readRequest.fields, this.columns, "");
     DbNamedColumn.fields(readRequest.fields, this.filters, "");
 
-    Class<E> clazz = this.service.clazz();
     grid = GridColumn.grid(clazz, this.columns, this.columns.sort());
     grid.setSizeFull();
 
@@ -75,7 +73,7 @@ extends VerticalLayout implements LocaleChangeObserver {
     title = VaadinUtil.label(columns.title);
     toolbar.add(title);
     filtrate = new Button(Text.Filtrate, e -> updateView());
-    filtrate.setId(filtrateId(this.service.clazz()));
+    filtrate.setId(filtrateId(clazz));
     toolbar.add(filtrate);
     clear = new Button(Text.Clear, e -> {
       for(DbGridColumn c : columns) {
@@ -85,7 +83,7 @@ extends VerticalLayout implements LocaleChangeObserver {
         c.component.clear();
       }
     });
-    clear.setId(clearId(this.service.clazz()));
+    clear.setId(clearId(clazz));
     toolbar.add(clear);
     toolbar.setAlignItems(FlexComponent.Alignment.CENTER);
 

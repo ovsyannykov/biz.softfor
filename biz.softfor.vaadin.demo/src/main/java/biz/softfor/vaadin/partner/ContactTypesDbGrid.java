@@ -1,9 +1,7 @@
 package biz.softfor.vaadin.partner;
 
 import biz.softfor.partner.jpa.ContactType;
-import biz.softfor.partner.jpa.ContactTypeRequest;
 import biz.softfor.partner.jpa.ContactTypeWor;
-import biz.softfor.partner.spring.ContactTypeSvc;
 import biz.softfor.vaadin.dbgrid.DbGrid;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -17,9 +15,8 @@ extends DbGrid<Short, ContactType, ContactTypeWor> {
 
   public final static String TITLE = "Contact types";
 
-  public ContactTypesDbGrid
-  (ContactTypeSvc service, ContactTypeDbGridColumns columns) {
-    super(service, ContactTypeRequest.Read.class, columns, DbGridColumns.EMPTY);
+  public ContactTypesDbGrid(ContactTypeDbGridColumns columns) {
+    super(ContactType.class, columns, DbGridColumns.EMPTY);
   }
 
 }

@@ -2,6 +2,10 @@ package biz.softfor.jpa.crud.querygraph;
 
 import biz.softfor.util.Generated;
 import biz.softfor.util.Reflection;
+import biz.softfor.util.api.CreateRequest;
+import biz.softfor.util.api.DeleteRequest;
+import biz.softfor.util.api.ReadRequest;
+import biz.softfor.util.api.UpdateRequest;
 import java.util.Map;
 
 public class EntityInf {
@@ -10,10 +14,10 @@ public class EntityInf {
   public final Class<?> worClass;
   public final Class<?> fltrClass;
   public final Map<String, ColumnDescr> cds;
-  public final Class<?> createRequestClass;
-  public final Class<?> readRequestClass;
-  public final Class<?> updateRequestClass;
-  public final Class<?> deleteRequestClass;
+  public final Class<? extends CreateRequest> createRequestClass;
+  public final Class<? extends ReadRequest> readRequestClass;
+  public final Class<? extends UpdateRequest> updateRequestClass;
+  public final Class<? extends DeleteRequest> deleteRequestClass;
 
   public EntityInf(Class<?> clazz, Map<String, ColumnDescr> cds)
   throws ReflectiveOperationException {
@@ -48,14 +52,14 @@ public class EntityInf {
       deleteRequestClass = null;
     } else {
       String clazzName = this.clazz.getName();
-      createRequestClass
-      = Class.forName(clazzName + Reflection.REQUEST + "$" + Reflection.CREATE);
-      readRequestClass
-      = Class.forName(clazzName + Reflection.REQUEST + "$" + Reflection.READ);
-      updateRequestClass
-      = Class.forName(clazzName + Reflection.REQUEST + "$" + Reflection.UPDATE);
-      deleteRequestClass
-      = Class.forName(clazzName + Reflection.REQUEST + "$" + Reflection.DELETE);
+      createRequestClass = (Class<? extends CreateRequest>)
+      Class.forName(clazzName + Reflection.REQUEST + "$" + Reflection.CREATE);
+      readRequestClass = (Class<? extends ReadRequest>)
+      Class.forName(clazzName + Reflection.REQUEST + "$" + Reflection.READ);
+      updateRequestClass = (Class<? extends UpdateRequest>)
+      Class.forName(clazzName + Reflection.REQUEST + "$" + Reflection.UPDATE);
+      deleteRequestClass = (Class<? extends DeleteRequest>)
+      Class.forName(clazzName + Reflection.REQUEST + "$" + Reflection.DELETE);
     }
   }
 

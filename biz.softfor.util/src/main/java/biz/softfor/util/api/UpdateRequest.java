@@ -12,7 +12,7 @@ import org.apache.commons.collections4.CollectionUtils;
 @EqualsAndHashCode(callSuper = true)
 public class UpdateRequest
 <K extends Number, F extends FilterId<K>, D extends Identifiable<K>>
- extends DeleteRequest<K, F> {
+extends DeleteRequest<K, F> {
 
   public D data;
   public List<String> fields;

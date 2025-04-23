@@ -30,7 +30,6 @@ implements DbNamedColumn, LocaleChangeObserver {
   protected final Supplier<V> emptyValue;
   public final GridFieldColumns<K, E> columns;
   private final Span title;
-
   protected final HorizontalLayout toolbar;
   public final Grid<E> grid;
   private final List<String> involvedFields;

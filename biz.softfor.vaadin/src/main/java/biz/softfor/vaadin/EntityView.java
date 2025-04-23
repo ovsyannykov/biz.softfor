@@ -238,7 +238,8 @@ extends BasicView {
     } else {
       boolean isAdd = item.getId() == null;
       if(!isAdd) {
-        ReadRequest request = Reflection.newInstance(dbGrid.readRequestClass);
+        ReadRequest request
+        = Reflection.newInstance(dbGrid.entityInf.readRequestClass);
         request.fields = form.fields;
         request.filter.assignId(item.getId());
         securityMgr.readCheck(dbGrid.service, request, SecurityUtil.groups());
