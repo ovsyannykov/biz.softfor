@@ -50,11 +50,10 @@ public class UserForm extends EntityForm<Long, User, UserWor> {
     super(
       User.TITLE
     , new EntityFormColumns<>(
-        securityMgr
-      , User.class
-      , UserWor.class
+        User.class
       , columns(userGroupColumns, userGroupsDbGrid, securityMgr)
-    )
+      , securityMgr
+      )
     , validator
     );
   }

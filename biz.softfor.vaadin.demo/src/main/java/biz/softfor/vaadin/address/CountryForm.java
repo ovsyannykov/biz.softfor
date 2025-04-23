@@ -22,9 +22,7 @@ public class CountryForm extends EntityForm<Short, Country, CountryWor> {
   public CountryForm(SecurityMgr securityMgr, Validator validator) {
     super(Country.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , Country.class
-      , CountryWor.class
+        Country.class
       , new LinkedHashMap<String, Component>() {{
           TextField name = new TextField(Country_.NAME);
           put(Country_.NAME, name);
@@ -36,6 +34,7 @@ public class CountryForm extends EntityForm<Short, Country, CountryWor> {
           });
           put(Country_.FULLNAME, fullname);
         }}
+      , securityMgr
       )
     , validator
     );

@@ -23,9 +23,7 @@ public class DistrictForm extends EntityForm<Integer, District, DistrictWor> {
   (SecurityMgr securityMgr, Validator validator, StatesDbGrid states) {
     super(District.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , District.class
-      , DistrictWor.class
+        District.class
       , new LinkedHashMap<String, Component>() {{
           TextField name = new TextField(District_.NAME);
           put(District_.NAME, name);
@@ -38,6 +36,7 @@ public class DistrictForm extends EntityForm<Integer, District, DistrictWor> {
           put(District_.FULLNAME, fullname);
           put(District_.STATE, new StateField(District_.STATE, states));
         }}
+      , securityMgr
       )
     , validator
     );

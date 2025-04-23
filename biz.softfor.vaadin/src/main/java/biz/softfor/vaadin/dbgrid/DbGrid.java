@@ -60,7 +60,7 @@ extends VerticalLayout implements LocaleChangeObserver {
     this.columns = columns;
     this.filters = filters;
 
-    readRequest = Reflection.newInstance(entityInf.readRequestClass);
+    readRequest = (ReadRequest)Reflection.newInstance(entityInf.readRequestClass);
     readRequest.fields = new ArrayList<>();
     DbNamedColumn.fields(readRequest.fields, this.columns, "");
     DbNamedColumn.fields(readRequest.fields, this.filters, "");

@@ -27,9 +27,7 @@ public class StateForm extends EntityForm<Integer, State, StateWor> {
   (SecurityMgr securityMgr, Validator validator, CountriesDbGrid countries) {
     super(State.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , State.class
-      , StateWor.class
+        State.class
       , new LinkedHashMap<String, Component>() {{
           TextField name = new TextField(State_.NAME);
           put(State_.NAME, name);
@@ -50,6 +48,7 @@ public class StateForm extends EntityForm<Integer, State, StateWor> {
           countryField.setClearButtonVisible(true);
           put(State_.COUNTRY, countryField);
         }}
+      , securityMgr
       )
     , validator
     );

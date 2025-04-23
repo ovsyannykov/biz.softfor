@@ -23,9 +23,7 @@ extends EntityForm<Short, LocationType, LocationTypeWor> {
   public LocationTypeForm(SecurityMgr securityMgr, Validator validator) {
     super(LocationType.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , LocationType.class
-      , LocationTypeWor.class
+        LocationType.class
       , new LinkedHashMap<String, Component>() {{
           TextField name = new TextField(LocationType_.NAME);
           put(LocationType_.NAME, name);
@@ -37,6 +35,7 @@ extends EntityForm<Short, LocationType, LocationTypeWor> {
           });
           put(LocationType_.DESCR, descr);
         }}
+      , securityMgr
       )
     , validator
     );

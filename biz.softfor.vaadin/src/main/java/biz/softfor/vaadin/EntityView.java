@@ -166,7 +166,7 @@ extends BasicView {
       setPadding(false);
       setMargin(false);
       setSizeFull();
-      setId(id(this.form.columns.clazz));
+      setId(id(this.form.columns.entityInf.clazz));
       edit(null);
     } else {
       binder = null;
@@ -239,7 +239,7 @@ extends BasicView {
       boolean isAdd = item.getId() == null;
       if(!isAdd) {
         ReadRequest request
-        = Reflection.newInstance(dbGrid.entityInf.readRequestClass);
+        = (ReadRequest)Reflection.newInstance(dbGrid.entityInf.readRequestClass);
         request.fields = form.fields;
         request.filter.assignId(item.getId());
         securityMgr.readCheck(dbGrid.service, request, SecurityUtil.groups());

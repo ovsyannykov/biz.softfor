@@ -30,9 +30,7 @@ public class PostcodeForm extends EntityForm<Integer, Postcode, PostcodeWor> {
   ) {
     super(Postcode.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , Postcode.class
-      , PostcodeWor.class
+        Postcode.class
       , new LinkedHashMap<String, Component>() {{
           put(Postcode_.POSTCODE, new TextField(Postcode_.POSTCODE));
           DistrictField districtField
@@ -44,6 +42,7 @@ public class PostcodeForm extends EntityForm<Integer, Postcode, PostcodeWor> {
           cityField.setClearButtonVisible(true);
           put(Postcode_.CITY, cityField);
         }}
+      , securityMgr
       )
     , validator
     );

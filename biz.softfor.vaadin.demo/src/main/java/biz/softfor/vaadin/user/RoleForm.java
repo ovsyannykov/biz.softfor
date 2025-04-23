@@ -33,9 +33,7 @@ public class RoleForm extends EntityForm<Long, Role, RoleWor> {
   ) {
     super(Role.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , Role.class
-      , RoleWor.class
+        Role.class
       , new LinkedHashMap<String, Component>() {{
           LongField id = new LongField(Role_.ID);
           id.setReadOnly(true);
@@ -80,6 +78,7 @@ public class RoleForm extends EntityForm<Long, Role, RoleWor> {
           , securityMgr
           ));
         }}
+      , securityMgr
       )
     , validator
     );

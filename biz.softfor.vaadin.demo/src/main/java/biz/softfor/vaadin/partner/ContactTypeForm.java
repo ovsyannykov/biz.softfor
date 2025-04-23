@@ -23,9 +23,7 @@ extends EntityForm<Short, ContactType, ContactTypeWor> {
   public ContactTypeForm(SecurityMgr securityMgr, Validator validator) {
     super(ContactType.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , ContactType.class
-      , ContactTypeWor.class
+        ContactType.class
       , new LinkedHashMap<String, Component>() {{
           TextField name = new TextField(ContactType_.NAME);
           put(ContactType_.NAME, name);
@@ -37,6 +35,7 @@ extends EntityForm<Short, ContactType, ContactTypeWor> {
           });
           put(ContactType_.DESCR, descr);
         }}
+      , securityMgr
       )
     , validator
     );

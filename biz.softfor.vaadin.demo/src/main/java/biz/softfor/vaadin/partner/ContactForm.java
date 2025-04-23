@@ -36,9 +36,7 @@ public class ContactForm extends EntityForm<Long, Contact, ContactWor> {
   ) {
     super(Contact.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , Contact.class
-      , ContactWor.class
+        Contact.class
       , new LinkedHashMap<String, Component>() {{
           put(Contact_.DESCR, new TextField(Contact_.DESCR));
           put(Contact_.PARTNER, new PartnerField(Contact_.PARTNER, partners));
@@ -64,6 +62,7 @@ public class ContactForm extends EntityForm<Long, Contact, ContactWor> {
           , new TextField(ContactDetails_.NOTE)
           );
         }}
+      , securityMgr
       )
     , validator
     );

@@ -22,9 +22,7 @@ public class CityTypeForm extends EntityForm<Short, CityType, CityTypeWor> {
   public CityTypeForm(SecurityMgr securityMgr, Validator validator) {
     super(CityType.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , CityType.class
-      , CityTypeWor.class
+        CityType.class
       , new LinkedHashMap<String, Component>() {{
           TextField name = new TextField(CityType_.NAME);
           put(CityType_.NAME, name);
@@ -36,6 +34,7 @@ public class CityTypeForm extends EntityForm<Short, CityType, CityTypeWor> {
           });
           put(CityType_.FULLNAME, fullname);
         }}
+      , securityMgr
       )
     , validator
     );

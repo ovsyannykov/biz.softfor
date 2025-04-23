@@ -1,6 +1,7 @@
 package biz.softfor.vaadin;
 
 import biz.softfor.jpa.crud.querygraph.ColumnDescr;
+import biz.softfor.jpa.crud.querygraph.EntityInf;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.util.api.Identifiable;
 import biz.softfor.vaadin.field.grid.GridField;
@@ -15,33 +16,30 @@ public class EntityFormColumns
 <K extends Number, E extends Identifiable<K>, WOR extends Identifiable<K>>
 extends LinkedHashMap<String, Component> implements Secured {
 
-  public final Class<E> clazz;
-  public final Class<WOR> classWor;
+  public final EntityInf<K, E, WOR> entityInf;
   public final boolean addEnabled;
   private final boolean accessible;
   private final boolean readOnly;
 
   public EntityFormColumns(
-    SecurityMgr securityMgr
-  , Class<E> clazz
-  , Class<WOR> classWor
+    Class<E> clazz
   , LinkedHashMap<String, Component> columns
+  , SecurityMgr securityMgr
   ) {
-    this.clazz = clazz;
-    this.classWor = classWor;
+    entityInf = ColumnDescr.getInf(clazz);
     boolean ae = true;
     boolean ro = true;
-    Map<String, ColumnDescr> cds = ColumnDescr.get(this.clazz);
     for(Map.Entry<String, Component> me : columns.entrySet()) {
       String fieldName = me.getKey();
       Component c = me.getValue();
-      ColumnSecured cs;
+      List<String> involvedFields;
       if(c instanceof DbNamedColumn cDbNamedColumn) {
-        List<String> involvedFields = cDbNamedColumn.involvedFields();
-        cs = new ColumnSecured(securityMgr, cds, fieldName, involvedFields);
+        involvedFields = cDbNamedColumn.involvedFields();
       } else {
-        cs = new ColumnSecured(securityMgr, cds, fieldName, Collections.EMPTY_LIST);
+        involvedFields = Collections.EMPTY_LIST;
       }
+      ColumnSecured cs = new ColumnSecured
+      (securityMgr, entityInf.cds, fieldName, involvedFields);
       boolean isGrid = c instanceof GridField;
       if(cs.isAccessible() && (!isGrid || ((GridField)c).columns.isAccessible())) {
         put(fieldName, c);
@@ -61,14 +59,10 @@ extends LinkedHashMap<String, Component> implements Secured {
     readOnly = ro;
   }
 
-  protected EntityFormColumns(
-    LinkedHashMap<String, Component> columns
-  , Class<E> clazz
-  , Class<WOR> classWor
-  ) {
+  protected EntityFormColumns
+  (Class<E> clazz, LinkedHashMap<String, Component> columns) {
+    entityInf = ColumnDescr.getInf(clazz);
     putAll(columns);
-    this.clazz = clazz;
-    this.classWor = classWor;
     addEnabled = false;
     accessible = true;
     readOnly = false;

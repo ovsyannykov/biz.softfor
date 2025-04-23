@@ -23,9 +23,7 @@ extends EntityForm<Short, Appointment, AppointmentWor> {
   public AppointmentForm(SecurityMgr securityMgr, Validator validator) {
     super(Appointment.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , Appointment.class
-      , AppointmentWor.class
+        Appointment.class
       , new LinkedHashMap<String, Component>() {{
           TextField name = new TextField(Appointment_.NAME);
           put(Appointment_.NAME, name);
@@ -37,6 +35,7 @@ extends EntityForm<Short, Appointment, AppointmentWor> {
           });
           put(Appointment_.DESCR, descr);
         }}
+      , securityMgr
       )
     , validator
     );

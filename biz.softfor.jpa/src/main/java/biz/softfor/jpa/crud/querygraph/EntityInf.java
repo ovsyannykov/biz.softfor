@@ -4,34 +4,37 @@ import biz.softfor.util.Generated;
 import biz.softfor.util.Reflection;
 import biz.softfor.util.api.CreateRequest;
 import biz.softfor.util.api.DeleteRequest;
+import biz.softfor.util.api.Identifiable;
 import biz.softfor.util.api.ReadRequest;
 import biz.softfor.util.api.UpdateRequest;
+import biz.softfor.util.api.filter.FilterId;
 import java.util.Map;
 
-public class EntityInf {
+public class EntityInf
+<K extends Number, E extends Identifiable<K>, WOR extends Identifiable<K>> {
 
-  public final Class<?> clazz;
-  public final Class<?> worClass;
-  public final Class<?> fltrClass;
+  public final Class<E> clazz;
+  public final Class<WOR> worClass;
+  public final Class<? extends FilterId<K>> fltrClass;
   public final Map<String, ColumnDescr> cds;
   public final Class<? extends CreateRequest> createRequestClass;
   public final Class<? extends ReadRequest> readRequestClass;
   public final Class<? extends UpdateRequest> updateRequestClass;
   public final Class<? extends DeleteRequest> deleteRequestClass;
 
-  public EntityInf(Class<?> clazz, Map<String, ColumnDescr> cds)
+  public EntityInf(Class<E> clazz, Map<String, ColumnDescr> cds)
   throws ReflectiveOperationException {
     boolean isM2MLink = false;
     if(Reflection.isFltrClass(clazz)) {
       String clazzName = clazz.getAnnotation(Generated.class).value();
-      this.clazz = Class.forName(clazzName);
-      worClass = Reflection.worClass(this.clazz);
-      fltrClass = clazz;
+      this.clazz = (Class<E>)Class.forName(clazzName);
+      worClass = (Class<WOR>)Reflection.worClass(this.clazz);
+      fltrClass = (Class<? extends FilterId<K>>)clazz;
     } else if(Reflection.isWorClass(clazz)) {
       String clazzName = clazz.getAnnotation(Generated.class).value();
-      this.clazz = Class.forName(clazzName);
-      worClass = clazz;
-      fltrClass = Reflection.filterClass(this.clazz);
+      this.clazz = (Class<E>)Class.forName(clazzName);
+      worClass = (Class<WOR>)clazz;
+      fltrClass = (Class<? extends FilterId<K>>)Reflection.filterClass(this.clazz);
     } else {
       this.clazz = clazz;
       isM2MLink = this.clazz.isAnnotationPresent(ManyToManyGeneratedLink.class)
@@ -40,8 +43,8 @@ public class EntityInf {
         worClass = null;
         fltrClass = null;
       } else {
-        worClass = Reflection.worClass(this.clazz);
-        fltrClass = Reflection.filterClass(this.clazz);
+        worClass = (Class<WOR>)Reflection.worClass(this.clazz);
+        fltrClass = (Class<? extends FilterId<K>>)Reflection.filterClass(this.clazz);
       }
     }
     this.cds = cds;

@@ -23,14 +23,13 @@ extends EntityForm<Long, PartnerFile, PartnerFileWor> {
   (SecurityMgr securityMgr, Validator validator, PartnersBasicDbGrid partners) {
     super(PartnerFile.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , PartnerFile.class
-      , PartnerFileWor.class
+        PartnerFile.class
       , new LinkedHashMap<String, Component>() {{
           put(PartnerFile_.PARTNER, new PartnerField(PartnerFile_.PARTNER, partners));
           put(PartnerFile_.DESCR, new TextField(PartnerFile_.DESCR));
           put(PartnerFile_.URI, new TextField(PartnerFile_.URI));
         }}
+      , securityMgr
       )
     , validator
     );

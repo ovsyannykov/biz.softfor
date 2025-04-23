@@ -26,9 +26,7 @@ public class CityForm extends EntityForm<Integer, City, CityWor> {
   ) {
     super(City.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , City.class
-      , CityWor.class
+        City.class
       , new LinkedHashMap<String, Component>() {{
           put(City_.NAME, new TextField(City_.NAME));
           StateField sf = new StateField(City_.STATE, statesDbGrid);
@@ -37,6 +35,7 @@ public class CityForm extends EntityForm<Integer, City, CityWor> {
           DistrictField df = new DistrictField(City_.DISTRICT, districtsDbGrid);
           put(City_.DISTRICT, df);
         }}
+      , securityMgr
       )
     , validator
     );

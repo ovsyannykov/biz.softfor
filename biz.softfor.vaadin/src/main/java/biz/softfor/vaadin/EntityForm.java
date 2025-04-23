@@ -86,8 +86,8 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
     add(toolbar);
     propertiesPane = new FormLayout();
     propertiesPane.addClassName(CSS.EDIT_FORM);
-    binder = new BeanValidationBinder<>(this.columns.clazz);
-    setId(id(this.columns.clazz));
+    binder = new BeanValidationBinder<>(this.columns.entityInf.clazz);
+    setId(id(this.columns.entityInf.clazz));
     if(isAccessible()) {
       Component c = propertiesPane;
       for(Map.Entry<String, ?> p
@@ -118,9 +118,9 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
       } else {
         save = new Button(Text.Save, e -> {
           try {
-            E data = (E)this.columns.clazz.getConstructor().newInstance();
+            E data = (E)this.columns.entityInf.clazz.getConstructor().newInstance();
             data.setId(oldData.getId());
-            ColumnDescr.initOneToOnes(data, this.columns.clazz);
+            ColumnDescr.initOneToOnes(data, this.columns.entityInf.clazz);
             binder.writeBeanAsDraft(data, true);
             onSave(data);
             fireEvent(new SaveEvent(this, oldData, data));
@@ -137,8 +137,8 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
         toolbar.add(save);
         binder.addStatusChangeListener(e -> {
           try {
-            E data = (E)this.columns.clazz.getConstructor().newInstance();
-            ColumnDescr.initOneToOnes(data, this.columns.clazz);
+            E data = (E)this.columns.entityInf.clazz.getConstructor().newInstance();
+            ColumnDescr.initOneToOnes(data, this.columns.entityInf.clazz);
             binder.writeBeanAsDraft(data, true);
             save.setEnabled(isValid(data));
           }
@@ -200,8 +200,8 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
   public void setData(E data, boolean isAdd) {
     this.isAdd = isAdd;
     try {
-      ColumnDescr.initOneToOnes(data, columns.clazz);
-      oldData = (E)ColumnDescr.copyByFields(data, columns.clazz, fields);
+      ColumnDescr.initOneToOnes(data, columns.entityInf.clazz);
+      oldData = (E)ColumnDescr.copyByFields(data, columns.entityInf.clazz, fields);
     }
     catch(IllegalAccessException | InstantiationException
     | InvocationTargetException | NoSuchMethodException ex) {
@@ -257,9 +257,10 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
     } else {
       try {
         Set<ConstraintViolation<?>> validate = new HashSet<>();
-        WOR dataWor
-        = (WOR)columns.classWor.getConstructor(columns.clazz).newInstance(data);
-        ColumnDescr.validate(validator, validate, columns.classWor, dataWor, fields);
+        WOR dataWor = (WOR)columns.entityInf.worClass
+        .getConstructor(columns.entityInf.clazz).newInstance(data);
+        ColumnDescr.validate
+        (validator, validate, columns.entityInf.worClass, dataWor, fields);
         result = validate.isEmpty();
       } catch(NoSuchMethodException | SecurityException | InstantiationException
       | IllegalAccessException | IllegalArgumentException

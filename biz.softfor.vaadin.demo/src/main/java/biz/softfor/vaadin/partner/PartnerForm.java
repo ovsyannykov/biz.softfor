@@ -95,9 +95,7 @@ public class PartnerForm extends EntityForm<Long, Partner, PartnerWor> {
   ) {
     super(Partner.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , Partner.class
-      , PartnerWor.class
+        Partner.class
       , new LinkedHashMap<String, Component>() {{
           ComboBox<PartnerType> partnerType
           = new ComboBox<>(Partner_.TYP, PartnerType.VALUES);
@@ -166,6 +164,7 @@ public class PartnerForm extends EntityForm<Long, Partner, PartnerWor> {
           , false
           ));
         }}
+      , securityMgr
       )
     , validator
     );
@@ -242,7 +241,8 @@ public class PartnerForm extends EntityForm<Long, Partner, PartnerWor> {
     }
     Set<ConstraintViolation<?>> validate = new HashSet<>();
     PartnerWor worData = new PartnerWor(data);
-    ColumnDescr.validate(validator, validate, columns.classWor, worData, vf);
+    ColumnDescr.validate
+    (validator, validate, columns.entityInf.worClass, worData, vf);
     return validate.isEmpty();
   }
 

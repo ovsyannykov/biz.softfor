@@ -38,7 +38,7 @@ public class ProfileFormColumns extends EntityFormColumns<Long, User, UserWor> {
   }
 
   public ProfileFormColumns() {
-    super(columns(), User.class, UserWor.class);
+    super(User.class, columns());
   }
 
 }

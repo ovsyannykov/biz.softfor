@@ -32,9 +32,7 @@ public class UserGroupForm extends EntityForm<Integer, UserGroup, UserGroupWor> 
   ) {
     super(UserGroup.TITLE
     , new EntityFormColumns(
-        securityMgr
-      , UserGroup.class
-      , UserGroupWor.class
+        UserGroup.class
       , new LinkedHashMap<String, Component>() {{
           put(UserGroup_.NAME, new TextField(UserGroup_.NAME));
           put(UserGroup_.USERS, new ToManyField<>(
@@ -54,6 +52,7 @@ public class UserGroupForm extends EntityForm<Integer, UserGroup, UserGroupWor> 
           , securityMgr
           ));
         }}
+      , securityMgr
       )
     , validator
     );
