@@ -1,7 +1,6 @@
 package biz.softfor.vaadin.partner;
 
 import biz.softfor.partner.jpa.ContactType;
-import biz.softfor.partner.jpa.ContactTypeRequest;
 import biz.softfor.partner.jpa.ContactTypeWor;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityView;
@@ -24,13 +23,7 @@ extends EntityView<Short, ContactType, ContactTypeWor> {
 
   public ContactTypesView
   (ContactTypesDbGrid dbGrid, ContactTypeForm form, SecurityMgr securityMgr) {
-    super(dbGrid
-    , ContactTypeRequest.Update.class
-    , ContactTypeRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }

@@ -1,7 +1,6 @@
 package biz.softfor.vaadin.partner;
 
 import biz.softfor.partner.jpa.PartnerFile;
-import biz.softfor.partner.jpa.PartnerFileRequest;
 import biz.softfor.partner.jpa.PartnerFileWor;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityView;
@@ -24,13 +23,7 @@ extends EntityView<Long, PartnerFile, PartnerFileWor> {
 
   public PartnerFilesView
   (PartnerFilesDbGrid dbGrid, PartnerFileForm form, SecurityMgr securityMgr) {
-    super(dbGrid
-    , PartnerFileRequest.Update.class
-    , PartnerFileRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }

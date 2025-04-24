@@ -2,7 +2,6 @@ package biz.softfor.vaadin.user;
 
 import biz.softfor.user.jpa.User;
 import biz.softfor.user.jpa.UserGroup;
-import biz.softfor.user.jpa.UserRequest;
 import biz.softfor.user.jpa.UserWor;
 import biz.softfor.user.jpa.User_;
 import biz.softfor.user.spring.SecurityMgr;
@@ -33,9 +32,8 @@ public class UsersView extends EntityView<Long, User, UserWor> {
   , UserForm form
   , SecurityMgr securityMgr
   ) {
-    super(dbGrid
-    , UserRequest.Update.class
-    , UserRequest.Delete.class
+    super(
+      dbGrid
     , new GridFields<>(
         securityMgr
       , User.class

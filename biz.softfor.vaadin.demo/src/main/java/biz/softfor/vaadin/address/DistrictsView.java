@@ -1,7 +1,6 @@
 package biz.softfor.vaadin.address;
 
 import biz.softfor.address.jpa.District;
-import biz.softfor.address.jpa.DistrictRequest;
 import biz.softfor.address.jpa.DistrictWor;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityView;
@@ -23,13 +22,7 @@ public class DistrictsView extends EntityView<Integer, District, DistrictWor> {
 
   public DistrictsView
   (DistrictsDbGrid dbGrid, DistrictForm form, SecurityMgr securityMgr) {
-    super(dbGrid
-    , DistrictRequest.Update.class
-    , DistrictRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }

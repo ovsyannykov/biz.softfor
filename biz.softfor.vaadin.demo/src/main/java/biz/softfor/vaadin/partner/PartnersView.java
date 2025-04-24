@@ -3,7 +3,6 @@ package biz.softfor.vaadin.partner;
 import biz.softfor.partner.jpa.Contact;
 import biz.softfor.partner.jpa.Partner;
 import biz.softfor.partner.jpa.PartnerFile;
-import biz.softfor.partner.jpa.PartnerRequest;
 import biz.softfor.partner.jpa.PartnerWor;
 import biz.softfor.partner.jpa.Partner_;
 import biz.softfor.user.jpa.User;
@@ -38,9 +37,8 @@ public class PartnersView extends EntityView<Long, Partner, PartnerWor> {
   , PartnerForm form
   , SecurityMgr securityMgr
   ) {
-    super(dbGrid
-    , PartnerRequest.Update.class
-    , PartnerRequest.Delete.class
+    super(
+      dbGrid
     , new GridFields<>(
         securityMgr
       , Partner.class

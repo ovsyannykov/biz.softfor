@@ -1,7 +1,6 @@
 package biz.softfor.vaadin.partner;
 
 import biz.softfor.partner.jpa.Appointment;
-import biz.softfor.partner.jpa.AppointmentRequest;
 import biz.softfor.partner.jpa.AppointmentWor;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityView;
@@ -24,13 +23,7 @@ extends EntityView<Short, Appointment, AppointmentWor> {
 
   public AppointmentsView
   (AppointmentsDbGrid dbGrid, AppointmentForm form, SecurityMgr securityMgr) {
-    super(dbGrid
-    , AppointmentRequest.Update.class
-    , AppointmentRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }

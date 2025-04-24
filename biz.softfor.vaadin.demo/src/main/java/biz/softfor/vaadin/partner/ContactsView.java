@@ -1,7 +1,6 @@
 package biz.softfor.vaadin.partner;
 
 import biz.softfor.partner.jpa.Contact;
-import biz.softfor.partner.jpa.ContactRequest;
 import biz.softfor.partner.jpa.ContactWor;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityView;
@@ -23,13 +22,7 @@ public class ContactsView extends EntityView<Long, Contact, ContactWor> {
 
   public ContactsView
   (ContactsDbGrid dbGrid, ContactForm form, SecurityMgr securityMgr) {
-    super(dbGrid
-    , ContactRequest.Update.class
-    , ContactRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }

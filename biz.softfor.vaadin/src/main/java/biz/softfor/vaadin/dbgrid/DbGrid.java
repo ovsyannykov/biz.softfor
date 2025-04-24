@@ -30,7 +30,7 @@ public class DbGrid
 <K extends Number, E extends Identifiable<K>, WOR extends Identifiable<K>>
 extends VerticalLayout implements LocaleChangeObserver {
 
-  public final EntityInf entityInf;
+  public final EntityInf<K, E, WOR> entityInf;
   public final CrudSvc<K, E, WOR, ?> service;
   public final DbGridColumns<K, E> columns;
   private final DbGridColumns<K, E> filters;
@@ -60,7 +60,7 @@ extends VerticalLayout implements LocaleChangeObserver {
     this.columns = columns;
     this.filters = filters;
 
-    readRequest = (ReadRequest)Reflection.newInstance(entityInf.readRequestClass);
+    readRequest = Reflection.newInstance(entityInf.readRequestClass);
     readRequest.fields = new ArrayList<>();
     DbNamedColumn.fields(readRequest.fields, this.columns, "");
     DbNamedColumn.fields(readRequest.fields, this.filters, "");

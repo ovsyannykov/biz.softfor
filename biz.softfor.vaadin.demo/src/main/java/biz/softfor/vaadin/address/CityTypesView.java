@@ -1,7 +1,6 @@
 package biz.softfor.vaadin.address;
 
 import biz.softfor.address.jpa.CityType;
-import biz.softfor.address.jpa.CityTypeRequest;
 import biz.softfor.address.jpa.CityTypeWor;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityView;
@@ -23,13 +22,7 @@ public class CityTypesView extends EntityView<Short, CityType, CityTypeWor> {
 
   public CityTypesView
   (CityTypesDbGrid dbGrid, CityTypeForm form, SecurityMgr securityMgr) {
-    super(dbGrid
-    , CityTypeRequest.Update.class
-    , CityTypeRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }

@@ -1,7 +1,6 @@
 package biz.softfor.vaadin.partner;
 
 import biz.softfor.partner.jpa.LocationType;
-import biz.softfor.partner.jpa.LocationTypeRequest;
 import biz.softfor.partner.jpa.LocationTypeWor;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityView;
@@ -22,18 +21,9 @@ extends EntityView<Short, LocationType, LocationTypeWor> {
 
   public final static String PATH = "locationtype";
 
-  public LocationTypesView(
-    LocationTypesDbGrid dbGrid
-  , LocationTypeForm form
-  , SecurityMgr securityMgr
-  ) {
-    super(dbGrid
-    , LocationTypeRequest.Update.class
-    , LocationTypeRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+  public LocationTypesView
+  (LocationTypesDbGrid dbGrid, LocationTypeForm form, SecurityMgr securityMgr) {
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }

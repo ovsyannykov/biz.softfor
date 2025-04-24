@@ -1,7 +1,6 @@
 package biz.softfor.vaadin.address;
 
 import biz.softfor.address.jpa.State;
-import biz.softfor.address.jpa.StateRequest;
 import biz.softfor.address.jpa.StateWor;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityView;
@@ -23,13 +22,7 @@ public class StatesView extends EntityView<Integer, State, StateWor> {
 
   public StatesView
   (StatesDbGrid dbGrid, StateForm form, SecurityMgr securityMgr) {
-    super(dbGrid
-    , StateRequest.Update.class
-    , StateRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }

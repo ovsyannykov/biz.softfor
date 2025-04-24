@@ -37,8 +37,6 @@ extends BasicView {
 
   private final SplitLayout layout;
   private final DbGrid<K, E, WOR> dbGrid;
-  private final Class<? extends UpdateRequest> updateRequestClass;
-  private final Class<? extends DeleteRequest> deleteRequestClass;
   private final GridFields<K, E> grids;
   private final EntityForm<K, E, WOR> form;
   private final SecurityMgr securityMgr;
@@ -79,8 +77,6 @@ extends BasicView {
 
   protected EntityView(
     DbGrid<K, E, WOR> dbGrid
-  , Class<? extends UpdateRequest> updateRequestClass
-  , Class<? extends DeleteRequest> deleteRequestClass
   , GridFields<K, E> grids
   , EntityForm<K, E, WOR> form
   , SecurityMgr securityMgr
@@ -89,14 +85,11 @@ extends BasicView {
     layout = new SplitLayout(SplitLayout.Orientation.HORIZONTAL);
     add(layout);
     this.dbGrid = dbGrid;
-    this.updateRequestClass = updateRequestClass;
-    this.deleteRequestClass = deleteRequestClass;
     this.grids = grids;
     this.form = form;
     this.securityMgr = securityMgr;
     if(this.dbGrid.columns.isAccessible()) {
-      Class<E> clazz = this.dbGrid.service.clazz();
-      this.dbGrid.grid.setId(gridId(clazz));
+      this.dbGrid.grid.setId(gridId(this.dbGrid.entityInf.clazz));
       for(GridField<?, ?, E, ?> c : this.grids) {
         DbNamedColumn.fields
         (this.dbGrid.readRequest.fields, c.columns, c.dbName());
@@ -106,7 +99,7 @@ extends BasicView {
         itemsPanesContainer = null;
         layout.addToSecondary(this.form);
       } else {
-        binder = new Binder<>(clazz);
+        binder = new Binder<>(this.dbGrid.entityInf.clazz);
         itemsPanesContainer = new VerticalLayout();
         for(GridField<?, ?, E, ?> g : this.grids) {
           binder.bindReadOnly(g, g.dbName());
@@ -145,12 +138,13 @@ extends BasicView {
           (svcClass, AbstractCrudSvc.CREATE_METHOD, groups)) {
           add = new Button(Text.Add, e -> {
             this.dbGrid.grid.getSelectionModel().deselectAll();
-            edit(Reflection.newInstance(clazz));
+            edit(Reflection.newInstance(this.dbGrid.entityInf.clazz));
           });
           add.setId(addId());
           this.dbGrid.toolbar.add(add);
         }
-        if(securityMgr.isAllowed(new UpdateClassRoleCalc(clazz).id(), groups)
+        if(securityMgr.isAllowed
+          (new UpdateClassRoleCalc(this.dbGrid.entityInf.clazz).id(), groups)
         && securityMgr.isMethodAllowed
         (svcClass, AbstractCrudSvc.DELETE_METHOD, groups)) {
           delete = new Button(Text.Delete, this::delete);
@@ -166,7 +160,7 @@ extends BasicView {
       setPadding(false);
       setMargin(false);
       setSizeFull();
-      setId(id(this.form.columns.entityInf.clazz));
+      setId(id(this.dbGrid.entityInf.clazz));
       edit(null);
     } else {
       binder = null;
@@ -192,14 +186,15 @@ extends BasicView {
   private void cancel(EntityForm.CancelEvent e) {
     edit(null);
     if(!e.getSource().isAdd()) {
-      Class<E> clazz = dbGrid.service.clazz();
-      Class<WOR> classWor = dbGrid.service.classWor();
-      E item = (E)this.dbGrid.grid.asSingleSelect().getValue();
+      E item = (E)dbGrid.grid.asSingleSelect().getValue();
       E oldItem = (E)e.oldItem;
       try {
-        WOR itemWor = classWor.getConstructor(clazz).newInstance(item);
-        WOR oldItemWor = classWor.getConstructor(clazz).newInstance(e.oldItem);
-        DiffContext diffCtx = ColumnDescr.diff("", classWor, itemWor, oldItemWor);
+        WOR itemWor = dbGrid.entityInf.worClass
+        .getConstructor(dbGrid.entityInf.clazz).newInstance(item);
+        WOR oldItemWor = dbGrid.entityInf.worClass
+        .getConstructor(dbGrid.entityInf.clazz).newInstance(e.oldItem);
+        DiffContext diffCtx
+        = ColumnDescr.diff("", dbGrid.entityInf.worClass, itemWor, oldItemWor);
         if(diffCtx.changed) {
           dbGrid.dataView.refreshItem(oldItem);
           binder.setBean(oldItem);
@@ -214,8 +209,9 @@ extends BasicView {
   }
 
   private void delete(ClickEvent<Button> e) {
-    DeleteRequest request = Reflection.newInstance(deleteRequestClass);
-    Set selected = this.dbGrid.grid.getSelectedItems();
+    DeleteRequest request
+    = Reflection.newInstance(dbGrid.entityInf.deleteRequestClass);
+    Set selected = dbGrid.grid.getSelectedItems();
     request.filter.setId(Identifiable.ids((Set<Identifiable<K>>)selected));
     securityMgr.methodCheck(
       dbGrid.service.serviceClass()
@@ -239,7 +235,7 @@ extends BasicView {
       boolean isAdd = item.getId() == null;
       if(!isAdd) {
         ReadRequest request
-        = (ReadRequest)Reflection.newInstance(dbGrid.entityInf.readRequestClass);
+        = Reflection.newInstance(dbGrid.entityInf.readRequestClass);
         request.fields = form.fields;
         request.filter.assignId(item.getId());
         securityMgr.readCheck(dbGrid.service, request, SecurityUtil.groups());
@@ -264,11 +260,10 @@ extends BasicView {
   }
 
   private void save(EntityForm.SaveEvent e) {
-    Class<E> clazz = dbGrid.service.clazz();
-    Class<WOR> classWor = dbGrid.service.classWor();
     E item = (E)e.item;
     try {
-      WOR itemWor = classWor.getConstructor(clazz).newInstance(item);
+      WOR itemWor = dbGrid.entityInf.worClass
+      .getConstructor(dbGrid.entityInf.clazz).newInstance(item);
       if(item.getId() == null) {
         securityMgr.methodCheck(
           dbGrid.service.serviceClass()
@@ -287,14 +282,22 @@ extends BasicView {
           VaadinUtil.messageDialog(getTranslation(Text.Save), response.getDescr());
         }
       } else {
-        WOR oldItemWor = classWor.getConstructor(clazz).newInstance(e.oldItem);
-        DiffContext diffCtx = ColumnDescr.diff("", classWor, itemWor, oldItemWor);
+        WOR oldItemWor = dbGrid.entityInf.worClass
+        .getConstructor(dbGrid.entityInf.clazz).newInstance(e.oldItem);
+        DiffContext diffCtx
+        = ColumnDescr.diff("", dbGrid.entityInf.worClass, itemWor, oldItemWor);
         if(diffCtx.changed) {
-          UpdateRequest request = updateRequestClass.getConstructor().newInstance();
+          UpdateRequest request
+          = dbGrid.entityInf.updateRequestClass.getConstructor().newInstance();
           request.data = (Identifiable<K>)diffCtx.data;
           request.fields = diffCtx.updateToNull;
           request.filter.assignId(itemWor.getId());
-          securityMgr.updateCheck(clazz, classWor, request, SecurityUtil.groups());
+          securityMgr.updateCheck(
+            dbGrid.entityInf.clazz
+          , dbGrid.entityInf.worClass
+          , request
+          , SecurityUtil.groups()
+          );
           CommonResponse<WOR> response = dbGrid.service.update(request);
           if(response.isOk()) {
             edit(null);

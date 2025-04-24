@@ -1,7 +1,6 @@
 package biz.softfor.vaadin.address;
 
 import biz.softfor.address.jpa.Country;
-import biz.softfor.address.jpa.CountryRequest;
 import biz.softfor.address.jpa.CountryWor;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityView;
@@ -21,18 +20,9 @@ public class CountriesView extends EntityView<Short, Country, CountryWor> {
 
   public final static String PATH = "country";
 
-  public CountriesView(
-    CountriesDbGrid dbGrid
-  , CountryForm form
-  , SecurityMgr securityMgr
-  ) {
-    super(dbGrid
-    , CountryRequest.Update.class
-    , CountryRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+  public CountriesView
+  (CountriesDbGrid dbGrid, CountryForm form, SecurityMgr securityMgr) {
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }

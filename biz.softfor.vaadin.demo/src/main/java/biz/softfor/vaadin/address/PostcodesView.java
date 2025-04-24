@@ -1,7 +1,6 @@
 package biz.softfor.vaadin.address;
 
 import biz.softfor.address.jpa.Postcode;
-import biz.softfor.address.jpa.PostcodeRequest;
 import biz.softfor.address.jpa.PostcodeWor;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityView;
@@ -23,13 +22,7 @@ public class PostcodesView extends EntityView<Integer, Postcode, PostcodeWor> {
 
   public PostcodesView
   (PostcodesDbGrid dbGrid, PostcodeForm form, SecurityMgr securityMgr) {
-    super(dbGrid
-    , PostcodeRequest.Update.class
-    , PostcodeRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }

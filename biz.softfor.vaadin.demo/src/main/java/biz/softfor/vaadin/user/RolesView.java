@@ -1,7 +1,6 @@
 package biz.softfor.vaadin.user;
 
 import biz.softfor.user.jpa.Role;
-import biz.softfor.user.jpa.RoleRequest;
 import biz.softfor.user.jpa.RoleWor;
 import biz.softfor.user.jpa.Role_;
 import biz.softfor.user.jpa.UserGroup;
@@ -32,9 +31,8 @@ public class RolesView extends EntityView<Long, Role, RoleWor> {
   , RoleForm form
   , SecurityMgr securityMgr
   ) {
-    super(dbGrid
-    , RoleRequest.Update.class
-    , RoleRequest.Delete.class
+    super(
+      dbGrid
     , new GridFields<>(securityMgr, Role.class, new GridField<>(
         Role_.GROUPS
       , UserGroup.class
