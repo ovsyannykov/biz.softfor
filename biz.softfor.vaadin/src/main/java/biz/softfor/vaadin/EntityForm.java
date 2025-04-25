@@ -16,6 +16,7 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBoxBase;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -191,8 +192,10 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
       if(c instanceof HasLabel hl) {
         hl.setLabel(getTranslation(StringUtil.fieldToName(me.getKey())));
       }
-      if(c instanceof ComboBoxBase cb) {
-        BasicComboBoxDbGridColumn.localeChange(cb);
+      switch(c) {
+        case ComboBoxBase cb -> BasicComboBoxDbGridColumn.localeChange(cb);
+        case DatePicker dp -> DatePickerI18n.localeChange(dp, event);
+        default -> {}
       }
     }
   }

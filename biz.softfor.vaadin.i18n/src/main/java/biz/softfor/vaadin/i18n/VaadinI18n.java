@@ -3,6 +3,7 @@ package biz.softfor.vaadin.i18n;
 import biz.softfor.i18nutil.I18n;
 import static biz.softfor.i18nutil.I18nUtil.UKRAINIAN;
 import static biz.softfor.i18nutil.I18nUtil.add;
+import biz.softfor.vaadin.DatePickerI18n;
 import biz.softfor.vaadin.Text;
 import biz.softfor.vaadin.security.LoginView;
 import biz.softfor.vaadin.security.RegistrationForm;
@@ -13,19 +14,24 @@ import static java.util.Map.of;
 public class VaadinI18n {
 
   static {
-    add(Text.Add, of(ENGLISH, Text.Add
+    add(Text.Add, of(
+      ENGLISH, Text.Add
     , UKRAINIAN, "Додати"
     ));
-    add(Text.Administration, of(ENGLISH, Text.Administration
+    add(Text.Administration, of(
+      ENGLISH, Text.Administration
     , UKRAINIAN, "Адміністрування"
     ));
-    add(Text.Apply, of(ENGLISH, Text.Apply
+    add(Text.Apply, of(
+      ENGLISH, Text.Apply
     , UKRAINIAN, "Застосувати"
     ));
-    add(Text.Cancel, of(ENGLISH, Text.Cancel
+    add(Text.Cancel, of(
+      ENGLISH, Text.Cancel
     , UKRAINIAN, "Скасувати"
     ));
-    add(Text.Clear, of(ENGLISH, Text.Clear
+    add(Text.Clear, of(
+      ENGLISH, Text.Clear
     , UKRAINIAN, "Очистити"
     ));
     add(Text.Confirm_new_password, of(
@@ -36,6 +42,22 @@ public class VaadinI18n {
       ENGLISH, "Confirm password"
     , UKRAINIAN, "Підтвердьте пароль"
     ));
+    add(DatePickerI18n.DAYS, of(
+      ENGLISH, "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"
+    , UKRAINIAN, "Неділя,Понеділок,Вівторок,Середа,Четвер,П'ятниця,Субота"
+    ));
+    add(DatePickerI18n.DAYS_SHORT, of(
+      ENGLISH, "Sun,Mon,Tue,Wed,Thu,Fri,Sat"
+    , UKRAINIAN, "Нед,Пон,Вів,Сер,Чет,Птн,Суб"
+    ));
+    add(DatePickerI18n.MONTHS, of(
+      ENGLISH, "January,February,March,April,May,June,July,August,September,October,November,December"
+    , UKRAINIAN, "Січень,Лютий,Березень,Квітень,Травень,Червень,Липень,Серпень,Вересень,Жовтень,Листопад,Грудень"
+    ));
+    add(DatePickerI18n.TODAY, of(
+      ENGLISH, DatePickerI18n.TODAY
+    , UKRAINIAN, "Сьогодні"
+    ));
     add(Text.Date_from, of(
       ENGLISH, "From"
     , UKRAINIAN, "Від"
@@ -44,10 +66,12 @@ public class VaadinI18n {
       ENGLISH, "To"
     , UKRAINIAN, "До"
     ));
-    add(Text.Delete, of(ENGLISH, Text.Delete
+    add(Text.Delete, of(
+      ENGLISH, Text.Delete
     , UKRAINIAN, "Видалити"
     ));
-    add(Text.Edit, of(ENGLISH, Text.Edit
+    add(Text.Edit, of(
+      ENGLISH, Text.Edit
     , UKRAINIAN, "Редагувати"
     ));
     add(Text.Enter_new_password, of(
@@ -58,7 +82,8 @@ public class VaadinI18n {
       ENGLISH, "Filter by {0}..."
     , UKRAINIAN, "Фільтрувати за"
     ));
-    add(Text.Filtrate, of(ENGLISH, Text.Filtrate
+    add(Text.Filtrate, of(
+      ENGLISH, Text.Filtrate
     , UKRAINIAN, "Фільтрувати"
     ));
     add(Text.Logout, of(
@@ -77,37 +102,44 @@ public class VaadinI18n {
       ENGLISH, "The requested item not found!"
     , UKRAINIAN, "Потрібний запис не знайдено!"
     ));
-    add(Text.OK, of(ENGLISH, Text.OK
+    add(Text.OK, of(
+      ENGLISH, Text.OK
     , UKRAINIAN, "Так"
     ));
-    add(RegistrationForm.Passwords_do_not_match
-    , of(ENGLISH, "Passwords do not match"
+    add(RegistrationForm.Passwords_do_not_match, of(
+      ENGLISH, "Passwords do not match"
     , UKRAINIAN, "Паролі не співпадають"
     ));
-    add(Text.PROFILE
-    , of(ENGLISH, "Profile"
+    add(Text.PROFILE, of(
+      ENGLISH, "Profile"
     , UKRAINIAN, "Профіль"
     ));
     add(Text.REGISTRATION, of(
       ENGLISH, "Registration"
     , UKRAINIAN, "Реєстрація"
     ));
-    add(Text.Remove, of(ENGLISH, Text.Remove
+    add(Text.Remove, of(
+      ENGLISH, Text.Remove
     , UKRAINIAN, "Видалити"
     ));
-    add(Text.Save, of(ENGLISH, Text.Save
+    add(Text.Save, of(
+      ENGLISH, Text.Save
     , UKRAINIAN, "Зберегти"
     ));
-    add(Text.Select, of(ENGLISH, Text.Select
+    add(Text.Select, of(
+      ENGLISH, Text.Select
     , UKRAINIAN, "Вибрати"
     ));
-    add(Text.Submit, of(ENGLISH, Text.Submit
+    add(Text.Submit, of(
+      ENGLISH, Text.Submit
     , UKRAINIAN, "Відправити"
     ));
-    add(Text.View, of(ENGLISH, Text.View
+    add(Text.View, of(
+      ENGLISH, Text.View
     , UKRAINIAN, "Дивитись"
     ));
-    add(Text.Login, of(ENGLISH, Text.Login
+    add(Text.Login, of(
+      ENGLISH, Text.Login
     , UKRAINIAN, "Вхід"
     ));
     add(LoginView.Username, of(

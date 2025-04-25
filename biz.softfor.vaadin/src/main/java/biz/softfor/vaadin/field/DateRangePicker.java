@@ -2,6 +2,7 @@ package biz.softfor.vaadin.field;
 
 import biz.softfor.util.Range;
 import biz.softfor.vaadin.CSS;
+import biz.softfor.vaadin.DatePickerI18n;
 import biz.softfor.vaadin.Text;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -45,7 +46,9 @@ implements LocaleChangeObserver {
   @Override
   public void localeChange(LocaleChangeEvent event) {
     from.setPlaceholder(getTranslation(Text.Date_from));
+    DatePickerI18n.localeChange(from, event);
     to.setPlaceholder(getTranslation(Text.Date_to));
+    DatePickerI18n.localeChange(to, event);
   }
 
   @Override
