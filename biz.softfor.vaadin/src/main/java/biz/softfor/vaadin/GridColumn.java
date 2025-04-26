@@ -16,7 +16,7 @@ implements DbNamedColumn/*, LocaleChangeObserver*/ {
 
   private final String dbName;
   public final C component;
-  private final Renderer<E> renderer;
+  private Renderer<E> renderer;
   private Grid<E> grid;
 
   public static String columnFilterId(String name) {
@@ -36,6 +36,10 @@ implements DbNamedColumn/*, LocaleChangeObserver*/ {
   @Override
   public String dbName() {
     return dbName;
+  }
+
+  public void setRenderer(Renderer<E> renderer) {
+    this.renderer = renderer;
   }
 
   public static <E> Grid<E> grid(

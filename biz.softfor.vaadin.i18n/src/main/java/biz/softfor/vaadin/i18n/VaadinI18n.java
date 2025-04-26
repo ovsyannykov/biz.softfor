@@ -3,7 +3,6 @@ package biz.softfor.vaadin.i18n;
 import biz.softfor.i18nutil.I18n;
 import static biz.softfor.i18nutil.I18nUtil.UKRAINIAN;
 import static biz.softfor.i18nutil.I18nUtil.add;
-import biz.softfor.vaadin.DatePickerI18n;
 import biz.softfor.vaadin.Text;
 import biz.softfor.vaadin.security.LoginView;
 import biz.softfor.vaadin.security.RegistrationForm;
@@ -41,30 +40,6 @@ public class VaadinI18n {
     add(Text.Confirm_password, of(
       ENGLISH, "Confirm password"
     , UKRAINIAN, "Підтвердьте пароль"
-    ));
-    add(DatePickerI18n.DAYS, of(
-      ENGLISH, "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"
-    , UKRAINIAN, "Неділя,Понеділок,Вівторок,Середа,Четвер,П'ятниця,Субота"
-    ));
-    add(DatePickerI18n.DAYS_SHORT, of(
-      ENGLISH, "Sun,Mon,Tue,Wed,Thu,Fri,Sat"
-    , UKRAINIAN, "Нед,Пон,Вів,Сер,Чет,Птн,Суб"
-    ));
-    add(DatePickerI18n.MONTHS, of(
-      ENGLISH, "January,February,March,April,May,June,July,August,September,October,November,December"
-    , UKRAINIAN, "Січень,Лютий,Березень,Квітень,Травень,Червень,Липень,Серпень,Вересень,Жовтень,Листопад,Грудень"
-    ));
-    add(DatePickerI18n.TODAY, of(
-      ENGLISH, DatePickerI18n.TODAY
-    , UKRAINIAN, "Сьогодні"
-    ));
-    add(Text.Date_from, of(
-      ENGLISH, "From"
-    , UKRAINIAN, "Від"
-    ));
-    add(Text.Date_to, of(
-      ENGLISH, "To"
-    , UKRAINIAN, "До"
     ));
     add(Text.Delete, of(
       ENGLISH, Text.Delete

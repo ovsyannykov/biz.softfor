@@ -53,9 +53,15 @@ public class PartnerDbGridColumns extends DbGridColumns<Long, Partner> {
       new ComboBoxDbGridColumn<>
       (Partner_.TYP, PartnerType.VALUES, Partner::getTyp, PartnerFltr::setTyp)
     , new TextDbGridColumn<>(Partner_.PARTNER_NAME, PartnerFltr::setPartnerName)
-    , new TextDbGridColumn<>(Partner_.PARTNER_FULLNAME, PartnerFltr::setPartnerFullname)
-    , new DateDbGridColumn<>(Partner_.PARTNER_REGDATE, PartnerFltr::setPartnerRegdate)
-    , new TextDbGridColumn<>(Partner_.PARTNER_REGCODE, PartnerFltr::setPartnerRegcode)
+    , new TextDbGridColumn<>
+      (Partner_.PARTNER_FULLNAME, PartnerFltr::setPartnerFullname)
+    , new DateDbGridColumn<>(
+        Partner_.PARTNER_REGDATE
+      , Partner::getPartnerRegdate
+      , PartnerFltr::setPartnerRegdate
+      )
+    , new TextDbGridColumn<>
+      (Partner_.PARTNER_REGCODE, PartnerFltr::setPartnerRegcode)
     , new TextDbGridColumn<>(Partner_.ADDRESS, PartnerFltr::setAddress)
     , new ManyToOneDbGridColumn<Partner, PartnerFltr, Integer, Postcode>(
         Partner_.POSTCODE
