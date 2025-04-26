@@ -57,8 +57,16 @@ implements LocaleChangeObserver {
 
   @Override
   protected void setPresentationValue(Range<LocalDate> dateRange) {
-    from.setValue(dateRange.getFrom());
-    to.setValue(dateRange.getTo());
+    LocalDate vFrom, vTo;
+    if(dateRange == null) {
+      vFrom = null;
+      vTo = null;
+    } else {
+      vFrom = dateRange.getFrom();
+      vTo = dateRange.getTo();
+    }
+    from.setValue(vFrom);
+    to.setValue(vTo);
   }
 
 }
