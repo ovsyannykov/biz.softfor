@@ -1,6 +1,9 @@
 package biz.softfor.vaadin.address;
 
 import biz.softfor.address.api.CityFltr;
+import biz.softfor.address.api.CityTypeFltr;
+import biz.softfor.address.api.DistrictFltr;
+import biz.softfor.address.api.StateFltr;
 import biz.softfor.address.jpa.City;
 import biz.softfor.address.jpa.CityType;
 import biz.softfor.address.jpa.CityType_;
@@ -45,7 +48,7 @@ public class CityDbGridColumns extends DbGridColumns<Integer, City> {
           CityType e = m.getTyp();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter(CityFltr::setTypeId)
+      , defaultFilter(CityFltr::getTyp, CityFltr::setTyp, CityTypeFltr::new)
       , cityTypesDbGrid
       , CityType::getName
       , CityType::getName
@@ -57,7 +60,7 @@ public class CityDbGridColumns extends DbGridColumns<Integer, City> {
           State e = m.getState();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter(CityFltr::setStateId)
+      , defaultFilter(CityFltr::getState, CityFltr::setState, StateFltr::new)
       , statesDbGrid
       , State::getName
       , State::getFullname
@@ -69,7 +72,8 @@ public class CityDbGridColumns extends DbGridColumns<Integer, City> {
           District e = m.getDistrict();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter(CityFltr::setDistrictId)
+      , defaultFilter
+        (CityFltr::getDistrict, CityFltr::setDistrict, DistrictFltr::new)
       , districtsDbGrid
       , District::getName
       , District::getFullname

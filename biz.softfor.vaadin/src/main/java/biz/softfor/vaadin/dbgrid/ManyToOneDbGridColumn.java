@@ -7,18 +7,28 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ManyToOneDbGridColumn
 <M, MF extends FilterId, K extends Number, E extends Identifiable<K>>
 extends DbGridColumn<M, Set<K>, ManyToOneGridColumnComponent<K, E>, Set<E>, MF> {
 
-  public static <K extends Number, E extends Identifiable<K>, F extends FilterId>
-  BiConsumer<F, ManyToOneGridColumnComponent<K, E>> defaultFilter
-  (BiConsumer<F, Set<K>> setter) {
+  public static <
+    K extends Number
+  , E extends Identifiable<K>
+  , F extends FilterId
+  , VF extends FilterId
+  > BiConsumer<F, ManyToOneGridColumnComponent<K, E>> defaultFilter
+  (Function<F, VF> getter, BiConsumer<F, VF> setter, Supplier<VF> supplier) {
     return (requestFilter, component) -> {
       Set<E> v = component.getValue();
       if(v != null && !v.isEmpty()) {
-        setter.accept(requestFilter, Identifiable.ids(v));
+        VF vf = getter.apply(requestFilter);
+        if(vf == null) {
+          vf = supplier.get();
+          setter.accept(requestFilter, vf);
+        }
+        vf.setId(Identifiable.ids(v));
       }
     };
   }

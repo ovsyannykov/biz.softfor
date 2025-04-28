@@ -2,7 +2,6 @@ package biz.softfor.jpa.filtergen;
 
 import biz.softfor.codegen.CodeGen;
 import biz.softfor.codegen.CodeGenUtil;
-import biz.softfor.jpa.crud.querygraph.ColumnDescr;
 import biz.softfor.util.Range;
 import biz.softfor.util.Reflection;
 import biz.softfor.util.api.Identifiable;
@@ -24,7 +23,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 import javax.lang.model.element.Modifier;
 import org.hibernate.type.Type;
@@ -73,37 +71,14 @@ public class FilterGen extends CodeGen {
         && !Identifiable.ID.equals(fieldName)) {
           Class<?> dclClass = dclField.getType();
           TypeName fieldType;
-          String keyName;
-          TypeName keyTypeName;
-          FieldSpec.Builder keyBldr;
           resetMethod.addStatement("$N = null", fieldName);
-          if(CodeGenUtil.isAnnotationPresent(dclField, OneToOne.class)) {
+          if(CodeGenUtil.isAnnotationPresent(dclField, OneToOne.class)
+          || CodeGenUtil.isAnnotationPresent(dclField, ManyToOne.class)) {
             fieldType = CodeGenUtil.filterTypeName(dclClass);
-          } else if(CodeGenUtil.isAnnotationPresent(dclField, ManyToOne.class)) {
-            fieldType = CodeGenUtil.filterTypeName(dclClass);
-            Class idDeclClass = Reflection.idClass(dclClass);
-            keyName = CodeGenUtil.manyToOneKeyName(dclField);
-            keyTypeName = addAssignMethod
-            (classBldr, TypeName.get(idDeclClass), keyName, Set.class);
-            keyBldr = FieldSpec.builder(keyTypeName, keyName)
-            .addModifiers(Modifier.PRIVATE);
-            CodeGenUtil.addField(classBldr, keyBldr, keyTypeName, keyName, false);
-            resetMethod.addStatement("$N = null", keyName);
           } else if(CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)
           || CodeGenUtil.isAnnotationPresent(dclField, ManyToMany.class)) {
             Class<?> joinClass = Reflection.genericParameter(dclField);
             fieldType = CodeGenUtil.filterTypeName(joinClass);
-            Class<?> joinIdClass = Reflection.idClass(joinClass);
-            keyName = ColumnDescr.toManyKeyName(fieldName);
-            Class<?> collectionClass
-            = CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)
-            ? List.class : Set.class;
-            keyTypeName = addAssignMethod
-            (classBldr, TypeName.get(joinIdClass), keyName, collectionClass);
-            keyBldr = FieldSpec.builder(keyTypeName, keyName)
-            .addModifiers(Modifier.PRIVATE);
-            CodeGenUtil.addField(classBldr, keyBldr, keyTypeName, keyName, false);
-            resetMethod.addStatement("$N = null", keyName);
           } else {
             fieldType = TypeName.get(dclClass);
             if(LocalDate.class.isAssignableFrom(dclClass)

@@ -1,6 +1,7 @@
 package biz.softfor.vaadin.partner;
 
 import biz.softfor.partner.api.PartnerFileFltr;
+import biz.softfor.partner.api.PartnerFltr;
 import biz.softfor.partner.jpa.PartnerFile;
 import biz.softfor.partner.jpa.PartnerFile_;
 import biz.softfor.partner.jpa.Partner_;
@@ -34,7 +35,9 @@ public class PartnerFileDbGridColumns extends DbGridColumns<Long, PartnerFile> {
     , new PartnerBasicDbGridColumn<>(
         PartnerFile_.PARTNER
       , PartnerFile::getPartner
-      , PartnerFileFltr::setPartnerId
+      , PartnerFileFltr::getPartner
+      , PartnerFileFltr::setPartner
+      , PartnerFltr::new
       , partners
       )
     , new TextDbGridColumn<>(PartnerFile_.DESCR, PartnerFileFltr::setDescr)

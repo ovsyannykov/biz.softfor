@@ -100,12 +100,14 @@ public class FilterTest extends PartnersTestBasic {
   public void nestedField(CapturedOutput output) throws Exception {
     int dataIdx = 2;
     String EXPECTED_SQL =
-    "from users u1_0 join users_groups g1_0 on u1_0.id=g1_0.userId join userGroups g1_1 on g1_1.id=g1_0.groupId left join roles_groups r1_0 on g1_1.id=r1_0.groupId where r1_0.roleId="
+    "from users u1_0 join users_groups g1_0 on u1_0.id=g1_0.userId join userGroups g1_1 on g1_1.id=g1_0.groupId join roles_groups r1_0 on g1_1.id=r1_0.groupId where r1_0.roleId="
     + data.roles.data.get(dataIdx).getId();
     UserRequest.Read request = new UserRequest.Read();
-    UserGroupFltr roleFltr = new UserGroupFltr();
-    roleFltr.setRoleIds(data.roles.ids(dataIdx));
-    request.filter.setGroups(roleFltr);
+    UserGroupFltr userGroupFltr = new UserGroupFltr();
+    RoleFltr role = new RoleFltr();
+    role.setId(data.roles.ids(dataIdx));
+    userGroupFltr.setRoles(role);
+    request.filter.setGroups(userGroupFltr);
     request.fields = list(
       User_.ID
     , User_.USERNAME
@@ -146,8 +148,7 @@ public class FilterTest extends PartnersTestBasic {
     , Contact_.PARTNER, field(Contact_.PARTNER, Partner_.USERS));
     validator.select(2).assertTotal();
     String EXPECTED_SQL =
-    "from contacts c1_0 join partners p1_0 on p1_0.id=c1_0.partnerId join users u1_0 on p1_0.id=u1_0.personId where u1_0.id"
-    + " in (" + StringUtils.join(dataIds, ",") + ")";
+    "from contacts c1_0 join partners p1_0 on p1_0.id=c1_0.partnerId join users u1_0 on p1_0.id=u1_0.personId where u1_0.id in (" + StringUtils.join(dataIds, ",") + ")";
     assertThat(output).contains(EXPECTED_SQL);
   }
 
@@ -159,8 +160,9 @@ public class FilterTest extends PartnersTestBasic {
     Calendar cal = Calendar.getInstance();
     cal.set(1970, Calendar.MARCH, 2, 0, 0, 0);
     cal.set(Calendar.MILLISECOND, 0);
-    Long actionId = data.roles.data.get(2).getId();
-    request.filter.and(new Expr(Expr.GT, Identifiable.ID, new Value(0))
+    Long roleId = data.roles.data.get(2).getId();
+    request.filter.and(
+      new Expr(Expr.GT, Identifiable.ID, new Value(0))
     , new Expr(Expr.OR
       , list(new Expr(Expr.GE, new Expr(Expr.NOW), new Value(cal.getTime()))
         , new Expr(Expr.NOT
@@ -195,7 +197,7 @@ public class FilterTest extends PartnersTestBasic {
           )
         )
       )
-    , new Expr(Expr.IN, field(UserFltr.GROUPS, UserGroupFltr.ROLE_IDS), actionId)
+    , new Expr(Expr.IN, field(UserFltr.GROUPS, UserGroupFltr.ROLES, Identifiable.ID), roleId)
     );
     Set<User> expected = new HashSet<>();
     for(User d : sourceData) {
@@ -206,7 +208,7 @@ public class FilterTest extends PartnersTestBasic {
     read(request, expected, 1);
     String expectedSql =
     "from users u1_0 left join users_groups g1_0 on u1_0.id=g1_0.userId left join userGroups g1_1 on g1_1.id=g1_0.groupId left join roles_groups r1_0 on g1_1.id=r1_0.groupId left join roles r1_1 on r1_1.id=r1_0.roleId where u1_0.id>0 and (now()>=timestamp with time zone '1970-03-02 00:00:00.000' or not(not(r1_1.isUrl) or r1_1.name like 'some%' escape '' or u1_0.username=g1_1.name or substring(u1_0.email,0,5)=CONCAT_WS('~','tezzt',r1_1.name,42)) or g1_1.name is null or g1_1.name not in ('ROLE_ADMIN2','ROLE_USER2','ROLE_SOMETHING2')) and r1_0.roleId="
-    + actionId;
+    + roleId;
     assertThat(output).contains(expectedSql);
   }
 

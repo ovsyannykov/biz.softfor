@@ -1,16 +1,19 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.PartnerFltr;
 import biz.softfor.partner.jpa.Partner;
 import biz.softfor.partner.jpa.Partner_;
 import biz.softfor.partner.jpa.PersonDetails_;
 import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.filter.FilterId;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
+import static biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn.defaultFilter;
 import biz.softfor.vaadin.VaadinUtil;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class PartnerBasicDbGridColumn<M, MF extends FilterId>
 extends ManyToOneDbGridColumn<M, MF, Long, Partner> {
@@ -18,7 +21,9 @@ extends ManyToOneDbGridColumn<M, MF, Long, Partner> {
   public PartnerBasicDbGridColumn(
     String dbName
   , Function<M, Partner> getter
-  , BiConsumer<MF, Set<Long>> filterSetter
+  , Function<MF, PartnerFltr> filterGetter
+  , BiConsumer<MF, PartnerFltr> filterSetter
+  , Supplier<PartnerFltr> filterSupplier
   , PartnersBasicDbGrid partners
   ) {
     super(
@@ -27,7 +32,7 @@ extends ManyToOneDbGridColumn<M, MF, Long, Partner> {
         Partner e = getter.apply(m);
         return e == null ? "" : e.label();
       })
-      , ManyToOneDbGridColumn.defaultFilter(filterSetter)
+      , defaultFilter(filterGetter, filterSetter, filterSupplier)
       , partners
       , Partner::label
       , Partner::details

@@ -1,6 +1,7 @@
 package biz.softfor.vaadin.address;
 
 import biz.softfor.address.api.DistrictFltr;
+import biz.softfor.address.api.StateFltr;
 import biz.softfor.address.jpa.District;
 import biz.softfor.address.jpa.District_;
 import biz.softfor.address.jpa.State;
@@ -38,7 +39,8 @@ public class DistrictDbGridColumns extends DbGridColumns<Integer, District> {
           State e = m.getState();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter(DistrictFltr::setStateId)
+      , defaultFilter
+        (DistrictFltr::getState, DistrictFltr::setState, StateFltr::new)
       , statesDbGrid
       , State::getName
       , State::getFullname

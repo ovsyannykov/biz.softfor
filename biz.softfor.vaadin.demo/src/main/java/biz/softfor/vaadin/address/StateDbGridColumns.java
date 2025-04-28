@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.CountryFltr;
 import biz.softfor.address.api.StateFltr;
 import biz.softfor.address.jpa.Country;
 import biz.softfor.address.jpa.Country_;
@@ -9,6 +10,7 @@ import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.util.api.Order;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
+import static biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn.defaultFilter;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
 import biz.softfor.vaadin.VaadinUtil;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -37,7 +39,8 @@ public class StateDbGridColumns extends DbGridColumns<Integer, State> {
           Country e = m.getCountry();
           return e == null ? "" : e.getName();
         })
-      , ManyToOneDbGridColumn.defaultFilter(StateFltr::setCountryId)
+      , defaultFilter
+        (StateFltr::getCountry, StateFltr::setCountry, CountryFltr::new)
       , countriesDbGrid
       , Country::getName
       , Country::getFullname

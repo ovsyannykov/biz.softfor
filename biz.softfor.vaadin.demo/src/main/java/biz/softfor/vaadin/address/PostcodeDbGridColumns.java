@@ -1,5 +1,7 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.CityFltr;
+import biz.softfor.address.api.DistrictFltr;
 import biz.softfor.address.api.PostcodeFltr;
 import biz.softfor.address.jpa.City;
 import biz.softfor.address.jpa.City_;
@@ -42,7 +44,8 @@ public class PostcodeDbGridColumns extends DbGridColumns<Integer, Postcode> {
           District e = m.getDistrict();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter(PostcodeFltr::setDistrictId)
+      , defaultFilter
+        (PostcodeFltr::getDistrict, PostcodeFltr::setDistrict, DistrictFltr::new)
       , districtsDbGrid
       , District::getName
       , District::getFullname
@@ -54,7 +57,8 @@ public class PostcodeDbGridColumns extends DbGridColumns<Integer, Postcode> {
           City e = m.getCity();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter(PostcodeFltr::setCityId)
+      , defaultFilter
+        (PostcodeFltr::getCity, PostcodeFltr::setCity, CityFltr::new)
       , citiesDbGrid
       , City::getName
       , City::getName

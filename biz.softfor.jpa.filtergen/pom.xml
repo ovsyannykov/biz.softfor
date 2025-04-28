@@ -50,10 +50,6 @@
       <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.codegen</artifactId>
     </dependency>
-    <dependency>
-      <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.jpa</artifactId>
-    </dependency>
 
     <!-- third party -->
     <dependency>

@@ -1,7 +1,9 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.address.api.PostcodeFltr;
 import biz.softfor.address.jpa.Postcode;
 import biz.softfor.address.jpa.Postcode_;
+import biz.softfor.partner.api.LocationTypeFltr;
 import biz.softfor.partner.api.PartnerDetailsFltr;
 import biz.softfor.partner.api.PartnerFltr;
 import biz.softfor.partner.api.PersonDetailsFltr;
@@ -25,6 +27,7 @@ import biz.softfor.vaadin.dbgrid.DateDbGridColumn;
 import biz.softfor.vaadin.dbgrid.DbGridColumn;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
+import static biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn.defaultFilter;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -69,7 +72,8 @@ public class PartnerDbGridColumns extends DbGridColumns<Long, Partner> {
           Postcode e = m.getPostcode();
           return e == null ? "" : e.getPostcode();
         })
-      , ManyToOneDbGridColumn.defaultFilter(PartnerFltr::setPostcodeId)
+      , defaultFilter
+        (PartnerFltr::getPostcode, PartnerFltr::setPostcode, PostcodeFltr::new)
       , postcodesDbGrid
       , Postcode::getPostcode
       , Postcode::getPostcode
@@ -81,7 +85,11 @@ public class PartnerDbGridColumns extends DbGridColumns<Long, Partner> {
           LocationType c = m.getLocationType();
           return c == null ? "" : c.getName();
         })
-      , ManyToOneDbGridColumn.defaultFilter(PartnerFltr::setLocationTypeId)
+      , defaultFilter(
+          PartnerFltr::getLocationType
+        , PartnerFltr::setLocationType
+        , LocationTypeFltr::new
+        )
       , locationTypesDbGrid
       , LocationType::getName
       , LocationType::getDescr
@@ -129,8 +137,14 @@ public class PartnerDbGridColumns extends DbGridColumns<Long, Partner> {
     , Partner.class
     , ArrayUtils.addAll(
         columns(postcodes, locationTypes)
-      , new PartnerBasicDbGridColumn<>
-        (Partner_.PARENT, Partner::getParent, PartnerFltr::setParentId, parents)
+      , new PartnerBasicDbGridColumn<>(
+          Partner_.PARENT
+        , Partner::getParent
+        , PartnerFltr::getParent
+        , PartnerFltr::setParent
+        , PartnerFltr::new
+        , parents
+        )
       , new TextDbGridColumn<>(
           StringUtil.field(Partner_.PARTNER_DETAILS, PartnerDetails_.NOTE)
         , VaadinUtil.defaultRenderer(e -> {

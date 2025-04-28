@@ -2,8 +2,6 @@ package biz.softfor.jpa.crud.querygraph;
 
 import biz.softfor.spring.jpa.crud.TestConfigJpaCrud;
 import biz.softfor.i18nspring.ConfigI18nSpring;
-import biz.softfor.jpa.crud.querygraph.ColumnDescr;
-import biz.softfor.jpa.crud.querygraph.DiffContext;
 import biz.softfor.partner.jpa.PartnerDetailsWor;
 import biz.softfor.partner.jpa.PartnerWor;
 import biz.softfor.partner.jpa.PersonDetailsWor;

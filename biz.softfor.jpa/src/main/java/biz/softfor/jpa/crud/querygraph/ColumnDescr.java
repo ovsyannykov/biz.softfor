@@ -112,7 +112,7 @@ public class ColumnDescr {
         }
         Map<String, ColumnDescr> cds = entityInfs.get(src).cds;
         Map<String, ColumnDescr> rks = relationKeys.get(src);
-        if(genAnn != null) {
+        if(genAnn != null) {//WOR classes
           Map<String, ColumnDescr> worCds = null;
           Map<String, ColumnDescr> worRks = null;
           for(Map.Entry<String, ColumnDescr> rkEntry : rks.entrySet()) {
@@ -360,7 +360,11 @@ public class ColumnDescr {
       result = (Predicate)new Stmt(from, cb).value(filter.and());
       try {
         for(ColumnDescr cd : getCds(filter.getClass())) {
-          result = FilterUtil.where(cd.name, filter, result, from, cb);
+          if(!(cd instanceof ManyToOneKeyDescr
+          || cd instanceof OneToManyKeyDescr
+          || cd instanceof ManyToManyKeyDescr)) {
+            result = FilterUtil.where(cd.name, filter, result, from, cb);
+          }
         }
       }
       catch(IllegalAccessException | InvocationTargetException

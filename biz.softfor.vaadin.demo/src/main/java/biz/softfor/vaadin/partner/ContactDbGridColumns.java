@@ -1,6 +1,9 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.AppointmentFltr;
 import biz.softfor.partner.api.ContactFltr;
+import biz.softfor.partner.api.ContactTypeFltr;
+import biz.softfor.partner.api.PartnerFltr;
 import biz.softfor.partner.jpa.Appointment;
 import biz.softfor.partner.jpa.Appointment_;
 import biz.softfor.partner.jpa.Contact;
@@ -14,6 +17,7 @@ import biz.softfor.vaadin.VaadinUtil;
 import biz.softfor.vaadin.dbgrid.BoolDbGridColumn;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
+import static biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn.defaultFilter;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.List;
@@ -46,7 +50,11 @@ public class ContactDbGridColumns extends DbGridColumns<Long, Contact> {
           ContactType e = m.getContactType();
           return e == null ? "" : e.getName();
         })
-      , ManyToOneDbGridColumn.defaultFilter(ContactFltr::setTypeId)
+      , defaultFilter(
+          ContactFltr::getContactType
+        , ContactFltr::setContactType
+        , ContactTypeFltr::new
+        )
       , contactTypes
       , ContactType::getName
       , ContactType::getName
@@ -55,7 +63,9 @@ public class ContactDbGridColumns extends DbGridColumns<Long, Contact> {
     , new PartnerBasicDbGridColumn<>(
         Contact_.PARTNER
       , Contact::getPartner
-      , ContactFltr::setPartnerId
+      , ContactFltr::getPartner
+      , ContactFltr::setPartner
+      , PartnerFltr::new
       , partners
       )
     , new ManyToOneDbGridColumn<>(
@@ -64,7 +74,11 @@ public class ContactDbGridColumns extends DbGridColumns<Long, Contact> {
           Appointment e = m.getAppointment();
           return e == null ? "" : e.getName();
         })
-      , ManyToOneDbGridColumn.defaultFilter(ContactFltr::setAppointmentId)
+      , defaultFilter(
+          ContactFltr::getAppointment
+        , ContactFltr::setAppointment
+        , AppointmentFltr::new
+        )
       , appointments
       , Appointment::getName
       , Appointment::getDescr
