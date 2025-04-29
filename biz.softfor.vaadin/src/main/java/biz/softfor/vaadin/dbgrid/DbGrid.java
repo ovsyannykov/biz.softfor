@@ -1,6 +1,5 @@
 package biz.softfor.vaadin.dbgrid;
 
-import biz.softfor.jpa.crud.AbstractCrudSvc;
 import biz.softfor.jpa.crud.querygraph.ColumnDescr;
 import biz.softfor.jpa.crud.querygraph.EntityInf;
 import biz.softfor.spring.jpa.crud.CrudSvc;
@@ -30,8 +29,8 @@ public class DbGrid
 <K extends Number, E extends Identifiable<K>, WOR extends Identifiable<K>>
 extends VerticalLayout implements LocaleChangeObserver {
 
-  public final EntityInf<K, E, WOR> entityInf;
   public final CrudSvc<K, E, WOR, ?> service;
+  public final EntityInf<K, E, WOR> entityInf;
   public final DbGridColumns<K, E> columns;
   private final DbGridColumns<K, E> filters;
   public final ReadRequest readRequest;
@@ -53,10 +52,14 @@ extends VerticalLayout implements LocaleChangeObserver {
     return Text.Filtrate + "-" + clazz.getSimpleName() + VaadinUtil.GRID_ID_OBJ;
   }
 
-  public DbGrid
-  (Class<E> clazz, DbGridColumns<K, E> columns, DbGridColumns<K, E> filters) {
+  public DbGrid(
+    CrudSvc<K, E, WOR, ?> service
+  , DbGridColumns<K, E> columns
+  , DbGridColumns<K, E> filters
+  ) {
+    this.service = service;
+    Class<E> clazz = this.service.clazz();
     entityInf = ColumnDescr.getInf(clazz);
-    service = (CrudSvc<K, E, WOR, ?>)AbstractCrudSvc.service(clazz);
     this.columns = columns;
     this.filters = filters;
 

@@ -2,6 +2,7 @@ package biz.softfor.vaadin.user;
 
 import biz.softfor.user.jpa.UserGroup;
 import biz.softfor.user.jpa.UserGroupWor;
+import biz.softfor.user.spring.UserGroupSvc;
 import biz.softfor.vaadin.dbgrid.DbGrid;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -12,8 +13,8 @@ import org.springframework.context.annotation.Scope;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class UserGroupsDbGrid extends DbGrid<Integer, UserGroup, UserGroupWor> {
 
-  public UserGroupsDbGrid(UserGroupDbGridColumns columns) {
-    super(UserGroup.class, columns, DbGridColumns.EMPTY);
+  public UserGroupsDbGrid(UserGroupSvc service, UserGroupDbGridColumns columns) {
+    super(service, columns, DbGridColumns.EMPTY);
   }
 
 }

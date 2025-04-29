@@ -2,6 +2,7 @@ package biz.softfor.vaadin.partner;
 
 import biz.softfor.partner.jpa.Appointment;
 import biz.softfor.partner.jpa.AppointmentWor;
+import biz.softfor.partner.spring.AppointmentSvc;
 import biz.softfor.vaadin.dbgrid.DbGrid;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -13,8 +14,9 @@ import org.springframework.context.annotation.Scope;
 public class AppointmentsDbGrid
 extends DbGrid<Short, Appointment, AppointmentWor> {
 
-  public AppointmentsDbGrid(AppointmentDbGridColumns columns) {
-    super(Appointment.class, columns, DbGridColumns.EMPTY);
+  public AppointmentsDbGrid
+  (AppointmentSvc service, AppointmentDbGridColumns columns) {
+    super(service, columns, DbGridColumns.EMPTY);
   }
 
 
