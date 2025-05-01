@@ -15,10 +15,6 @@ public class ManyToOneWorDescr extends ColumnDescr implements RelationKeyDescr {
     (parent, field, manyToOneKeyName(field), Reflection.idClass(field.getType()));
   }
 
-  protected ManyToOneWorDescr(ManyToOneWorDescr cd) {
-    super(cd);
-  }
-
   @Override
   public int delete(
     Class<Identifiable<? extends Number>> entityClass

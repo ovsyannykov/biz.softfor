@@ -33,6 +33,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -46,9 +47,11 @@ import org.apache.commons.lang3.StringUtils;
 public class ColumnDescr {
 
   private final static Map<String, EntityInf> entityInfs = new HashMap<>();
-  private final static Map<String, Map<String, ColumnDescr>> relationKeys
+  private final static Map<String, Map<String, ColumnDescr>> filterCds
   = new HashMap<>();
   private final static Map<String, Map<String, ColumnDescr>> plainCds
+  = new HashMap<>();
+  private final static Map<String, Map<String, ColumnDescr>> relationKeys
   = new HashMap<>();
 
   private final static boolean DEBUG = false;
@@ -56,85 +59,93 @@ public class ColumnDescr {
   public static void init(EntityManager em) throws ReflectiveOperationException {
     Set<EntityType<?>> entities = em.getMetamodel().getEntities();
     for(EntityType<?> et : entities) {
-      Class<?> t = et.getJavaType();
-      if(!t.isAnnotationPresent(Generated.class)
-      || t.isAnnotationPresent(ManyToManyGeneratedLink.class)
-      || t.isAnnotationPresent(TestEntity.class)) {
+      Class<?> clazz = et.getJavaType();
+      boolean isM2MLink = clazz.isAnnotationPresent(ManyToManyGeneratedLink.class);
+      if(!clazz.isAnnotationPresent(Generated.class)
+      || isM2MLink
+      || clazz.isAnnotationPresent(TestEntity.class)) {
         Map<String, ColumnDescr> clazzCds = new HashMap<>();
-        Map<String, ColumnDescr> clazzRelationKeys = new HashMap<>();
+        Map<String, ColumnDescr> clazzFilterCds = new HashMap<>();
         Map<String, ColumnDescr> clazzPlainCds = new HashMap<>();
-        for(Field field : Reflection.declaredProperties(t)) {
+        Map<String, ColumnDescr> clazzRelationKeys = new HashMap<>();
+        Map<String, ColumnDescr> worCds = new HashMap<>();
+        Map<String, ColumnDescr> worRelationKeys = new HashMap<>();
+        for(Field field : Reflection.declaredProperties(clazz)) {
           if(!Reflection.HIBERNATE_PROXY.equals(field.getName())) {
             ColumnDescr cd;
             if(field.isAnnotationPresent(OneToOne.class)) {
-              cd = new OneToOneColumnDescr(t, field);
+              cd = new OneToOneColumnDescr(clazz, field);
               clazzRelationKeys.put(cd.name, cd);
+              worRelationKeys.put(cd.name, cd);
             } else if(field.isAnnotationPresent(ManyToOne.class)) {
-              cd = new ManyToOneColumnDescr(t, field);
-              ManyToOneKeyDescr kd = new ManyToOneKeyDescr(t, field);
+              cd = new ManyToOneColumnDescr(clazz, field);
+              ManyToOneKeyDescr kd = new ManyToOneKeyDescr(clazz, field);
               clazzCds.put(kd.name, kd);
               clazzRelationKeys.put(kd.name, kd);
+              ManyToOneWorDescr worKd = new ManyToOneWorDescr(clazz, field);
+              worCds.put(worKd.name, worKd);
+              worRelationKeys.put(worKd.name, worKd);
             } else if(field.isAnnotationPresent(OneToMany.class)) {
-              cd = new OneToManyColumnDescr(t, field);
-              OneToManyKeyDescr kd = new OneToManyKeyDescr(t, field);
+              cd = new OneToManyColumnDescr(clazz, field);
+              OneToManyKeyDescr kd = new OneToManyKeyDescr(clazz, field);
               clazzCds.put(kd.name, kd);
               clazzRelationKeys.put(kd.name, kd);
+              worCds.put(kd.name, kd);
+              worRelationKeys.put(kd.name, kd);
             } else if(field.isAnnotationPresent(ManyToMany.class)) {
-              cd = new ManyToManyColumnDescr(t, field);
-              ManyToManyKeyDescr kd = new ManyToManyKeyDescr(t, field);
+              cd = new ManyToManyColumnDescr(clazz, field);
+              ManyToManyKeyDescr kd = new ManyToManyKeyDescr(clazz, field);
               clazzCds.put(kd.name, kd);
               clazzRelationKeys.put(kd.name, kd);
+              worCds.put(kd.name, kd);
+              worRelationKeys.put(kd.name, kd);
             } else {
-              cd = new ColumnDescr(t, field);
+              cd = new ColumnDescr(clazz, field);
               clazzPlainCds.put(cd.name, cd);
             }
             clazzCds.put(cd.name, cd);
+            clazzFilterCds.put(cd.name, cd);
+            worCds.put(cd.name, cd);
           }
         }
-        String tName = t.getName();
-        entityInfs.put(tName, new EntityInf(t, clazzCds));
-        relationKeys.put(tName, clazzRelationKeys);
-        plainCds.put(tName, clazzPlainCds);
+        String className = clazz.getName();
+        entityInfs.put(className, new EntityInf(clazz, clazzCds));
+        plainCds.put(className, clazzPlainCds);
+        relationKeys.put(className, clazzRelationKeys);
+        if(!isM2MLink) {
+          String worName = Reflection.worClassName(className);
+          entityInfs.put(worName, new EntityInf(clazz, worCds));
+          plainCds.put(worName, clazzPlainCds);
+          relationKeys.put(worName, worRelationKeys);
+          filterCds.put(Reflection.filterClassName(clazz), clazzFilterCds);
+        }
       }
     }
-    for(EntityType<?> et : entities) {
-      Class<?> t = et.getJavaType();
-      if(!t.isAnnotationPresent(ManyToManyGeneratedLink.class)
-      && !t.isAnnotationPresent(TestEntity.class)) {
-        String name, src;
-        Generated genAnn = t.getAnnotation(Generated.class);
-        if(genAnn == null) {//is t Original or Without Relations entity
-          src = t.getName();
-          name = Reflection.filterClassName(t);
-        } else {
-          src = genAnn.value();
-          name = t.getName();
-        }
-        Map<String, ColumnDescr> cds = entityInfs.get(src).cds;
-        Map<String, ColumnDescr> rks = relationKeys.get(src);
-        if(genAnn != null) {//WOR classes
-          Map<String, ColumnDescr> worCds = null;
-          Map<String, ColumnDescr> worRks = null;
-          for(Map.Entry<String, ColumnDescr> rkEntry : rks.entrySet()) {
-            ColumnDescr cd = rkEntry.getValue();
-            if(cd instanceof ManyToOneKeyDescr kd) {
-              if(worRks == null) {
-                worCds = new HashMap<>(cds);
-                worRks = new HashMap<>(rks);
-              }
-              ManyToOneWorDescr worRk = new ManyToOneWorDescr(kd);
-              worCds.put(worRk.name, worRk);
-              worRks.put(worRk.name, worRk);
-            }
-          }
-          if(worRks != null) {
-            cds = worCds;
-            rks = worRks;
-          }
-        }
-        entityInfs.put(name, new EntityInf(Class.forName(name), cds));
-        relationKeys.put(name, rks);
-        plainCds.put(name, plainCds.get(src));
+    if(DEBUG) {
+      String[] keys;
+      System.out.println("\ncds (" + entityInfs.keySet().size() + ")\n" + "=".repeat(32));
+      keys = entityInfs.keySet().toArray(String[]::new);
+      Arrays.sort(keys, (s1, s2) -> s1.substring(s1.lastIndexOf('.')).compareTo(s2.substring(s2.lastIndexOf('.'))));
+      for(String c : keys) {
+        System.out.println("  " + c + ": " + String.join(", ", entityInfs.get(c).cds.keySet()));
+      }
+      System.out.println("\nplainCds (" + plainCds.keySet().size() + ")\n" + "=".repeat(32));
+      keys = plainCds.keySet().toArray(String[]::new);
+      Arrays.sort(keys, (s1, s2) -> s1.substring(s1.lastIndexOf('.')).compareTo(s2.substring(s2.lastIndexOf('.'))));
+      for(String c : keys) {
+        System.out.println("  " + c + ": " + String.join(", ", plainCds.get(c).keySet()));
+      }
+      System.out.println("\nrelationKeys (" + relationKeys.keySet().size() + ")\n" + "=".repeat(32));
+      keys = relationKeys.keySet().toArray(String[]::new);
+      Arrays.sort(keys, (s1, s2) -> s1.substring(s1.lastIndexOf('.')).compareTo(s2.substring(s2.lastIndexOf('.'))));
+      for(String c : keys) {
+        System.out.println("  " + c + ": " + String.join(", ", relationKeys.get(c).keySet()));
+      }
+      System.out.println("\nfilterCds (" + filterCds.keySet().size() + ")\n" + "=".repeat(32));
+      keys = filterCds.keySet().toArray(String[]::new);
+      Arrays.sort(keys, (s1, s2) -> s1.substring(s1.lastIndexOf('.')).compareTo(s2.substring(s2.lastIndexOf('.'))));
+      for(String c : keys) {
+        System.out.println("  " + c + ": " + String.join(", ", filterCds.get(c).keySet()));
       }
     }
   }
@@ -201,8 +212,7 @@ public class ColumnDescr {
   ) throws IllegalAccessException, IllegalArgumentException
   , InstantiationException, InvocationTargetException, NoSuchMethodException {
     DiffContext result = new DiffContext();
-    Map<String, ColumnDescr> cds = ColumnDescr.get(parentClass);
-    for(ColumnDescr cd : cds.values()) {
+    for(ColumnDescr cd : get(parentClass).values()) {
       if(!Identifiable.ID.equals(cd.name) && cd.isPlainOrRelationKey()) {
         Object v = itemWor == null
         ? null : PropertyUtils.getProperty(itemWor, cd.name);
@@ -245,7 +255,7 @@ public class ColumnDescr {
   public static void initOneToOnes(Object data, Class<?> dataClass)
   throws IllegalAccessException, InstantiationException
   , InvocationTargetException, NoSuchMethodException {
-    Collection<ColumnDescr> cds = ColumnDescr.getRelationKeys(dataClass);
+    Collection<ColumnDescr> cds = getRelationKeys(dataClass);
     if(cds != null) {
       for(ColumnDescr cd : cds) {
         if(cd.isOneToOne()) {
@@ -281,7 +291,7 @@ public class ColumnDescr {
       }
       List<Class<?>> validationGroups = new ArrayList<>();
       try {
-        for(ColumnDescr cd : ColumnDescr.getCds(classWor)) {
+        for(ColumnDescr cd : getCds(classWor)) {
           if(cd.isWor()) {
             if(fields.contains(cd.name) && cd.validationGroup != null) {
               validationGroups.add(cd.validationGroup);
@@ -315,7 +325,7 @@ public class ColumnDescr {
     }
     List<Class<?>> validationGroups = new ArrayList<>();
     try {
-      for(ColumnDescr cd : ColumnDescr.getCds(classWor)) {
+      for(ColumnDescr cd : getCds(classWor)) {
         if(!Identifiable.ID.equals(cd.name) && cd.isWor()) {
           Object dataNext = PropertyUtils.getProperty(data, cd.name);
           if(dataNext != null
@@ -359,12 +369,8 @@ public class ColumnDescr {
     if(filter != null) {
       result = (Predicate)new Stmt(from, cb).value(filter.and());
       try {
-        for(ColumnDescr cd : getCds(filter.getClass())) {
-          if(!(cd instanceof ManyToOneKeyDescr
-          || cd instanceof OneToManyKeyDescr
-          || cd instanceof ManyToManyKeyDescr)) {
-            result = FilterUtil.where(cd.name, filter, result, from, cb);
-          }
+        for(ColumnDescr cd : filterCds.get(filter.getClass().getName()).values()) {
+          result = FilterUtil.where(cd.name, filter, result, from, cb);
         }
       }
       catch(IllegalAccessException | InvocationTargetException

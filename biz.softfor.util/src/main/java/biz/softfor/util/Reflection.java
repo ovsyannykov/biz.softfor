@@ -137,10 +137,9 @@ public class Reflection {
   }
 
   public static String filterClassName(Class<?> entityClass) {
-    return StringUtil.field(
-      apiPackageName(entityClass.getPackageName())
-    , filterClassName(entityClass.getSimpleName())
-    );
+    String packageName = apiPackageName(entityClass.getPackageName());
+    String className = filterClassName(entityClass.getSimpleName());
+    return StringUtil.field(packageName, className);
   }
 
   public static Class<?> filterClass(Class<?> entityClass)
