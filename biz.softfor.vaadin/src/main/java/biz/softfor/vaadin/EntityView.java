@@ -212,7 +212,7 @@ extends BasicView {
     DeleteRequest request
     = Reflection.newInstance(dbGrid.entityInf.deleteRequestClass);
     Set selected = dbGrid.grid.getSelectedItems();
-    request.filter.setId(Identifiable.ids((Set<Identifiable<K>>)selected));
+    request.filter.setId(Identifiable.idList((Set<Identifiable<K>>)selected));
     securityMgr.methodCheck(
       dbGrid.service.serviceClass()
     , AbstractCrudSvc.CREATE_METHOD

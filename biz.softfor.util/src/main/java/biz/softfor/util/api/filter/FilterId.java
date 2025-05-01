@@ -1,29 +1,32 @@
 package biz.softfor.util.api.filter;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import lombok.ToString;
 
 @ToString
 public class FilterId<K extends Number> implements Serializable {
 
-  private Set<K> id;
+  private List<K> id;
 
   private Object and;
   public final static String AND = "and";
 
   private final static long serialVersionUID = 0L;
 
-  public Set<K> getId() {
+  public List<K> getId() {
     return id;
   }
 
-  public void setId(Set<K> id) {
+  public void setId(List<K> id) {
     this.id = id;
   }
 
   public void assignId(K... id) {
-    this.id = Set.of(id);
+    this.id = new ArrayList<>();
+    Collections.addAll(this.id, id);
   }
 
   public Object and() {

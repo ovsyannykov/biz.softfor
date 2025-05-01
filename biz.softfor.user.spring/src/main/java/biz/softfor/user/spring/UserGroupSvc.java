@@ -40,7 +40,7 @@ extends CrudSvc<Integer, UserGroup, UserGroupWor, UserGroupFltr> {
     req.filter = (UserGroupFltr)request.filter;
     req.fields = List.of(UserGroup_.ID);
     CommonResponse<UserGroup> res = read(req);
-    Set<Integer> ids = Identifiable.ids(res.getData());
+    List<Integer> ids = Identifiable.idList(res.getData());
     request.filter = new UserGroupFltr();
     request.filter.setId(ids);
     CommonResponse result;
@@ -67,7 +67,7 @@ extends CrudSvc<Integer, UserGroup, UserGroupWor, UserGroupFltr> {
       req.filter = (UserGroupFltr)request.filter;
       req.fields = List.of(UserGroup_.ID);
       CommonResponse<UserGroup> res = read(req);
-      Set<Integer> groupIds = Identifiable.ids(res.getData());
+      List<Integer> groupIds = Identifiable.idList(res.getData());
       if(CollectionUtils.isEmpty(groupIds)) {
         result = new CommonResponse();
       } else {

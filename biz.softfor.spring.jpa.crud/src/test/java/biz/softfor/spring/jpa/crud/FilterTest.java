@@ -30,6 +30,7 @@ import java.beans.IntrospectionException;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +60,7 @@ public class FilterTest extends PartnersTestBasic {
   public void id() throws Exception {
     Set<User> expected = data.users.data(1, 2);
     UserRequest.Read request = new UserRequest.Read();
-    request.filter.setId(Identifiable.ids(expected));
+    request.filter.setId(Identifiable.idList(expected));
     read(request, expected, 1);
   }
 
@@ -105,7 +106,7 @@ public class FilterTest extends PartnersTestBasic {
     UserRequest.Read request = new UserRequest.Read();
     UserGroupFltr userGroupFltr = new UserGroupFltr();
     RoleFltr role = new RoleFltr();
-    role.setId(data.roles.ids(dataIdx));
+    role.setId(data.roles.idList(dataIdx));
     userGroupFltr.setRoles(role);
     request.filter.setGroups(userGroupFltr);
     request.fields = list(
@@ -126,7 +127,7 @@ public class FilterTest extends PartnersTestBasic {
   @Test
   public void nestedField_m2o_o2m(CapturedOutput output) throws Exception {
     Set<Integer> dataIdxs = set(0, 1);
-    Set<Long> dataIds = data.users.ids(dataIdxs);
+    List<Long> dataIds = data.users.idList(dataIdxs);
     ContactRequest.Read request = new ContactRequest.Read();
     UserFltr userFltr = new UserFltr();
     userFltr.setId(dataIds);

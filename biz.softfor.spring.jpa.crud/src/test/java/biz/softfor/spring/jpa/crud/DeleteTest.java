@@ -116,7 +116,7 @@ public class DeleteTest extends PartnersTestBasic {
 
   @Test
   public void deleteManyToMany() {
-    Set<Long> ids = data.users.ids(1);
+    List<Long> ids = data.users.idList(1);
     log.info(() -> "=".repeat(32) + "\n" + LABEL
     + "\nids=" + ids.toString());
     UserRequest.Delete request = new UserRequest.Delete();

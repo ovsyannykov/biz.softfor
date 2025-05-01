@@ -85,7 +85,7 @@ public class SecurityMgrUpdateTest {
     int GROUP_ID = 1;
     RoleWor data = new RoleWor();
     RoleRequest.Update roleReq = new RoleRequest.Update(data);
-    roleReq.filter.setId(set(ROLE_ID));
+    roleReq.filter.assignId(ROLE_ID);
     TeztEntityRequest.Read req = new TeztEntityRequest.Read();
     req.filter.assignId(1);
     req.fields = list(TeztEntityDto.EVERYBODY);
@@ -128,7 +128,7 @@ public class SecurityMgrUpdateTest {
     (User.class, User.class.getDeclaredField(User_.EMAIL)).id();
     RoleWor data = new RoleWor();
     RoleRequest.Update roleReq = new RoleRequest.Update(data);
-    roleReq.filter.setId(set(ACTION_ID));
+    roleReq.filter.assignId(ACTION_ID);
     UserRequest.Read req = new UserRequest.Read();
     req.filter.assignId(SecurityTest.ADMIN_ID);
     req.fields = list(User_.EMAIL);
@@ -165,7 +165,7 @@ public class SecurityMgrUpdateTest {
     long ROLE_ID = new FieldRoleCalc(TeztEntity.class, everybodyField).id();
     RoleWor data = new RoleWor();
     RoleRequest.Update roleReq = new RoleRequest.Update(data);
-    roleReq.filter.setId(set(ROLE_ID));
+    roleReq.filter.assignId(ROLE_ID);
     TeztEntityRequest.Read req = new TeztEntityRequest.Read();
     req.filter.assignId(1);
     req.fields = list(TeztEntityDto.EVERYBODY);
@@ -214,7 +214,7 @@ public class SecurityMgrUpdateTest {
     ).id();
     RoleWor data = new RoleWor();
     RoleRequest.Update roleReq = new RoleRequest.Update(data);
-    roleReq.filter.setId(set(ACTION_ID));
+    roleReq.filter.assignId(ACTION_ID);
     AbstractRequest req = new AbstractRequest();
     {
       CommonResponse res = testSvc.call(CommonResponse.class
@@ -245,7 +245,7 @@ public class SecurityMgrUpdateTest {
     long ACTION_ID = new ClassRoleCalc(HttpRequestsMgrUrlByClassTestCtlr.class).id();
     RoleWor data = new RoleWor();
     RoleRequest.Update roleReq = new RoleRequest.Update(data);
-    roleReq.filter.setId(set(ACTION_ID));
+    roleReq.filter.assignId(ACTION_ID);
     String HTTP_METHOD = RequestMethod.GET.name();
     String ENDPOINT = TeztEntityRequest.TEST_SECURITY
     + HttpRequestsMgrUrlByClassTestCtlr.URL_BY_CLASS;

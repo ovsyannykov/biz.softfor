@@ -33,10 +33,10 @@ public class UpdateParams {
   -> UPDATE_PROPERTY.apply(propertyName, e, label + UpdateParams.UPDATED);
   public final static TriConsumer<FilterId, Collection<Integer>, TestEntities>
   BY_ID = (filter, idxs, data)
-  -> filter.setId(data.ids(idxs));
+  -> filter.setId(data.idList(idxs));
   public final static TriConsumer<FilterId, Collection<Integer>, TestEntities>
   BY_AND = (filter, idxs, data)
-  -> filter.and(new Expr(Expr.IN, Identifiable.ID, data.ids(idxs)));
+  -> filter.and(new Expr(Expr.IN, Identifiable.ID, data.idList(idxs)));
 
   public final String description;
   public final Collection<Integer> idxs;

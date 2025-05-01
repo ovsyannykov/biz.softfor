@@ -28,7 +28,7 @@ extends DbGridColumn<M, Set<K>, ManyToOneGridColumnComponent<K, E>, Set<E>, MF> 
           vf = supplier.get();
           setter.accept(requestFilter, vf);
         }
-        vf.setId(Identifiable.ids(v));
+        vf.setId(Identifiable.idList(v));
       }
     };
   }

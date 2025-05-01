@@ -6,7 +6,6 @@ import biz.softfor.user.jpa.UserRequest;
 import biz.softfor.user.spring.UserSvc;
 import biz.softfor.util.api.CommonResponse;
 import java.beans.IntrospectionException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public class UserWs {
   public UserReadResponse read(@RequestPayload UserReadRequest request)
   throws ReflectiveOperationException, IntrospectionException {
     UserRequest.Read svcRequest = new UserRequest.Read();
-    svcRequest.filter.setId(new HashSet<>(request.getFilter().getId()));
+    svcRequest.filter.setId(request.getFilter().getId());
     svcRequest.fields = request.getFields();
     CommonResponse<biz.softfor.user.jpa.User> svcResponse = service.read(svcRequest);
     biz.softfor.user.jpa.User svcUser = svcResponse.getData(0);
