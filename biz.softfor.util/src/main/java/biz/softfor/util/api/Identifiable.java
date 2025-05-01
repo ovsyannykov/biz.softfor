@@ -33,7 +33,7 @@ public interface Identifiable<K extends Number> {
     return v == null ? null : v.getId();
   }
 
-  public static <K extends Number, E extends Identifiable<K>> Set<K> ids(Iterable<E> items) {
+  public static <K extends Number, E extends Identifiable<K>> Set<K> idSet(Iterable<E> items) {
     Set<K> result = null;
     if(items != null) {
       result = new HashSet<>();
@@ -47,7 +47,7 @@ public interface Identifiable<K extends Number> {
     return result;
   }
 
-  public static <K extends Number, E extends Identifiable<K>> Set<K> ids(E... items) {
+  public static <K extends Number, E extends Identifiable<K>> Set<K> idSet(E... items) {
     Set<K> result = null;
     if(items != null) {
       result = new HashSet<>();
@@ -61,7 +61,7 @@ public interface Identifiable<K extends Number> {
     return result;
   }
 
-  public static <K extends Number, E extends Identifiable<K>> List<K> idList(Iterable<E> items) {
+  public static <K extends Number, E extends Identifiable<K>> List<K> ids(Iterable<E> items) {
     List<K> result = null;
     if(items != null) {
       result = new ArrayList<>();
@@ -75,7 +75,7 @@ public interface Identifiable<K extends Number> {
     return result;
   }
 
-  public static <K extends Number, E extends Identifiable<K>> List<K> idList(E... items) {
+  public static <K extends Number, E extends Identifiable<K>> List<K> ids(E... items) {
     List<K> result = null;
     if(items != null) {
       result = new ArrayList<>();

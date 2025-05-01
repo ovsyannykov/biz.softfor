@@ -60,7 +60,7 @@ public class FilterTest extends PartnersTestBasic {
   public void id() throws Exception {
     Set<User> expected = data.users.data(1, 2);
     UserRequest.Read request = new UserRequest.Read();
-    request.filter.setId(Identifiable.idList(expected));
+    request.filter.setId(Identifiable.ids(expected));
     read(request, expected, 1);
   }
 

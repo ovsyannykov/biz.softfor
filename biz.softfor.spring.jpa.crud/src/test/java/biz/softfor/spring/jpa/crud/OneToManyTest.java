@@ -374,8 +374,8 @@ public class OneToManyTest extends PartnersTestBasic {
     }
     PartnerWor result = (PartnerWor)params.updater.apply(new PartnerWor(), label);
     if(params.joinIdxs != null) {
-      result.setUserIds(Identifiable.idList(reassignableUsers));
-      result.setContactIds(Identifiable.idList(reassignableContacts));
+      result.setUserIds(Identifiable.ids(reassignableUsers));
+      result.setContactIds(Identifiable.ids(reassignableContacts));
     }
     return result;
   }

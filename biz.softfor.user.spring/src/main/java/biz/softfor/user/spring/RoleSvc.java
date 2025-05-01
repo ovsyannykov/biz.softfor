@@ -56,7 +56,7 @@ extends CrudSvc<Long, Role, RoleWor, RoleFltr> {
     req.filter = (RoleFltr)request.filter;
     req.fields = List.of(Role_.ID);
     CommonResponse<Role> res = read(req);
-    List<Long> ids = Identifiable.idList(res.getData());
+    List<Long> ids = Identifiable.ids(res.getData());
     request.filter = new RoleFltr();
     request.filter.setId(ids);
     CommonResponse result = super.update(request);

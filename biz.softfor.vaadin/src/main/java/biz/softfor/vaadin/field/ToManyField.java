@@ -73,7 +73,7 @@ extends GridField<K, E, M, V> {
           V current = getValue();
           Consumer<? extends FilterId> filter = CollectionUtils.isEmpty(current)
           ? null : f -> f.andAnd
-          (new Expr(Expr.NOT_IN, Identifiable.ID, Identifiable.ids(current)));
+          (new Expr(Expr.NOT_IN, Identifiable.ID, Identifiable.idSet(current)));
           dbGrid.filter(filter);
           Dialog dialog = new Dialog(dbGrid);
 

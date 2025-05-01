@@ -316,7 +316,7 @@ public class ManyToManyTest extends PartnersTestBasic {
       }
     }
     request.data = (UserWor)params.updater.apply(new UserWor(), LABEL);
-    request.data.setGroupIds(Identifiable.ids(reassignableRoles));
+    request.data.setGroupIds(Identifiable.idSet(reassignableRoles));
     request.fields = params.fields;
     params.filter.accept(request.filter, params.idxs, data.users);
     SqlCountValidator validator = params.validatorBldr.entityManager(em).build();

@@ -253,7 +253,7 @@ public class WithoutRelationsGen extends CodeGen {
           , ONE_TO_MANY_FIELD_EXCLUDED_ANNOTATIONS
           );
           fieldBldr.addAnnotation(Transient.class);
-          ctor1.addStatement("$N = $T.idList($N.$N())"
+          ctor1.addStatement("$N = $T.ids($N.$N())"
           , fieldName
           , ClassName.get(Identifiable.class)
           , CodeGenUtil.PARAM_NAME
@@ -273,7 +273,7 @@ public class WithoutRelationsGen extends CodeGen {
           , null
           );
           fieldBldr.addAnnotation(Transient.class);
-          ctor1.addStatement("$N = $T.ids($N.$N())"
+          ctor1.addStatement("$N = $T.idSet($N.$N())"
           , fieldName
           , ClassName.get(Identifiable.class)
           , CodeGenUtil.PARAM_NAME

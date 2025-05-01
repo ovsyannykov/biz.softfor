@@ -4,6 +4,8 @@ import biz.softfor.util.Labeled;
 import biz.softfor.util.api.filter.FilterId;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.data.renderer.Renderer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -14,11 +16,11 @@ extends BasicComboBoxDbGridColumn<E, V, V, F> {
 
   public static <V extends Labeled, F extends FilterId>
   BiConsumer<F, MultiSelectComboBox<V>> defaultFilter
-  (BiConsumer<F, Set<V>> setter) {
+  (BiConsumer<F, List<V>> setter) {
     return (requestFilter, component) -> {
       Set<V> v = component.getValue();
       if(CollectionUtils.isNotEmpty(v)) {
-        setter.accept(requestFilter, v);
+        setter.accept(requestFilter, new ArrayList<>(v));
       }
     };
   }
@@ -33,7 +35,7 @@ extends BasicComboBoxDbGridColumn<E, V, V, F> {
   }
 
   public ComboBoxDbGridColumn
-  (String dbName, V[] items, Function<E, V> getter, BiConsumer<F, Set<V>> setter) {
+  (String dbName, V[] items, Function<E, V> getter, BiConsumer<F, List<V>> setter) {
     this(dbName, items, defaultRenderer(getter), defaultFilter(setter));
   }
 

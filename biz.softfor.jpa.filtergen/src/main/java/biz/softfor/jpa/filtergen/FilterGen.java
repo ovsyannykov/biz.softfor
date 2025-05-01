@@ -23,7 +23,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 import javax.lang.model.element.Modifier;
 import org.hibernate.type.Type;
 import org.hibernate.validator.constraints.URL;
@@ -88,7 +88,7 @@ public class FilterGen extends CodeGen {
             } else if(Number.class.isAssignableFrom(dclClass)
             || Enum.class.isAssignableFrom(dclClass)) {
               fieldType
-              = addAssignMethod(classBldr, fieldType, fieldName, Set.class);
+              = addAssignMethod(classBldr, fieldType, fieldName, List.class);
             }
           }
           FieldSpec.Builder fieldBldr = CodeGenUtil.fieldBuilder(

@@ -212,7 +212,7 @@ public class TestEntities<K extends Number, E extends Identifiable<K>> {
   }
 
   public void read() {
-    data = selectQuery.apply(Identifiable.ids(data));
+    data = selectQuery.apply(Identifiable.idSet(data));
   }
 
   public void detach() {
@@ -226,7 +226,7 @@ public class TestEntities<K extends Number, E extends Identifiable<K>> {
 
   public void remove() {
     new TransactionTemplate(tm).executeWithoutResult(status -> {
-      List<E> toRemove = new SelectQuery<>(em, entityClass).apply(Identifiable.ids(data));
+      List<E> toRemove = new SelectQuery<>(em, entityClass).apply(Identifiable.idSet(data));
       preRemove(toRemove);
       for(E item : toRemove) {
         em.remove(item);
