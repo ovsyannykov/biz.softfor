@@ -30,7 +30,7 @@ public class ContactType extends SetStoredEntity<Short> implements Serializable 
 
   @Column
   @NotBlank
-  @Size(min = 2, max = 63)
+  @Size(min = 2, max = 255)
   private String descr;
 
   private final static long serialVersionUID = 0L;

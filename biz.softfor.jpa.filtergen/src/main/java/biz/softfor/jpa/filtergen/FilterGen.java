@@ -2,6 +2,7 @@ package biz.softfor.jpa.filtergen;
 
 import biz.softfor.codegen.CodeGen;
 import biz.softfor.codegen.CodeGenUtil;
+import biz.softfor.jpa.Identifier;
 import biz.softfor.util.Range;
 import biz.softfor.util.Reflection;
 import biz.softfor.util.api.Identifiable;
@@ -32,8 +33,12 @@ public class FilterGen extends CodeGen {
 
   private final static String[] FILTER_EXCLUDED_PACKAGES
   = { Entity.class.getPackageName(), CodeGenUtil.VALIDATION_ANNOTATIONS_PKG };
-  private final static String[] FILTER_FIELD_EXCLUDED_ANNOTATIONS
-  = { ActionAccess.class.getName(), Type.class.getName(), URL.class.getName() };
+  private final static String[] FILTER_FIELD_EXCLUDED_ANNOTATIONS = {
+    ActionAccess.class.getName()
+  , Identifier.class.getName()
+  , Type.class.getName()
+  , URL.class.getName()
+  };
   private final static String RESET_METHOD = "reset";
 
   public FilterGen() {
@@ -81,14 +86,15 @@ public class FilterGen extends CodeGen {
             fieldType = CodeGenUtil.filterTypeName(joinClass);
           } else {
             fieldType = TypeName.get(dclClass);
-            if(LocalDate.class.isAssignableFrom(dclClass)
+            if(Enum.class.isAssignableFrom(dclClass)
+            || CodeGenUtil.isAnnotationPresent(dclField, Identifier.class)) {
+              fieldType
+              = addAssignMethod(classBldr, fieldType, fieldName, List.class);
+            } else if(Number.class.isAssignableFrom(dclClass)
+            || LocalDate.class.isAssignableFrom(dclClass)
             || LocalDateTime.class.isAssignableFrom(dclClass)) {
               fieldType
               = ParameterizedTypeName.get(ClassName.get(Range.class), fieldType);
-            } else if(Number.class.isAssignableFrom(dclClass)
-            || Enum.class.isAssignableFrom(dclClass)) {
-              fieldType
-              = addAssignMethod(classBldr, fieldType, fieldName, List.class);
             }
           }
           FieldSpec.Builder fieldBldr = CodeGenUtil.fieldBuilder(

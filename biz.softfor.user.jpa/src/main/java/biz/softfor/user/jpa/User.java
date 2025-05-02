@@ -1,5 +1,6 @@
 package biz.softfor.user.jpa;
 
+import biz.softfor.jpa.Identifier;
 import biz.softfor.jpa.SetStoredEntity;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -66,6 +67,7 @@ public class User extends SetStoredEntity<Long> implements Serializable {
   private String password;
 
   @Column
+  @Identifier
   private Long personId;
 
   @ManyToMany(mappedBy = UserGroup.USERS, fetch = FetchType.LAZY)

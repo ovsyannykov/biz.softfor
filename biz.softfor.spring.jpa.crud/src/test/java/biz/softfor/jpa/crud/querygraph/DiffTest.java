@@ -43,7 +43,7 @@ public class DiffTest {
     result.setMiddlename(PersonDetailsWor.MIDDLENAME);
     result.setPassportDate(LocalDate.now());
     result.setPassportIssued(PersonDetailsWor.PASSPORT_ISSUED);
-    result.setPassportNumber(9999);
+    result.setPassportNumber("9999");
     result.setPassportSeries("PS");
     return result;
   }

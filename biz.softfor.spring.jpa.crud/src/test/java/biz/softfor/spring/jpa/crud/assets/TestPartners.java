@@ -175,7 +175,7 @@ public class TestPartners extends TestData {
     String label = l + i;
     PersonDetailsWor result = new PersonDetailsWor();
     result.setPassportSeries("S" + StringUtils.right(String.valueOf(i), 6));
-    result.setPassportNumber(((Number)i).intValue());
+    result.setPassportNumber(l);
     result.setPassportDate(LocalDate.of(2022, 1, 24));
     result.setMiddlename("Middlename" + label);
     result.setPassportIssued("PassportIssued" + label);
@@ -188,7 +188,7 @@ public class TestPartners extends TestData {
     String label = l + i;
     PersonDetails result = new PersonDetails();
     result.setPassportSeries("S" + StringUtils.right(String.valueOf(i), 6));
-    result.setPassportNumber(((Number)i).intValue());
+    result.setPassportNumber(l);
     result.setPassportDate(LocalDate.of(2022, 1, 24));
     result.setMiddlename("Middlename" + label);
     result.setPassportIssued("PassportIssued" + label);

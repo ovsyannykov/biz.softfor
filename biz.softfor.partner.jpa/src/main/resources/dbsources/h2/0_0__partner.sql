@@ -54,8 +54,8 @@ alter table partnerDetails add constraint fk_partnerDetails_partners foreign key
 
 create table personDetails (
   id bigint not null
-, passportSeries varchar(7) not null
-, passportNumber int not null
+, passportSeries varchar(6) not null
+, passportNumber varchar(16) not null
 , passportDate date not null
 , middlename varchar(63) not null
 , passportIssued varchar(255) not null

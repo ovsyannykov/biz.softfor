@@ -141,7 +141,7 @@ public class ValidationTest {
     pd.setMiddlename("Bred");
     pd.setPassportDate(LocalDate.of(2024, 2, 24));
     pd.setPassportIssued("DEP");
-    pd.setPassportNumber(1);
+    pd.setPassportNumber("1");
     pd.setPassportSeries("NN");
     request.data.setPersonDetails(pd);
     PartnerResponse res = testSvc.call(PartnerResponse.class

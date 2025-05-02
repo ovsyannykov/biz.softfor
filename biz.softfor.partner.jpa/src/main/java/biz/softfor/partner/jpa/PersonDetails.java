@@ -30,12 +30,13 @@ implements Serializable {
 
   @Column
   @NotBlank
-  @Size(min = 2, max = 11)
+  @Size(min = 2, max = 6)
   private String passportSeries;
 
   @Column
-  @NotNull
-  private Integer passportNumber;
+  @NotBlank
+  @Size(min = 2, max = 10)
+  private String passportNumber;
 
   @Column
   @Temporal(TemporalType.DATE)
