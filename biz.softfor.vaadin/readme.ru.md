@@ -82,18 +82,21 @@ public class AppointmentForm
 extends EntityForm<Short, Appointment, AppointmentWor> {
 
   public AppointmentForm(SecurityMgr securityMgr, Validator validator) {
-    super(
-      Appointment.TITLE
-    , new FormColumns(
-        securityMgr
-      , Appointment.class
-      , AppointmentWor.class
+    super(Appointment.TITLE
+    , new EntityFormColumns(
+        Appointment.class
       , new LinkedHashMap<String, Component>() {{
           TextField name = new TextField(Appointment_.NAME);
           put(Appointment_.NAME, name);
           TextField descr = new TextField(Appointment_.DESCR);
+          descr.addBlurListener(e -> {
+            if(StringUtils.isBlank(descr.getValue())) {
+              descr.setValue(name.getValue());
+            }
+          });
           put(Appointment_.DESCR, descr);
         }}
+      , securityMgr
       )
     , validator
     );
@@ -140,7 +143,7 @@ extends DbGrid<Short, Appointment, AppointmentWor> {
 
   public AppointmentsDbGrid
   (AppointmentSvc service, AppointmentDbGridColumns columns) {
-    super(service, AppointmentRequest.Read.class, columns, DbGridColumns.EMPTY);
+    super(service, columns, DbGridColumns.EMPTY);
   }
 
 }
@@ -160,14 +163,7 @@ extends EntityView<Short, Appointment, AppointmentWor> {
 
   public AppointmentsView
   (AppointmentsDbGrid dbGrid, AppointmentForm form, SecurityMgr securityMgr) {
-    super(
-      dbGrid
-    , AppointmentRequest.Update.class
-    , AppointmentRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }
@@ -261,6 +257,12 @@ biz.softfor.locales=en,uk
 отфильтрованный в соответствии с правами доступа список колонок для DbGrid.
 Пример использования:
 [PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java).
+
+Также этот класс используется для полей фильтра, не являющихся отображаемыми
+колонками. Например, здесь с помощью фильтра по пользователям мы можем отобрать
+все роли во всех группах для заданного пользователя:
+[RoleDbGridFilters](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridFilters.java#L27)
+<p align="center"><img src="doc/images/UserDbGridFilter.png" alt="DbGrid filter"></p>
 
 - [BoolDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/BoolDbGridColumn.java) -
 компонент для отображения булевых значений, может иметь состояние

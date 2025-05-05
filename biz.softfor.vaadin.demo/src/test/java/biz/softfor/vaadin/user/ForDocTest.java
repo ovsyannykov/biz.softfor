@@ -5,6 +5,7 @@ import biz.softfor.partner.jpa.Partner_;
 import biz.softfor.playwrightutil.DriverHlpr;
 import biz.softfor.playwrightutil.Screenshot;
 import biz.softfor.playwrightutil.VaadinTestUtil;
+import biz.softfor.user.jpa.Role;
 import biz.softfor.user.jpa.User;
 import biz.softfor.user.jpa.User_;
 import biz.softfor.util.api.StdPath;
@@ -51,13 +52,13 @@ public class ForDocTest {
 
     String name = "NotFoundView";
     page.navigate(StdPath.locationUri(port, NotFoundView.PATH));
-    page.locator("//h3[contains(text(),'not found')]").waitFor(DriverHlpr.lwait);
+    page.locator("//h3[contains(text(),'not found')]").waitFor(DriverHlpr.wait);
     screenshot.get(page, name);
 
     name = "GridField";
     page.navigate(StdPath.locationUri(port, PartnersView.PATH));
     String entityViewGridId = EntityView.gridId(Partner.class);
-    page.locator("#" + entityViewGridId).waitFor(DriverHlpr.lwait);
+    page.locator("#" + entityViewGridId).waitFor(DriverHlpr.wait);
     String[] rows = { "First Co", "John", "Mike", "Plimuth Tax Cons." };
     for(int i = 0; i < rows.length; ++i) {
       page.click("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='" + rows[i] + "']");
@@ -93,7 +94,7 @@ public class ForDocTest {
 
     name = "LangSelector";
     String langSelectorXp = "//vaadin-app-layout/vaadin-horizontal-layout/vaadin-horizontal-layout/vaadin-combo-box";
-    page.locator(langSelectorXp).waitFor(DriverHlpr.lwait);
+    page.locator(langSelectorXp).waitFor(DriverHlpr.wait);
     screenshot.get(page, name + 0);
     page.click(langSelectorXp);
     screenshot.get(page, name + 1);
@@ -123,7 +124,7 @@ public class ForDocTest {
     page.locator("#" + locationTypeGridId).waitFor(VaadinTestUtil.DETACHED);
     screenshot.get(page, name + 2);
     page.click("#" + EntityForm.saveId());
-    page.locator("#" + entityViewGridId).waitFor(DriverHlpr.lwait);
+    page.locator("#" + entityViewGridId).waitFor(DriverHlpr.wait);
     String filterLocationTypeCss = "#" + GridColumn.columnFilterId(Partner_.LOCATION_TYPE) + " vaadin-button:nth-child(2)";
     page.locator(filterLocationTypeCss).scrollIntoViewIfNeeded();
     screenshot.get(page, name + 3);
@@ -148,16 +149,16 @@ public class ForDocTest {
     screenshot.get(page, name + 4);
 
     name = "ManyToManyField";
-    entityViewGridId = EntityView.gridId(User.class);
     page.navigate(StdPath.locationUri(port, UsersView.PATH));
-    page.locator("#" + entityViewGridId).waitFor(DriverHlpr.lwait);
+    entityViewGridId = EntityView.gridId(User.class);
+    page.locator("#" + entityViewGridId).waitFor(DriverHlpr.wait);
     String[] entities = { "admin", "user", "manager" };
     for(int i = 0; i < entities.length; ++i) {
       page.click("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='" + entities[i] + "']");
       screenshot.get(page, name + i);
     }
     entityFormId = EntityForm.id(User.class);
-    page.locator("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='manager']").dblclick();
+    page.dblclick("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='manager']");
     page.locator("#" + entityFormId).waitFor(DriverHlpr.wait);
     page.locator("#" + EntityForm.fieldId(User_.GROUPS)).scrollIntoViewIfNeeded();
     screenshot.get(page, name + 3);
@@ -186,21 +187,40 @@ public class ForDocTest {
     page.locator("#" + entityFormId).waitFor(VaadinTestUtil.HIDDEN);
     screenshot.get(page, name + 9);
 
+    name = "UserDbGridFilter";
+    page.navigate(StdPath.locationUri(port, RolesView.PATH));
+    entityViewGridId = EntityView.gridId(Role.class);
+    page.locator("#" + entityViewGridId).waitFor(DriverHlpr.wait);
+    screenshot.get(page, name + 0);
+    dialogSlctId = ToManyField.gridId(User.TITLE);
+    page.click("//vaadin-form-layout/vaadin-custom-field/vaadin-horizontal-layout/vaadin-button");
+    page.locator("//*[@id='" + dialogSlctId + "']").waitFor(DriverHlpr.wait);
+    Thread.sleep(100);
+    screenshot.get(page, name + 1);
+    page.click("//*[@id='" + dialogSlctId + "']/vaadin-grid-cell-content[text()='" + ADMIN_USER + "']");
+    screenshot.get(page, name + 2);
+    page.click("#" + ToManyField.selectId());
+    page.locator("#" + dialogSlctId).waitFor(VaadinTestUtil.DETACHED);
+    screenshot.get(page, name + 3);
+    page.click("#" + DbGrid.filtrateId(Role.class));
+    page.waitForSelector("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='Users']");
+    screenshot.get(page, name + 4);
+
     name = "ProfileView";
     page.navigate(StdPath.locationUri(port, ProfileView.PATH));
-    page.locator("#" + EntityForm.cancelId()).waitFor(DriverHlpr.lwait);
+    page.locator("#" + EntityForm.cancelId()).waitFor(DriverHlpr.wait);
     screenshot.get(page, name);
 
     name = "LoginView";
     VaadinTestUtil.logout(page);
     page.navigate(StdPath.locationUri(port, LoginView.PATH));
     String submitXp = "//vaadin-button[@slot='submit']";
-    page.locator(submitXp).waitFor(DriverHlpr.lwait);
+    page.locator(submitXp).waitFor(DriverHlpr.wait);
     screenshot.get(page, name);
 
     name = "RegistrationView";
     page.click("#" + MainLayout.registrationId);
-    page.locator("#" + EntityForm.cancelId()).waitFor(DriverHlpr.lwait);
+    page.locator("#" + EntityForm.cancelId()).waitFor(DriverHlpr.wait);
     screenshot.get(page, name);
   }
 

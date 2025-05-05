@@ -80,18 +80,21 @@ public class AppointmentForm
 extends EntityForm<Short, Appointment, AppointmentWor> {
 
   public AppointmentForm(SecurityMgr securityMgr, Validator validator) {
-    super(
-      Appointment.TITLE
-    , new FormColumns(
-        securityMgr
-      , Appointment.class
-      , AppointmentWor.class
+    super(Appointment.TITLE
+    , new EntityFormColumns(
+        Appointment.class
       , new LinkedHashMap<String, Component>() {{
           TextField name = new TextField(Appointment_.NAME);
           put(Appointment_.NAME, name);
           TextField descr = new TextField(Appointment_.DESCR);
+          descr.addBlurListener(e -> {
+            if(StringUtils.isBlank(descr.getValue())) {
+              descr.setValue(name.getValue());
+            }
+          });
           put(Appointment_.DESCR, descr);
         }}
+      , securityMgr
       )
     , validator
     );
@@ -138,7 +141,7 @@ extends DbGrid<Short, Appointment, AppointmentWor> {
 
   public AppointmentsDbGrid
   (AppointmentSvc service, AppointmentDbGridColumns columns) {
-    super(service, AppointmentRequest.Read.class, columns, DbGridColumns.EMPTY);
+    super(service, columns, DbGridColumns.EMPTY);
   }
 
 }
@@ -158,14 +161,7 @@ extends EntityView<Short, Appointment, AppointmentWor> {
 
   public AppointmentsView
   (AppointmentsDbGrid dbGrid, AppointmentForm form, SecurityMgr securityMgr) {
-    super(
-      dbGrid
-    , AppointmentRequest.Update.class
-    , AppointmentRequest.Delete.class
-    , GridFields.EMPTY
-    , form
-    , securityMgr
-    );
+    super(dbGrid, GridFields.EMPTY, form, securityMgr);
   }
 
 }
@@ -257,6 +253,12 @@ database, it is performed by pressing the "Filtrate" button.
 - [DbGridColumns](src/main/java/biz/softfor/vaadin/dbgrid/DbGridColumns.java) -
 a list of columns for DbGrid filtered according to access rights. Usage example:
 [PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java).
+
+This class is also used for filter fields that are not display as grid columns.
+For example, here we can use the user filter to select all roles in all groups
+for a given user:
+[RoleDbGridFilters](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridFilters.java#L27)
+<p align="center"><img src="doc/images/UserDbGridFilter.png" alt="DbGrid filter"></p>
 
 - [BoolDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/BoolDbGridColumn.java) -
 a component for displaying Boolean values, can have the state "undefined",

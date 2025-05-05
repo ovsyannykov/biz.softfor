@@ -19,5 +19,4 @@ extends DbGrid<Short, Appointment, AppointmentWor> {
     super(service, columns, DbGridColumns.EMPTY);
   }
 
-
 }
