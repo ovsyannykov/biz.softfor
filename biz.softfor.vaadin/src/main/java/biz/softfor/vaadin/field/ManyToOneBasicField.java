@@ -21,11 +21,11 @@ public abstract class ManyToOneBasicField
 <K extends Number, E extends Identifiable<K>, V> extends CustomField<V>
 implements DbNamedColumn {
 
-  protected final String dbName;
+  private final String dbName;
   protected final DbGrid<K, E, ? extends Identifiable<K>> dbGrid;
   protected final Function<E, String> label;
   protected final Function<E, String> detail;
-  protected final List<String> involvedFields;
+  private final List<String> involvedFields;
   protected final TextField viewCtl;
   protected V value;
   private final HorizontalLayout layout;

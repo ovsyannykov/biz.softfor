@@ -11,7 +11,7 @@ extends GridColumn<E, C> {
 
   public final BiConsumer<F, C> filter;
 
-  protected DbGridColumn
+  public DbGridColumn
   (String dbName, C component, Renderer<E> renderer, BiConsumer<F, C> filter) {
     super(dbName, component, renderer);
     this.filter = filter;

@@ -81,7 +81,7 @@ implements DbNamedColumn, LocaleChangeObserver {
   @Override
   public void localeChange(LocaleChangeEvent event) {
     title.setText(getTranslation(StringUtil.fieldToName(dbName)));
-    GridColumn.gridLocaleChange(columns);
+    GridColumn.localeChangeColumns(columns);
   }
 
   @Override

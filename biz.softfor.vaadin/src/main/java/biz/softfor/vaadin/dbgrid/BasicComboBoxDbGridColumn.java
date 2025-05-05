@@ -50,8 +50,8 @@ extends DbGridColumn<E, V, MultiSelectComboBox<VL>, Set<VL>, F> {
   }
 
   @Override
-  public void localeChange(LocaleChangeEvent event) {
-    super.localeChange(event);
+  public void localeChangeColumn(LocaleChangeEvent event) {
+    super.localeChangeColumn(event);
     localeChange(component);
   }
 

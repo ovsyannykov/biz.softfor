@@ -12,8 +12,8 @@ import biz.softfor.vaadin.DbNamedColumn;
 import biz.softfor.vaadin.GridColumn;
 import biz.softfor.vaadin.Text;
 import biz.softfor.vaadin.VaadinUtil;
-import com.vaadin.flow.component.HasLabel;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.dataview.GridLazyDataView;
 import com.vaadin.flow.component.html.Span;
@@ -36,6 +36,7 @@ extends VerticalLayout implements LocaleChangeObserver {
   public final ReadRequest readRequest;
   public final Grid<E> grid;
   public final HorizontalLayout toolbar;
+  public final FormLayout filterBar;
 
   public GridLazyDataView<E> dataView;
   private Consumer filter;
@@ -73,16 +74,16 @@ extends VerticalLayout implements LocaleChangeObserver {
 
     toolbar = new HorizontalLayout();
     toolbar.addClassName(CSS.TOOLBAR);
-    title = VaadinUtil.label(columns.title);
+    title = VaadinUtil.label(this.columns.title);
     toolbar.add(title);
     filtrate = new Button(Text.Filtrate, e -> updateView());
     filtrate.setId(filtrateId(clazz));
     toolbar.add(filtrate);
     clear = new Button(Text.Clear, e -> {
-      for(DbGridColumn c : columns) {
+      for(DbGridColumn c : this.columns) {
         c.component.clear();
       }
-      for(DbGridColumn c : filters) {
+      for(DbGridColumn c : this.filters) {
         c.component.clear();
       }
     });
@@ -90,7 +91,20 @@ extends VerticalLayout implements LocaleChangeObserver {
     toolbar.add(clear);
     toolbar.setAlignItems(FlexComponent.Alignment.CENTER);
 
-    add(toolbar, grid);
+    filterBar = new FormLayout();
+    filterBar.setResponsiveSteps(
+      new FormLayout.ResponsiveStep("0", 1)
+    , new FormLayout.ResponsiveStep("36em", 2)
+    , new FormLayout.ResponsiveStep("54em", 3)
+    , new FormLayout.ResponsiveStep("72px", 4)
+    , new FormLayout.ResponsiveStep("90em", 5)
+    , new FormLayout.ResponsiveStep("108em", 6)
+    );
+    for(DbGridColumn c : this.filters) {
+      filterBar.add(c.component);
+    }
+
+    add(toolbar, filterBar, grid);
     addClassName(CSS.GRID_VIEW);
     setSizeFull();
     updateView();
@@ -106,10 +120,8 @@ extends VerticalLayout implements LocaleChangeObserver {
     title.setText(getTranslation(columns.title));
     filtrate.setText(getTranslation(Text.Filtrate));
     clear.setText(getTranslation(Text.Clear));
-    GridColumn.gridLocaleChange(columns);
-    for(DbGridColumn c : filters) {
-      ((HasLabel)c.component).setLabel(getTranslation(c.dbName()));
-    }
+    GridColumn.localeChangeColumns(columns);
+    GridColumn.localeChangeFilters(filters);
   }
 
   public final void updateView() {

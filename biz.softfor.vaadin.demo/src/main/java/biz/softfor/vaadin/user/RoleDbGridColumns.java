@@ -28,9 +28,7 @@ public class RoleDbGridColumns extends DbGridColumns<Long, Role> {
   );
 
   public RoleDbGridColumns(SecurityMgr securityMgr) {
-    super(Role.TABLE
-    , securityMgr
-    , Role.class
+    super(Role.TABLE, securityMgr, Role.class
     , new TextDbGridColumn<>(Role_.NAME, RoleFltr::setName)
     , new BoolDbGridColumn<>(
         Role_.ORPHAN

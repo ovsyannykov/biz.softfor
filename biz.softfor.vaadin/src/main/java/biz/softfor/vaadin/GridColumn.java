@@ -3,6 +3,7 @@ package biz.softfor.vaadin;
 import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.Order;
 import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.HasLabel;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridSortOrderBuilder;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -10,14 +11,15 @@ import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import java.util.Collection;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
-public class GridColumn<E, C extends AbstractField>
-implements DbNamedColumn/*, LocaleChangeObserver*/ {
+public class GridColumn<E, C extends AbstractField> implements DbNamedColumn {
 
   private final String dbName;
   public final C component;
   private Renderer<E> renderer;
   private Grid<E> grid;
+  private final String label;
 
   public static String columnFilterId(String name) {
     return name + VaadinUtil.COLUMN_FILTER_ID_SFX;
@@ -31,6 +33,15 @@ implements DbNamedColumn/*, LocaleChangeObserver*/ {
     this.dbName = dbName;
     this.component = component;
     this.renderer = renderer;
+    String l = ((HasLabel)this.component).getLabel();
+    if(StringUtils.isBlank(l)) {
+      if(this.component instanceof DbNamedColumn dbNamedColumn) {
+        l = dbNamedColumn.dbName();
+      } else {
+        l = StringUtil.fieldToName(this.dbName);
+      }
+    }
+    label = l;
   }
 
   @Override
@@ -95,9 +106,15 @@ implements DbNamedColumn/*, LocaleChangeObserver*/ {
     return grid;
   }
 
-  public static <E> void gridLocaleChange(List<? extends GridColumn> columns) {
+  public static <E> void localeChangeColumns(List<? extends GridColumn> columns) {
     for(GridColumn c : columns) {
-      c.localeChange(null);
+      c.localeChangeColumn(null);
+    }
+  }
+
+  public static <E> void localeChangeFilters(List<? extends GridColumn> filters) {
+    for(GridColumn c : filters) {
+      c.localeChangeFilter(null);
     }
   }
 
@@ -105,11 +122,14 @@ implements DbNamedColumn/*, LocaleChangeObserver*/ {
     this.grid = grid;
   }
 
-  //@Override
-  public void localeChange(LocaleChangeEvent event) {
+  public void localeChangeColumn(LocaleChangeEvent event) {
     Grid.Column<E> gc = grid.getColumnByKey(dbName());
-    gc.setHeader(gc.getTranslation(StringUtil.fieldToName(gc.getKey())));
+    gc.setHeader(gc.getTranslation(label));
     rendererSet(gc);
+  }
+
+  public void localeChangeFilter(LocaleChangeEvent event) {
+    ((HasLabel)component).setLabel(component.getTranslation(label));
   }
 
   public final void rendererSet(Grid.Column<E> column) {

@@ -29,8 +29,8 @@ extends GridFieldColumn<E, V, MultiSelectComboBox<VL>, Set<VL>> {
   }
 
   @Override
-  public void localeChange(LocaleChangeEvent event) {
-    super.localeChange(event);
+  public void localeChangeColumn(LocaleChangeEvent event) {
+    super.localeChangeColumn(event);
     BasicComboBoxDbGridColumn.localeChange(component);
   }
 
