@@ -20,30 +20,30 @@ import org.springframework.context.annotation.Scope;
 
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class RoleDbGridFilters extends DbGridColumns<Long, Role> {
+public class UserDbGridFilters extends DbGridColumns<Long, User> {
 
-  public RoleDbGridFilters(SecurityMgr securityMgr, UsersDbGridBasic users) {
-    super("", securityMgr, Role.class
-    , new DbGridColumn<Role, User, ManyToOneField<Long, User>, User, RoleFltr>(
-        StringUtil.field(Role_.GROUPS, UserGroup_.USERS)
+  public UserDbGridFilters(SecurityMgr securityMgr, RolesDbGridBasic roles) {
+    super("", securityMgr, User.class
+    , new DbGridColumn<User, Role, ManyToOneField<Long, Role>, Role, UserFltr>(
+        StringUtil.field(User_.GROUPS, UserGroup_.ROLES)
       , new ManyToOneField<>(
-          User.TITLE
-        , users
-        , User::getUsername
-        , User::getUsername
-        , List.of(User_.USERNAME)
+          Role.TITLE
+        , roles
+        , Role::getName
+        , Role::getDescription
+        , List.of(Role_.NAME)
         )
       , null
       , (filter, component) -> {
-          User v = component.getValue();
+          Role v = component.getValue();
           if(v != null) {
             UserGroupFltr g = filter.getGroups();
             if(g == null) {
               filter.setGroups(g = new UserGroupFltr());
             }
-            UserFltr u = g.getUsers();
+            RoleFltr u = g.getRoles();
             if(u == null) {
-              g.setUsers(u = new UserFltr());
+              g.setRoles(u = new RoleFltr());
             }
             u.assignId(v.getId());
           }
