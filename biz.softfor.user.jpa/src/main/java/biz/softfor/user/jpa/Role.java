@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -83,7 +82,6 @@ public class Role implements Identifiable<Long>, Serializable {
   @JoinTable(name = "roles_groups", joinColumns = @JoinColumn(name = "roleId"), inverseJoinColumns = @JoinColumn(name = "groupId"))
   @JsonIgnoreProperties(value = { UserGroup.ROLES }, allowSetters = true)
   @ToString.Exclude
-  @EqualsAndHashCode.Exclude
   private Set<UserGroup> groups;
   public final static String GROUPS = "groups";
 

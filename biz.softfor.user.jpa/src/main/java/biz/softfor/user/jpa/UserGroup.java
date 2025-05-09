@@ -1,6 +1,6 @@
 package biz.softfor.user.jpa;
 
-import biz.softfor.jpa.SetStoredEntity;
+import biz.softfor.jpa.IdEntity;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
@@ -16,7 +16,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,7 +26,7 @@ import lombok.ToString;
 @Setter
 @ToString(callSuper = true)
 @JsonFilter("UserGroup")
-public class UserGroup extends SetStoredEntity<Integer> implements Serializable {
+public class UserGroup extends IdEntity<Integer> implements Serializable {
 
   public final static String TABLE = "userGroups";
   public final static String TITLE = "userGroup";
@@ -41,7 +40,6 @@ public class UserGroup extends SetStoredEntity<Integer> implements Serializable 
   @JoinTable(name = "users_groups", joinColumns = @JoinColumn(name = "groupId"), inverseJoinColumns = @JoinColumn(name = "userId"))
   @JsonIgnoreProperties(value = { User.GROUPS }, allowSetters = true)
   @ToString.Exclude
-  @EqualsAndHashCode.Exclude
   private Set<User> users;
   public final static String USERS = "users";
 
@@ -99,7 +97,6 @@ public class UserGroup extends SetStoredEntity<Integer> implements Serializable 
   @ManyToMany(mappedBy = Role.GROUPS, fetch = FetchType.LAZY)
   @JsonIgnoreProperties(value = { Role.GROUPS }, allowSetters = true)
   @ToString.Exclude
-  @EqualsAndHashCode.Exclude
   private Set<Role> roles;
   public final static String ROLES = "roles";
 

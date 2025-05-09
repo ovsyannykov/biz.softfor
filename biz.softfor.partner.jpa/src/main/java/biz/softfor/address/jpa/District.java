@@ -1,6 +1,6 @@
 package biz.softfor.address.jpa;
 
-import biz.softfor.jpa.SetStoredEntity;
+import biz.softfor.jpa.IdEntity;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @ToString(callSuper = true)
 @JsonFilter("District")
-public class District extends SetStoredEntity<Integer> implements Serializable {
+public class District extends IdEntity<Integer> implements Serializable {
 
   public final static String TABLE = "districts";
   public final static String TITLE = "district";

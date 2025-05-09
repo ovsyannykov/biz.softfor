@@ -187,8 +187,8 @@ public class TestPartners extends TestData {
   newPersonDetails = (l, i) -> {
     String label = l + i;
     PersonDetails result = new PersonDetails();
-    result.setPassportSeries("S" + StringUtils.right(String.valueOf(i), 6));
-    result.setPassportNumber(l);
+    result.setPassportSeries("S" + StringUtils.right(String.valueOf(i), 5));
+    result.setPassportNumber("l23");
     result.setPassportDate(LocalDate.of(2022, 1, 24));
     result.setMiddlename("Middlename" + label);
     result.setPassportIssued("PassportIssued" + label);

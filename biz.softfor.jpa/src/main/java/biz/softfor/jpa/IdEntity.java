@@ -9,7 +9,9 @@ import jakarta.persistence.MappedSuperclass;
 import java.io.Serializable;
 import java.util.Objects;
 import lombok.ToString;
+import org.hibernate.proxy.HibernateProxy;
 
+//https://jpa-buddy.com/blog/hopefully-the-final-article-about-equals-and-hashcode-for-jpa-entities-with-db-generated-ids/
 @MappedSuperclass
 @ToString
 @JsonIgnoreProperties({ "handler", "hibernateLazyInitializer", "this$0" })
@@ -44,14 +46,34 @@ public class IdEntity<K extends Number> implements Identifiable<K>, Serializable
   }
 
   @Override
-  @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-  public boolean equals(Object a) {
-    return Identifiable.equals(this, a);
+  public final boolean equals(Object a) {
+    boolean result;
+    if(a == this) {
+      result = true;
+    } else if(a == null) {
+      result = false;
+    } else {
+      Class<?> effectiveClass = a instanceof HibernateProxy
+      ? ((HibernateProxy)a).getHibernateLazyInitializer().getPersistentClass()
+      : a.getClass();
+      Class<?> clazz = this instanceof HibernateProxy
+      ? ((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass()
+      : this.getClass();
+      if(clazz == effectiveClass) {
+        Object tid = getId();
+        result = tid != null && Objects.equals(tid, ((Identifiable)a).getId());
+      } else {
+        result = false;
+      }
+    }
+    return result;
   }
 
   @Override
-  public int hashCode() {
-    return Objects.hashCode(getId());
+  public final int hashCode() {
+    return this instanceof HibernateProxy
+    ? ((HibernateProxy)this).getHibernateLazyInitializer().getPersistentClass()
+    .hashCode() : getClass().hashCode();
   }
 
 }

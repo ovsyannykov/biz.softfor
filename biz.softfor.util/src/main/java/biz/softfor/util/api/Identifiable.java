@@ -20,11 +20,11 @@ public interface Identifiable<K extends Number> {
       result = true;
     } else if(r == null || l == null) {
       result = false;
-    } else if(l.getClass() != r.getClass()) {
-      result = false;
-    } else {
+    } else if(l.getClass() == r.getClass()) {
       Object id = l.getId();
       result = id != null && id.equals(((Identifiable)r).getId());
+    } else {
+      result = false;
     }
     return result;
   }

@@ -1,6 +1,6 @@
 package biz.softfor.partner.jpa;
 
-import biz.softfor.jpa.SetStoredEntity;
+import biz.softfor.jpa.IdEntity;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
@@ -16,7 +16,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -27,7 +26,7 @@ import lombok.ToString;
 @Setter
 @ToString(callSuper = true)
 @JsonFilter("Contact")
-public class Contact extends SetStoredEntity<Long> implements Serializable {
+public class Contact extends IdEntity<Long> implements Serializable {
 
   public final static String TABLE = "contacts";
   public final static String TITLE = "contact";
@@ -41,7 +40,6 @@ public class Contact extends SetStoredEntity<Long> implements Serializable {
   @JoinColumn(name = "partnerId")
   @JsonIgnoreProperties(value = { "contacts" }, allowSetters = true)
   @ToString.Exclude
-  @EqualsAndHashCode.Exclude
   @NotNull
   private Partner partner;
 

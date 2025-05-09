@@ -1,6 +1,6 @@
 package biz.softfor.address.jpa;
 
-import biz.softfor.jpa.SetStoredEntity;
+import biz.softfor.jpa.IdEntity;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +23,7 @@ import lombok.ToString;
 @Setter
 @ToString(callSuper = true)
 @JsonFilter("State")
-public class State extends SetStoredEntity<Integer> implements Serializable {
+public class State extends IdEntity<Integer> implements Serializable {
 
   public final static String TABLE = "states";
   public final static String TITLE = "state";

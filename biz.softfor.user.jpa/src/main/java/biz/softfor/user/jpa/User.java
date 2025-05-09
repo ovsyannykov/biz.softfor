@@ -1,7 +1,7 @@
 package biz.softfor.user.jpa;
 
+import biz.softfor.jpa.IdEntity;
 import biz.softfor.jpa.Identifier;
-import biz.softfor.jpa.SetStoredEntity;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -29,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 @Setter
 @ToString(callSuper = true)
 @JsonFilter("User")
-public class User extends SetStoredEntity<Long> implements Serializable {
+public class User extends IdEntity<Long> implements Serializable {
 
   public final static String TABLE = "users";
   public final static String TITLE = "user";
@@ -73,7 +72,6 @@ public class User extends SetStoredEntity<Long> implements Serializable {
   @ManyToMany(mappedBy = UserGroup.USERS, fetch = FetchType.LAZY)
   @JsonIgnoreProperties(value = { UserGroup.USERS }, allowSetters = true)
   @ToString.Exclude
-  @EqualsAndHashCode.Exclude
   private Set<UserGroup> groups;
   public final static String GROUPS = "groups";
 

@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -97,7 +96,6 @@ public class Partner extends IdEntity<Long> implements Serializable {
   @OneToMany(mappedBy = PARTNER_FILES_MAPPED_BY, orphanRemoval = true, fetch = FetchType.LAZY)
   @JsonIgnoreProperties(value = { PARTNER_FILES_MAPPED_BY }, allowSetters = true)
   @ToString.Exclude
-  @EqualsAndHashCode.Exclude
   private List<PartnerFile> partnerFiles;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -116,13 +114,11 @@ public class Partner extends IdEntity<Long> implements Serializable {
   @OneToMany(mappedBy = CONTACTS_MAPPED_BY, orphanRemoval = true, fetch = FetchType.LAZY)
   @JsonIgnoreProperties(value = { CONTACTS_MAPPED_BY }, allowSetters = true)
   @ToString.Exclude
-  @EqualsAndHashCode.Exclude
   private List<Contact> contacts;
 
   @OneToMany(fetch = FetchType.LAZY)
   @JoinColumn(name = "personId")
   @ToString.Exclude
-  @EqualsAndHashCode.Exclude
   private List<User> users;
 
   private final static String PARTNER_FILES_MAPPED_BY = "partner";

@@ -1,6 +1,6 @@
 package biz.softfor.address.jpa;
 
-import biz.softfor.jpa.SetStoredEntity;
+import biz.softfor.jpa.IdEntity;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +18,7 @@ import lombok.ToString;
 @Setter
 @ToString(callSuper = true)
 @JsonFilter("Country")
-public class Country extends SetStoredEntity<Short> implements Serializable {
+public class Country extends IdEntity<Short> implements Serializable {
 
   public final static String TABLE = "countries";
   public final static String TITLE = "country";
