@@ -39,6 +39,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.AssertFalse;
 import jakarta.validation.constraints.AssertTrue;
@@ -62,17 +63,20 @@ public class WithoutRelationsGen extends CodeGen {
   private final static boolean DEBUG = false;
   private final static String[] ONE_TO_MANY_FIELD_EXCLUDED_ANNOTATIONS
   = { Fetch.class.getName() };
-  private final static String[] RELATION_FIELD_EXCUDED_PACKAGES = {
-    Column.class.getPackageName()
-  , ToString.class.getPackageName()
-  , JsonIgnoreProperties.class.getPackageName()
+  private final static String[] RELATION_FIELD_EXCUDED_PACKAGES
+  = { Column.class.getPackageName(), JsonIgnoreProperties.class.getPackageName() };
+  private final static String[] WOR_EXCLUDED_ANNOTATIONS = {
+    ActionAccess.class.getName()
+  , UpdateAccess.class.getName()
+  , JsonFilter.class.getName()
   };
-  private final static String[] WOR_EXCLUDED_ANNOTATIONS
-  = { ActionAccess.class.getName(), JsonFilter.class.getName() };
   private final static String[] WOR_FIELD_EXCLUDED_PACKAGES
   = { Column.class.getPackageName() };
-  private final static String[] WOR_FIELD_EXCLUDED_ANNOTATIONS
-  = { ActionAccess.class.getName(), Column.class.getName(), Fetch.class.getName() };
+  private final static String[] WOR_FIELD_EXCLUDED_ANNOTATIONS = {
+    ActionAccess.class.getName()
+  , UpdateAccess.class.getName()
+  , Fetch.class.getName()
+  };
   private final static String SERIAL_VERSION_UID = "serialVersionUID";
 
   public WithoutRelationsGen() {
@@ -113,15 +117,15 @@ public class WithoutRelationsGen extends CodeGen {
       ;
       classBldr.addAnnotation(aaBldr.build());
     }
-    Class<?> superClass = clazz.getSuperclass();
-    boolean isIdentifiable = Object.class.equals(superClass);
-    MethodSpec.Builder ctor1 = MethodSpec.constructorBuilder()
+    MethodSpec.Builder ctorFromEntity = MethodSpec.constructorBuilder()
     .addModifiers(Modifier.PUBLIC).addParameter(clazz, CodeGenUtil.PARAM_NAME);
-    MethodSpec.Builder ctor2 = MethodSpec.constructorBuilder()
+    MethodSpec.Builder ctorFromWor = MethodSpec.constructorBuilder()
     .addModifiers(Modifier.PUBLIC)
     .addParameter(worClazzName, CodeGenUtil.PARAM_NAME);
+    Class<?> superClass = clazz.getSuperclass();
+    boolean isIdentifiable = Object.class.equals(superClass);
+    CodeGenUtil.addToString(classBldr, !isIdentifiable);
     if(isIdentifiable) {
-      CodeGenUtil.addToString(classBldr, false);
       MethodSpec.Builder equalsBldr
       = MethodSpec.methodBuilder(Reflection.EQUALS_METHOD)
       .addAnnotation(Override.class)
@@ -159,18 +163,14 @@ public class WithoutRelationsGen extends CodeGen {
     } else {
       classBldr.superclass
       (ParameterizedTypeName.get(superClass, idClass));
-      ctor1.addStatement("super($N)", CodeGenUtil.PARAM_NAME);
-      ctor2.addStatement("super($N)", CodeGenUtil.PARAM_NAME);
+      ctorFromEntity.addStatement("super($N)", CodeGenUtil.PARAM_NAME);
+      ctorFromWor.addStatement("super($N)", CodeGenUtil.PARAM_NAME);
     }
     addSerializable(classBldr, processingEnv, clazz);
-    if(CodeGenUtil.isAnnotationPresent(clazz, JsonFilter.class)) {
-      classBldr.addAnnotation(AnnotationSpec.builder(JsonFilter.class)
-      .addMember(CodeGenUtil.ANNOTATION_VALUE, "$S", worSimpleName).build());
-    }
     classBldr.addMethod
     (MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).build());
-    ctor1.beginControlFlow("if($N != null)", CodeGenUtil.PARAM_NAME);
-    ctor2.beginControlFlow("if($N != null)", CodeGenUtil.PARAM_NAME);
+    ctorFromEntity.beginControlFlow("if($N != null)", CodeGenUtil.PARAM_NAME);
+    ctorFromWor.beginControlFlow("if($N != null)", CodeGenUtil.PARAM_NAME);
 
     MethodSpec.Builder idSetter = null;
     for(Field dclField : clazz.getDeclaredFields()) {
@@ -211,13 +211,13 @@ public class WithoutRelationsGen extends CodeGen {
           .addStatement("$N.$N($N)"
           , fieldName, CodeGenUtil.ID_SETTER_NAME, Identifiable.ID)
           .endControlFlow();
-          ctor1.addStatement("$N = new $T($N.$N())"
+          ctorFromEntity.addStatement("$N = new $T($N.$N())"
           , fieldName
           , fieldType
           , CodeGenUtil.PARAM_NAME
           , CodeGenUtil.getterName(dclName)
           );
-          ctor2.addStatement("$N = new $T($N.$N())"
+          ctorFromWor.addStatement("$N = new $T($N.$N())"
           , fieldName
           , fieldType
           , CodeGenUtil.PARAM_NAME
@@ -234,12 +234,14 @@ public class WithoutRelationsGen extends CodeGen {
           , null
           );
           fieldBldr.addAnnotation(Column.class);
-          ctor1.addStatement("$N = $T.id($N.$N())"
+          ctorFromEntity.addStatement("$N = $T.id($N.$N())"
           , fieldName
           , ClassName.get(Identifiable.class)
           , CodeGenUtil.PARAM_NAME
           , CodeGenUtil.getterName(dclName)
           );
+          ctorFromWor.addStatement("$N = $N.$N()"
+          , fieldName, CodeGenUtil.PARAM_NAME, CodeGenUtil.getterName(fieldName));
         } else if(CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)) {
           fieldName = ColumnDescr.toManyKeyName(dclName);
           Class<?> joinClass = Reflection.genericParameter(dclField);
@@ -253,12 +255,14 @@ public class WithoutRelationsGen extends CodeGen {
           , ONE_TO_MANY_FIELD_EXCLUDED_ANNOTATIONS
           );
           fieldBldr.addAnnotation(Transient.class);
-          ctor1.addStatement("$N = $T.ids($N.$N())"
+          ctorFromEntity.addStatement("$N = $T.ids($N.$N())"
           , fieldName
           , ClassName.get(Identifiable.class)
           , CodeGenUtil.PARAM_NAME
           , CodeGenUtil.getterName(dclName)
           );
+          ctorFromWor.addStatement("$N = $N.$N()"
+          , fieldName, CodeGenUtil.PARAM_NAME, CodeGenUtil.getterName(fieldName));
         } else if(CodeGenUtil.isAnnotationPresent(dclField, ManyToMany.class)) {
           ManyToManyInf m2mInf = new ManyToManyInf(dclField);
           Class<?> joinClass = Reflection.genericParameter(dclField);
@@ -273,17 +277,15 @@ public class WithoutRelationsGen extends CodeGen {
           , null
           );
           fieldBldr.addAnnotation(Transient.class);
-          ctor1.addStatement("$N = $T.idSet($N.$N())"
+          ctorFromEntity.addStatement("$N = $T.idSet($N.$N())"
           , fieldName
           , ClassName.get(Identifiable.class)
           , CodeGenUtil.PARAM_NAME
           , CodeGenUtil.getterName(dclName)
           );
+          ctorFromWor.addStatement("$N = $N.$N()"
+          , fieldName, CodeGenUtil.PARAM_NAME, CodeGenUtil.getterName(fieldName));
 
-          TypeName linksTypeName = ParameterizedTypeName.get(
-            ClassName.get(Set.class)
-          , ClassName.get(m2mInf.packageName, m2mInf.className)
-          );
           AnnotationSpec.Builder oneToMany
           = AnnotationSpec.builder(OneToMany.class)
           .addMember("fetch", "$T.$L", FetchType.class, FetchType.LAZY.name());
@@ -292,14 +294,15 @@ public class WithoutRelationsGen extends CodeGen {
           .addMember("name", "$S", m2mInf.joinColumn)
           .addMember("insertable", "$L", false)
           .addMember("updatable", "$L", false);
-          FieldSpec.Builder linksBldr = FieldSpec
-          .builder(linksTypeName, m2mInf.fieldName, Modifier.PRIVATE)
+          TypeName linksTypeName = ParameterizedTypeName.get(
+            ClassName.get(Set.class)
+          , ClassName.get(m2mInf.packageName, m2mInf.className)
+          );
+          FieldSpec.Builder linksBldr
+          = FieldSpec.builder(linksTypeName, m2mInf.fieldName, Modifier.PRIVATE)
           .addAnnotation(oneToMany.build())
           .addAnnotation(joinColumn.build());
-          checkAndAddActionAccess(linksBldr, clazz, dclField);
           classBldr.addField(linksBldr.build());
-          CodeGenUtil.addGetter
-          (classBldr, linksTypeName, m2mInf.fieldName, false, null);
 
           MethodSpec.Builder allArgsCtor
           = MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC)
@@ -421,12 +424,18 @@ public class WithoutRelationsGen extends CodeGen {
             CodeGenUtil.isAnnotationPresent(dclField, Id.class)
             ? Id.class : Column.class
           );
-          ctor1.addStatement("$N = $N.$N()"
-          , fieldName, CodeGenUtil.PARAM_NAME, CodeGenUtil.getterName(fieldName));
-          ctor2.addStatement("$N = $N.$N()"
-          , fieldName, CodeGenUtil.PARAM_NAME, CodeGenUtil.getterName(fieldName));
+          Annotation temporal
+          = CodeGenUtil.getAnnotation(dclField, Temporal.class);
+          if(temporal != null) {
+            fieldBldr.addAnnotation(AnnotationSpec.get(temporal));
+          }
+          String getterName = CodeGenUtil.getterName(fieldName);
+          ctorFromEntity.addStatement("$N = $N.$N()"
+          , fieldName, CodeGenUtil.PARAM_NAME, getterName);
+          ctorFromWor.addStatement("$N = $N.$N()"
+          , fieldName, CodeGenUtil.PARAM_NAME, getterName);
         }
-        checkAndAddActionAccess(fieldBldr, clazz, dclField);
+        addActionAccess(fieldBldr, clazz, dclField);
         CodeGenUtil.addField(
           classBldr
         , fieldBldr
@@ -444,8 +453,8 @@ public class WithoutRelationsGen extends CodeGen {
     if(idSetter != null) {
       classBldr.addMethod(idSetter.addModifiers(Modifier.PUBLIC).build());
     }
-    classBldr.addMethod(ctor1.endControlFlow().build());
-    classBldr.addMethod(ctor2.endControlFlow().build());
+    classBldr.addMethod(ctorFromEntity.endControlFlow().build());
+    classBldr.addMethod(ctorFromWor.endControlFlow().build());
     for(Method method : Reflection.annotatedMethods
     (clazz, new Class[] { AssertTrue.class, AssertFalse.class })) {
       Annotation assertAnno = method.getAnnotation(AssertTrue.class);
@@ -514,7 +523,7 @@ public class WithoutRelationsGen extends CodeGen {
     .initializer("$L", serialVersionUID).build());
   }
 
-  private static void checkAndAddActionAccess
+  private static void addActionAccess
   (FieldSpec.Builder fieldBldr, Class<?> parent, Field dclField) {
     RoleCalc calc = new FieldRoleCalc(parent, dclField);
     AnnotationSpec.Builder aBldr = AnnotationSpec.builder(ActionAccess.class)

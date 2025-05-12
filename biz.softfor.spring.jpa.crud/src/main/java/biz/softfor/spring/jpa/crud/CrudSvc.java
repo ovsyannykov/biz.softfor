@@ -123,7 +123,7 @@ public class CrudSvc<
     UpdateCtx ctx = new UpdateCtx
     (em, cb, pvdr, classWor, updateToNullNext, parentField, response);
     CriteriaUpdate<WOR> cru = cb.createCriteriaUpdate((Class<WOR>)ctx.rootClass);
-    for(ColumnDescr cd : ColumnDescr.getCds(classWor())) {
+    for(ColumnDescr cd : ColumnDescr.getCds(classWor)) {
       if(!Identifiable.ID.equals(cd.name)
       && (cd.isPlain() || cd instanceof ManyToOneWorDescr)) {
         Object v = data == null ? null : PropertyUtils.getProperty(data, cd.name);
