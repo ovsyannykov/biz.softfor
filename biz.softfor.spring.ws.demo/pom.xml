@@ -20,7 +20,7 @@
   </parent>
 
   <properties>
-    <biz.softfor.ws.root>ws</biz.softfor.ws.root>
+    <biz.softfor.ws.root>/ws</biz.softfor.ws.root>
     <biz.softfor.ws.schemas>/userApi.xsd</biz.softfor.ws.schemas>
   </properties>
 
