@@ -45,8 +45,7 @@ public class PartnerCtlr {
 
   @RequestMapping(path = StdPath.UPDATE, method = RequestMethod.POST)
   public CommonResponse update(@RequestBody @Valid PartnerRequest.Update request) {
-    securityMgr.updateCheck
-    (service.clazz(), service.classWor(), request, SecurityUtil.groups());
+    securityMgr.updateCheck(service, request, SecurityUtil.groups());
     service.validateUpdate(request);
     return service.update(request);
   }

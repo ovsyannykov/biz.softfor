@@ -73,8 +73,7 @@ public class ProfileView extends BasicView {
         request.data = (UserWor)diffCtx.data;
         request.fields = diffCtx.updateToNull;
         request.filter.assignId(itemWor.getId());
-        securityMgr.updateCheck
-        (User.class, UserWor.class, request, SecurityUtil.groups());
+        securityMgr.updateCheck(service, request, SecurityUtil.groups());
         CommonResponse<UserWor> response = service.update(request);
         if(response.isOk()) {
           VaadinUtil.returnToRetPath();

@@ -44,8 +44,7 @@ public class CountryCtlr {
 
   @RequestMapping(path = StdPath.UPDATE, method = RequestMethod.POST)
   public CommonResponse update(@RequestBody CountryRequest.Update request) {
-    securityMgr.updateCheck
-    (service.clazz(), service.classWor(), request, SecurityUtil.groups());
+    securityMgr.updateCheck(service, request, SecurityUtil.groups());
     service.validateUpdate(request);
     return service.update(request);
   }

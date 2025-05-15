@@ -50,8 +50,7 @@ public class DefaultAccessCtlr {
   @RequestMapping(path = TeztEntityRequest.DATA_DEFAULT_UPDATE_ACCESS, method = { RequestMethod.POST })
   public CommonResponse dataDefaultUpdateAccess
   (@RequestBody TeztEntityRequest.Update request) {
-    securityMgr.updateCheck
-    (service.clazz(), service.classWor(), request, SecurityUtil.groups());
+    securityMgr.updateCheck(service, request, SecurityUtil.groups());
     return service.update(request);
   }
 

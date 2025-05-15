@@ -84,7 +84,9 @@ implements DbNamedColumn {
     (ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY_INLINE);
     selectBtnAdded = true;
     layout = new HorizontalLayout(viewCtl, selectBtn);
-    layout.setWidthFull();
+    layout.setPadding(false);
+    layout.setSpacing(false);
+    layout.getThemeList().add("spacing-xs");
     add(layout);
   }
 

@@ -428,14 +428,11 @@ public class SecurityMgr {
     }
   }
 
-  public final void updateCheck(
-    Class<?> serviceClass
-  , Class<?> classWor
-  , UpdateRequest request
-  , Collection<String> groups
-  ) {
-    methodCheck(serviceClass, AbstractCrudSvc.UPDATE_METHOD, groups);
+  public final void updateCheck
+  (AbstractCrudSvc service, UpdateRequest request, Collection<String> groups) {
+    methodCheck(service.serviceClass(), AbstractCrudSvc.UPDATE_METHOD, groups);
     Set<String> denied = new HashSet<>();
+    Class<?> classWor = service.classWor();
     updateCheck(request.data, classWor, denied, "", groups);
     fieldsParse(request.fields, null, classWor, denied, groups, true);
     checkDenied(denied);

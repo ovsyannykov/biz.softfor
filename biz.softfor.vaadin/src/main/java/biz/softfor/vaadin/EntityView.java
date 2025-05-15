@@ -35,11 +35,11 @@ public abstract class EntityView
 <K extends Number, E extends Identifiable<K>, WOR extends Identifiable<K>>
 extends BasicView {
 
-  private final SplitLayout layout;
   private final DbGrid<K, E, WOR> dbGrid;
   private final GridFields<K, E> grids;
   private final EntityForm<K, E, WOR> form;
   private final SecurityMgr securityMgr;
+  private final SplitLayout layout;
   private final Binder<E> binder;
   private final VerticalLayout itemsPanesContainer;
   private boolean isEdit;
@@ -82,12 +82,13 @@ extends BasicView {
   , SecurityMgr securityMgr
   ) {
     super(dbGrid.columns.title);
-    layout = new SplitLayout(SplitLayout.Orientation.HORIZONTAL);
-    add(layout);
     this.dbGrid = dbGrid;
     this.grids = grids;
     this.form = form;
     this.securityMgr = securityMgr;
+    add(layout = new SplitLayout(SplitLayout.Orientation.HORIZONTAL));
+    layout.addToPrimary(this.dbGrid);
+    layout.setSizeFull();
     if(this.dbGrid.columns.isAccessible()) {
       this.dbGrid.grid.setId(gridId(this.dbGrid.entityInf.clazz));
       for(GridField<?, ?, E, ?> c : this.grids) {
@@ -97,7 +98,6 @@ extends BasicView {
       if(this.grids.isEmpty()) {
         binder = null;
         itemsPanesContainer = null;
-        layout.addToSecondary(this.form);
       } else {
         binder = new Binder<>(this.dbGrid.entityInf.clazz);
         itemsPanesContainer = new VerticalLayout();
@@ -111,10 +111,12 @@ extends BasicView {
           g.grid.setId(gridId(g.dbName()));
           itemsPanesContainer.add(g);
         }
-        layout.addToSecondary(this.form, itemsPanesContainer);
+        layout.addToSecondary(itemsPanesContainer);
+        layout.setSplitterPosition(65);
       }
       isEdit = false;
       if(this.form.isAccessible()) {
+        add(this.form);
         Class<?> svcClass = this.dbGrid.service.serviceClass();
         Collection<String> groups = SecurityUtil.groups();
         isEdit = !this.form.isReadOnly() && securityMgr.isMethodAllowed
@@ -146,7 +148,7 @@ extends BasicView {
         if(securityMgr.isAllowed
           (new UpdateClassRoleCalc(this.dbGrid.entityInf.clazz).id(), groups)
         && securityMgr.isMethodAllowed
-        (svcClass, AbstractCrudSvc.DELETE_METHOD, groups)) {
+          (svcClass, AbstractCrudSvc.DELETE_METHOD, groups)) {
           delete = new Button(Text.Delete, this::delete);
           delete.setId(deleteId());
           delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -154,9 +156,6 @@ extends BasicView {
         }
         this.form.addCancelListener(this::cancel);
       }
-      layout.addToPrimary(this.dbGrid);
-      layout.setSplitterPosition(65);
-      layout.setSizeFull();
       setPadding(false);
       setMargin(false);
       setSizeFull();
@@ -228,9 +227,7 @@ extends BasicView {
     if(item == null) {
       removeClassName(CSS.EDIT_FORM_EDITING);
       form.setVisible(false);
-      if(itemsPanesContainer != null) {
-        itemsPanesContainer.setVisible(true);
-      }
+      layout.setVisible(true);
     } else {
       boolean isAdd = item.getId() == null;
       if(!isAdd) {
@@ -251,9 +248,7 @@ extends BasicView {
         }
       }
       form.setData(item, isAdd);
-      if(itemsPanesContainer != null) {
-        itemsPanesContainer.setVisible(false);
-      }
+      layout.setVisible(false);
       form.setVisible(true);
       addClassName(CSS.EDIT_FORM_EDITING);
     }
@@ -292,12 +287,7 @@ extends BasicView {
           request.data = (Identifiable<K>)diffCtx.data;
           request.fields = diffCtx.updateToNull;
           request.filter.assignId(itemWor.getId());
-          securityMgr.updateCheck(
-            dbGrid.entityInf.clazz
-          , dbGrid.entityInf.worClass
-          , request
-          , SecurityUtil.groups()
-          );
+          securityMgr.updateCheck(dbGrid.service, request, SecurityUtil.groups());
           CommonResponse<WOR> response = dbGrid.service.update(request);
           if(response.isOk()) {
             edit(null);

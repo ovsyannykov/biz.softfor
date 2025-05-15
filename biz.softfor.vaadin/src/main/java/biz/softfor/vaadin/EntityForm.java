@@ -22,10 +22,10 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
-import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.shared.Registration;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -40,13 +40,12 @@ import lombok.extern.java.Log;
 @Log
 public abstract class EntityForm
 <K extends Number, E extends Identifiable<K>, WOR extends Identifiable<K>>
-extends VerticalLayout implements LocaleChangeObserver, Secured {
+extends BasicView implements Secured {
 
   protected final String title;
   public final EntityFormColumns columns;
   protected final Validator validator;
   public final List<String> fields;
-  private final List<GridField<?, ?, E, ?>> grids;
   private final Span titleLbl;
   protected final FormLayout propertiesPane;
   protected final Binder<E> binder;
@@ -76,43 +75,52 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
   }
 
   protected EntityForm(String title, EntityFormColumns columns, Validator validator) {
+    super(title);
     this.title = title;
     this.columns = columns;
     this.validator = validator;
-    fields = new ArrayList<>();
-    grids = new ArrayList<>();
-    titleLbl = VaadinUtil.label(this.title);
-    HorizontalLayout toolbar = new HorizontalLayout(titleLbl);
-    toolbar.setAlignItems(FlexComponent.Alignment.CENTER);
-    add(toolbar);
-    propertiesPane = new FormLayout();
-    propertiesPane.addClassName(CSS.EDIT_FORM);
-    binder = new BeanValidationBinder<>(this.columns.entityInf.clazz);
-    setId(id(this.columns.entityInf.clazz));
     if(isAccessible()) {
-      Component c = propertiesPane;
+      fields = new ArrayList<>();
+      titleLbl = VaadinUtil.label(this.title);
+      binder = new BeanValidationBinder<>(this.columns.entityInf.clazz);
+      HorizontalLayout toolbar = new HorizontalLayout(titleLbl);
+      toolbar.setAlignItems(FlexComponent.Alignment.CENTER);
+      propertiesPane = new FormLayout(toolbar);
+      propertiesPane.addClassName(CSS.EDIT_FORM);
+      propertiesPane.setResponsiveSteps(
+        new FormLayout.ResponsiveStep("0", 1)
+      , new FormLayout.ResponsiveStep("30em", 2)
+      , new FormLayout.ResponsiveStep("45em", 3)
+      , new FormLayout.ResponsiveStep("60em", 4)
+      , new FormLayout.ResponsiveStep("75em", 5)
+      );
+      VerticalLayout formPane = new VerticalLayout(toolbar, propertiesPane);
+      List<GridField<?, ?, E, ?>> grids = new ArrayList<>();
       for(Map.Entry<String, ?> p
       : (Set<Map.Entry<String, ?>>)this.columns.entrySet()) {
         String fieldName = p.getKey();
         HasValue fieldCtl = (HasValue)p.getValue();
         binder.bind(fieldCtl, fieldName);
         if(fieldCtl instanceof GridField gridField) {
-          DbNamedColumn.fields(fields, gridField.columns, fieldName);
-          gridField.grid.setId(fieldGridId(gridField.dbName()));
-          grids.add(gridField);
+          GridField<?, ?, E, ?> g = gridField;
+          DbNamedColumn.fields(fields, g.columns, fieldName);
+          g.grid.setId(fieldGridId(g.dbName()));
+          g.setId(fieldId(g.dbName()));
+          grids.add(g);
         } else {
           fields.add(fieldName);
-          ((HasSize)fieldCtl).setWidthFull();
           propertiesPane.add((Component)fieldCtl);
+          ((HasSize)fieldCtl).setWidthFull();
         }
       }
-      add(c);
-      for(GridField<?, ?, E, ?> g : grids) {
-        g.getContent().setMargin(false);
-        g.getContent().setPadding(false);
-        g.grid.getStyle().setMargin("0px").setPadding("0px");
-        g.setId(fieldId(g.dbName()));
-        add(g);
+      if(grids.isEmpty()) {
+        add(formPane);
+      } else {
+        SplitLayout splitter = new SplitLayout(SplitLayout.Orientation.HORIZONTAL);
+        splitter.addToPrimary(formPane);
+        splitter.addToSecondary(grids.toArray(Component[]::new));
+        splitter.setSplitterPosition(65);
+        add(splitter);
       }
       if(isReadOnly()) {
         save = null;
@@ -150,15 +158,20 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
           }
         });
       }
-      cancel = new Button
-      (Text.Cancel, e -> fireEvent(new CancelEvent(this, oldData)));
+      cancel
+      = new Button(Text.Cancel, e -> fireEvent(new CancelEvent(this, oldData)));
       cancel.addClickShortcut(Key.ESCAPE);
       cancel.addThemeVariants
       (ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_SMALL);
       cancel.setId(cancelId());
       toolbar.add(cancel);
       setWidthFull();
+      setId(id(this.columns.entityInf.clazz));
     } else {
+      fields = null;
+      titleLbl = null;
+      binder = null;
+      propertiesPane = null;
       save = null;
       cancel = null;
     }
@@ -180,6 +193,7 @@ extends VerticalLayout implements LocaleChangeObserver, Secured {
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
+    super.localeChange(event);
     titleLbl.setText(getTranslation(title));
     if(save != null) {
       save.setText(getTranslation(Text.Save));
