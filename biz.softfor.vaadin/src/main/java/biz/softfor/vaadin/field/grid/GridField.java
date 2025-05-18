@@ -62,7 +62,7 @@ implements DbNamedColumn, LocaleChangeObserver {
     return dbName;
   }
 
-  public boolean filter(E v) {
+  private boolean filter(E v) {
     boolean result = true;
     for(GridColumn c : columns) {
       if(!((GridFieldColumn)c).filter(v)) {

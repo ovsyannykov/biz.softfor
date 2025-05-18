@@ -2,6 +2,7 @@ package biz.softfor.vaadin;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
@@ -25,6 +26,14 @@ public class VaadinUtil {
   public static final String RETPATH = "retpath";
   public final static String SLCT_ID_SFX = "-SLCT";
   public final static String VIEW_ID_SFX = "-VIEW";
+  public final static FormLayout.ResponsiveStep[] LAYOUT_STEPS = {
+    new FormLayout.ResponsiveStep("0", 1)
+  , new FormLayout.ResponsiveStep("36rem", 2)
+  , new FormLayout.ResponsiveStep("54rem", 3)
+  , new FormLayout.ResponsiveStep("72rem", 4)
+  , new FormLayout.ResponsiveStep("90rem", 5)
+  , new FormLayout.ResponsiveStep("108rem", 6)
+  };
 
   public static <E> Renderer<E> defaultRenderer(Function<E, String> label) {
     return LitRenderer.<E>of("${item.p}").withProperty("p", e -> label.apply(e));

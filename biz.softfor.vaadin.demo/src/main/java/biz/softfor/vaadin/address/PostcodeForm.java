@@ -35,11 +35,9 @@ public class PostcodeForm extends EntityForm<Integer, Postcode, PostcodeWor> {
           put(Postcode_.POSTCODE, new TextField(Postcode_.POSTCODE));
           DistrictField districtField
           = new DistrictField(Postcode_.DISTRICT, districts);
-          districtField.setClearButtonVisible(true);
           put(Postcode_.DISTRICT, districtField);
           ManyToOneField<Integer, City> cityField = new ManyToOneField<>
           (Postcode_.CITY, cities, City::getName, City::getName, List.of(City_.NAME));
-          cityField.setClearButtonVisible(true);
           put(Postcode_.CITY, cityField);
         }}
       , securityMgr

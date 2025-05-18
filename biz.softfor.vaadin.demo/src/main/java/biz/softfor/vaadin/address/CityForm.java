@@ -30,7 +30,6 @@ public class CityForm extends EntityForm<Integer, City, CityWor> {
       , new LinkedHashMap<String, Component>() {{
           put(City_.NAME, new TextField(City_.NAME));
           StateField sf = new StateField(City_.STATE, statesDbGrid);
-          sf.setClearButtonVisible(true);
           put(City_.STATE, sf);
           DistrictField df = new DistrictField(City_.DISTRICT, districtsDbGrid);
           put(City_.DISTRICT, df);

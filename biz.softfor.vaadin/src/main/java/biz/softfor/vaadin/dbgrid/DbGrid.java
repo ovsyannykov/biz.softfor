@@ -12,6 +12,8 @@ import biz.softfor.vaadin.DbNamedColumn;
 import biz.softfor.vaadin.GridColumn;
 import biz.softfor.vaadin.Text;
 import biz.softfor.vaadin.VaadinUtil;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -22,7 +24,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import com.vaadin.flow.shared.Registration;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class DbGrid
@@ -39,11 +44,12 @@ extends VerticalLayout implements LocaleChangeObserver {
   public final FormLayout filterBar;
 
   public GridLazyDataView<E> dataView;
-  private Consumer filter;
+  private Consumer<FilterId<K>> filter;
 
   private final Span title;
   private final Button filtrate;
-  private final Button clear;
+  public final Registration clearReg;
+  public final Button clearBtn;
 
   public static String clearId(Class<?> clazz) {
     return Text.Clear + "-" + clazz.getSimpleName() + VaadinUtil.GRID_ID_OBJ;
@@ -79,27 +85,17 @@ extends VerticalLayout implements LocaleChangeObserver {
     filtrate = new Button(Text.Filtrate, e -> updateView());
     filtrate.setId(filtrateId(clazz));
     toolbar.add(filtrate);
-    clear = new Button(Text.Clear, e -> {
-      for(DbGridColumn c : this.columns) {
-        c.component.clear();
-      }
-      for(DbGridColumn c : this.filters) {
-        c.component.clear();
-      }
+    clearBtn = new Button(Text.Clear);
+    clearReg = clearBtn.addClickListener(e -> {
+      filterClear();
+      updateView();
     });
-    clear.setId(clearId(clazz));
-    toolbar.add(clear);
+    clearBtn.setId(clearId(clazz));
+    toolbar.add(clearBtn);
     toolbar.setAlignItems(FlexComponent.Alignment.CENTER);
 
     filterBar = new FormLayout();
-    filterBar.setResponsiveSteps(
-      new FormLayout.ResponsiveStep("0", 1)
-    , new FormLayout.ResponsiveStep("36em", 2)
-    , new FormLayout.ResponsiveStep("54em", 3)
-    , new FormLayout.ResponsiveStep("72px", 4)
-    , new FormLayout.ResponsiveStep("90em", 5)
-    , new FormLayout.ResponsiveStep("108em", 6)
-    );
+    filterBar.setResponsiveSteps(VaadinUtil.LAYOUT_STEPS);
     for(DbGridColumn c : this.filters) {
       filterBar.add(c.component);
     }
@@ -110,21 +106,41 @@ extends VerticalLayout implements LocaleChangeObserver {
     updateView();
   }
 
-  public void filter(Consumer<? extends FilterId> filter) {
+  public Consumer<FilterId<K>> filter() {
+    return filter;
+  }
+
+  public void filter(Consumer<FilterId<K>> filter) {
     this.filter = filter;
     updateView();
+  }
+
+  public void filterClear() {
+    for(DbGridColumn c : this.columns) {
+      c.component.clear();
+    }
+    for(DbGridColumn c : this.filters) {
+      c.component.clear();
+    }
   }
 
   @Override
   public void localeChange(LocaleChangeEvent event) {
     title.setText(getTranslation(columns.title));
     filtrate.setText(getTranslation(Text.Filtrate));
-    clear.setText(getTranslation(Text.Clear));
+    clearBtn.setText(getTranslation(Text.Clear));
     GridColumn.localeChangeColumns(columns);
     GridColumn.localeChangeFilters(filters);
   }
 
   public final void updateView() {
+    Collection<E> v;
+    if(grid.getSelectionMode() == Grid.SelectionMode.MULTI) {
+      v = grid.asMultiSelect().getValue();
+    } else {
+      E e = grid.asSingleSelect().getValue();
+      v = e == null ? List.of() : List.of(e);
+    }
     readRequest.filter.reset();
     if(filter != null) {
       filter.accept(readRequest.filter);
@@ -137,6 +153,9 @@ extends VerticalLayout implements LocaleChangeObserver {
     }
     DbGridDataProvider<K, E> dp = new DbGridDataProvider<>(service, readRequest);
     dataView = grid.setItems(dp::get);
+    for(E ev : v) {
+      grid.select(ev);
+    }
   }
 
 }

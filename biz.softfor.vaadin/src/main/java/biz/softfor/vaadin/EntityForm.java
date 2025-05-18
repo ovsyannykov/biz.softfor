@@ -87,13 +87,7 @@ extends BasicView implements Secured {
       toolbar.setAlignItems(FlexComponent.Alignment.CENTER);
       propertiesPane = new FormLayout(toolbar);
       propertiesPane.addClassName(CSS.EDIT_FORM);
-      propertiesPane.setResponsiveSteps(
-        new FormLayout.ResponsiveStep("0", 1)
-      , new FormLayout.ResponsiveStep("30em", 2)
-      , new FormLayout.ResponsiveStep("45em", 3)
-      , new FormLayout.ResponsiveStep("60em", 4)
-      , new FormLayout.ResponsiveStep("75em", 5)
-      );
+      propertiesPane.setResponsiveSteps(VaadinUtil.LAYOUT_STEPS);
       VerticalLayout formPane = new VerticalLayout(toolbar, propertiesPane);
       List<GridField<?, ?, E, ?>> grids = new ArrayList<>();
       for(Map.Entry<String, ?> p
@@ -120,6 +114,7 @@ extends BasicView implements Secured {
         splitter.addToPrimary(formPane);
         splitter.addToSecondary(grids.toArray(Component[]::new));
         splitter.setSplitterPosition(65);
+        splitter.setWidthFull();
         add(splitter);
       }
       if(isReadOnly()) {
@@ -152,8 +147,8 @@ extends BasicView implements Secured {
             save.setEnabled(isValid(data));
           }
           catch(IllegalAccessException | IllegalArgumentException
-          | InstantiationException | InvocationTargetException | NoSuchMethodException
-          | SecurityException ex) {
+          | InstantiationException | InvocationTargetException
+          | NoSuchMethodException | SecurityException ex) {
             throw new ServerError(ex);
           }
         });

@@ -71,8 +71,8 @@ extends GridField<K, E, M, V> {
         dbGrid.grid.setSelectionMode(Grid.SelectionMode.MULTI);
         add = new Button(Text.Add, e -> {
           V current = getValue();
-          Consumer<? extends FilterId> filter = CollectionUtils.isEmpty(current)
-          ? null : f -> f.andAnd
+          Consumer<FilterId<K>> filter
+          = CollectionUtils.isEmpty(current) ? null : f -> f.andAnd
           (new Expr(Expr.NOT_IN, Identifiable.ID, Identifiable.idSet(current)));
           dbGrid.filter(filter);
           Dialog dialog = new Dialog(dbGrid);

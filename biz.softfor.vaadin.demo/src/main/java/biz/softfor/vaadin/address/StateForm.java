@@ -45,7 +45,6 @@ public class StateForm extends EntityForm<Integer, State, StateWor> {
           , Country::getFullname
           , List.of(Country_.NAME, Country_.FULLNAME)
           );
-          countryField.setClearButtonVisible(true);
           put(State_.COUNTRY, countryField);
         }}
       , securityMgr

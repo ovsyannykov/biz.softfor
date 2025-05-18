@@ -4,6 +4,7 @@ import biz.softfor.i18nutil.I18n;
 import static biz.softfor.i18nutil.I18nUtil.UKRAINIAN;
 import static biz.softfor.i18nutil.I18nUtil.add;
 import biz.softfor.vaadin.Text;
+import biz.softfor.vaadin.dbgrid.ManyToOneGridColumnComponent;
 import biz.softfor.vaadin.security.LoginView;
 import biz.softfor.vaadin.security.RegistrationForm;
 import static java.util.Locale.ENGLISH;
@@ -140,6 +141,10 @@ public class VaadinI18n {
     add(Text.Page_not_found, of(
       ENGLISH, "The requested page not found."
     , UKRAINIAN, "Запитана сторінка не знайдена."
+    ));
+    add(ManyToOneGridColumnComponent.Selected_only, of(
+      ENGLISH, "Selected only"
+    , UKRAINIAN, "Тільки обрані"
     ));
   }
 

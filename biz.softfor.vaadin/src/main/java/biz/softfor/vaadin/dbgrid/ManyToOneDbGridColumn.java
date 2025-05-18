@@ -45,7 +45,7 @@ extends DbGridColumn<M, Set<K>, ManyToOneGridColumnComponent<K, E>, Set<E>, MF> 
     super(
       dbName
     , new ManyToOneGridColumnComponent<>
-      (dbName, dbGrid, view, detail, involvedFields).configure()
+      (dbName, dbGrid, view, detail, involvedFields)
     , renderer
     , filter
     );

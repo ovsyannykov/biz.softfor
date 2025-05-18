@@ -109,7 +109,6 @@ public class PartnerForm extends EntityForm<Long, Partner, PartnerWor> {
           put(Partner_.ADDRESS, new TextField());
           ManyToOneField<Long, Partner> parentField
           = new PartnerField(Partner_.PARENT, partnersBasicDbGrid);
-          parentField.setClearButtonVisible(true);
           put(Partner_.PARENT, parentField);
           ManyToOneField<Integer, Postcode> postcodeField = new ManyToOneField<>(
             Partner_.POSTCODE
@@ -118,7 +117,6 @@ public class PartnerForm extends EntityForm<Long, Partner, PartnerWor> {
           , Postcode::getPostcode
           , List.of(Postcode_.POSTCODE)
           );
-          postcodeField.setClearButtonVisible(true);
           put(Partner_.POSTCODE, postcodeField);
           ManyToOneField<Short, LocationType> locTypeField = new ManyToOneField<>(
             Partner_.LOCATION_TYPE
@@ -127,7 +125,6 @@ public class PartnerForm extends EntityForm<Long, Partner, PartnerWor> {
           , LocationType::getDescr
           , List.of(LocationType_.NAME, LocationType_.DESCR)
           );
-          locTypeField.setClearButtonVisible(true);
           put(Partner_.LOCATION_TYPE, locTypeField);
           put(NOTE_KEY, new TextArea());
           put(PASSPORT_SERIES_KEY, new TextField());
@@ -178,8 +175,10 @@ public class PartnerForm extends EntityForm<Long, Partner, PartnerWor> {
     passportNumber = (TextField)columns.get(PASSPORT_NUMBER_KEY);
     passportDate = (DatePicker)columns.get(PASSPORT_DATE_KEY);
     passportIssued = (TextArea)columns.get(PASSPORT_ISSUED_KEY);
+    propertiesPane.setColspan(passportIssued, 2);
     married = (Checkbox)columns.get(MARRIED_KEY);
     note = (TextArea)columns.get(NOTE_KEY);
+    propertiesPane.setColspan(note, 2);
   }
 
   @Override

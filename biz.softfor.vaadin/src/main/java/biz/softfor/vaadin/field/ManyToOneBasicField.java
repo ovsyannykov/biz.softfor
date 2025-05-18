@@ -1,10 +1,10 @@
 package biz.softfor.vaadin.field;
 
 import biz.softfor.util.api.Identifiable;
+import biz.softfor.vaadin.CSS;
 import biz.softfor.vaadin.DbNamedColumn;
 import biz.softfor.vaadin.Text;
 import biz.softfor.vaadin.dbgrid.DbGrid;
-import static biz.softfor.vaadin.field.ToManyField.gridId;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.customfield.CustomField;
@@ -12,8 +12,8 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -28,11 +28,8 @@ implements DbNamedColumn {
   private final List<String> involvedFields;
   protected final TextField viewCtl;
   protected V value;
-  private final HorizontalLayout layout;
   private final Button clearBtn;
-  private boolean clearBtnAdded;
   private final Button selectBtn;
-  private boolean selectBtnAdded;
 
   public ManyToOneBasicField(
     String name
@@ -43,7 +40,7 @@ implements DbNamedColumn {
   ) {
     this.dbName = name;
     this.dbGrid = dbGrid;
-    dbGrid.grid.setId(gridId(this.dbName));
+    this.dbGrid.grid.setId(ToManyField.gridId(this.dbName));
     this.label = label;
     this.detail = detail;
     this.involvedFields = involvedFields;
@@ -51,7 +48,7 @@ implements DbNamedColumn {
     viewCtl.setReadOnly(true);
     viewCtl.setWidthFull();
     clearBtn = new Button(new Icon(VaadinIcon.CLOSE), e -> {
-      dbGrid.grid.deselectAll();
+      this.dbGrid.grid.deselectAll();
       updateModel();
     });
     clearBtn.addThemeVariants(
@@ -59,22 +56,23 @@ implements DbNamedColumn {
     , ButtonVariant.LUMO_TERTIARY_INLINE
     , ButtonVariant.LUMO_ERROR
     );
-    clearBtnAdded = false;
+    clearBtn.setVisible(false);
+    viewCtl.setSuffixComponent(clearBtn);
     selectBtn = new Button(new Icon(VaadinIcon.LIST_SELECT), e -> {
-      Dialog dialog = new Dialog(dbGrid);
-
+      this.dbGrid.updateView();
+      Dialog dialog = new Dialog(this.dbGrid);
       Button select = new Button(getTranslation(Text.Select), ev -> {
         updateModel();
         dialog.close();
       });
       select.setId(ToManyField.selectId());
-
-      Button cancel = new Button(getTranslation(Text.Cancel), ev -> dialog.close());
+      Button cancel
+      = new Button(getTranslation(Text.Cancel), ev -> dialog.close());
       cancel.setId(ToManyField.cancelId());
-
       dialog.getFooter().add(select, cancel);
       dialog.addThemeVariants(DialogVariant.LUMO_NO_PADDING);
       dialog.setMinWidth("32rem");
+      dialog.setWidth(CSS.AUTO);
       dialog.setHeightFull();
       dialog.setDraggable(true);
       dialog.setResizable(true);
@@ -82,12 +80,8 @@ implements DbNamedColumn {
     });
     selectBtn.addThemeVariants
     (ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY_INLINE);
-    selectBtnAdded = true;
-    layout = new HorizontalLayout(viewCtl, selectBtn);
-    layout.setPadding(false);
-    layout.setSpacing(false);
-    layout.getThemeList().add("spacing-xs");
-    add(layout);
+    viewCtl.setPrefixComponent(selectBtn);
+    add(viewCtl);
   }
 
   @Override
@@ -107,29 +101,18 @@ implements DbNamedColumn {
 
   public abstract V getModelValue();
 
-  public void setClearButtonVisible(boolean v) {
-    if(v && !clearBtnAdded) {
-      layout.add(clearBtn);
-    } else {
-      layout.remove(clearBtn);
-    }
-    clearBtnAdded = v;
-  }
-
   @Override
   public void setReadOnly(boolean v) {
-    if(v && !selectBtnAdded) {
-      layout.add(selectBtn);
-    } else {
-      layout.remove(selectBtn);
-    }
-    selectBtnAdded = v;
+    clearBtn.setVisible(!v);
+    selectBtn.setVisible(!v);
   }
 
   private void updateModel() {
     V v = getModelValue();
     setPresentationValue(v);
     setModelValue(v, true);
+    clearBtn.setVisible(v != null
+    && !((v instanceof Collection) && ((Collection)v).isEmpty()));
   }
 
 }

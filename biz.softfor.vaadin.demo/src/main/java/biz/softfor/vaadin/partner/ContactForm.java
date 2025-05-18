@@ -47,7 +47,6 @@ public class ContactForm extends EntityForm<Long, Contact, ContactWor> {
           , Appointment::getDescr
           , List.of(Appointment_.NAME, Appointment_.DESCR)
           );
-          appointmentField.setClearButtonVisible(true);
           put(Contact_.APPOINTMENT, appointmentField);
           put(Contact_.CONTACT_TYPE, new ManyToOneField<>(
             Contact_.CONTACT_TYPE
