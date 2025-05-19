@@ -1,4 +1,4 @@
-package biz.softfor.vaadin.user;
+package biz.softfor.vaadin;
 
 import biz.softfor.partner.jpa.Partner;
 import biz.softfor.partner.jpa.Partner_;
@@ -9,17 +9,14 @@ import biz.softfor.user.jpa.Role;
 import biz.softfor.user.jpa.User;
 import biz.softfor.user.jpa.User_;
 import biz.softfor.util.api.StdPath;
-import biz.softfor.vaadin.EntityForm;
-import biz.softfor.vaadin.EntityView;
-import biz.softfor.vaadin.GridColumn;
-import biz.softfor.vaadin.MainLayout;
-import biz.softfor.vaadin.NotFoundView;
 import biz.softfor.vaadin.dbgrid.DbGrid;
 import biz.softfor.vaadin.demo.App;
 import biz.softfor.vaadin.field.ToManyField;
 import biz.softfor.vaadin.partner.PartnersView;
 import biz.softfor.vaadin.security.LoginView;
 import biz.softfor.vaadin.security.ProfileView;
+import biz.softfor.vaadin.user.RolesView;
+import biz.softfor.vaadin.user.UsersView;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
