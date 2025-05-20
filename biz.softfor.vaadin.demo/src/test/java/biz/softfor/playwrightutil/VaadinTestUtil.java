@@ -64,9 +64,19 @@ public class VaadinTestUtil {
     }
     screenshot.get(page);
     page.locator("#" + ToManyField.selectId()).click();
-    page.locator("#" + dialogSlctId).waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.DETACHED));
+    page.locator("#" + dialogSlctId).waitFor
+    (new Locator.WaitForOptions().setState(WaitForSelectorState.DETACHED));
     screenshot.get(page);
     return result;
+  }
+
+  public static Object highlight(Locator locator) {
+    return locator.evaluate
+    ("e => {const r=e.style.border; e.style.border='2px solid red'; return r; }");
+  }
+
+  public static void unhighlight(Locator locator, Object originalStyle) {
+    locator.evaluate("e => e.style.border='" + originalStyle + "'");
   }
 
   public static void login

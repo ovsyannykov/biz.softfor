@@ -192,7 +192,7 @@ complex example:
 
 - [EntityFormColumns](src/main/java/biz/softfor/vaadin/EntityFormColumns.java) -
 Map of components that are allowed to be viewed and edited. Usage example:
-[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L97).
+[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L96).
 
 - [EntityView](src/main/java/biz/softfor/vaadin/EntityView.java) - displays
 data in tabular form, including **ManyToMany** and **OneToMany** relations, in
@@ -214,14 +214,14 @@ build process, when generating ***.messages** files, the missing values ​​wi
 replaced by default values corresponding to the first language in this list.
 You will also find warnings in the logs about each such replacement. For more
 information, see [biz.softfor.i18nutil](../biz.softfor.i18nutil). Usage example:
-[MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java#L51).
+[MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java#L57).
 
 ![LangSelector](doc/images/LangSelector.png)
 
 - [MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java) - includes
 the menu, application title, language switcher, login/logout and
 registration/profile buttons. Usage example:
-[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L27).
+[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L26).
 
 - [MenuItemData](src/main/java/biz/softfor/vaadin/MenuItemData.java) - contains
 data for creating a hierarchical menu. Usage example:
@@ -232,7 +232,7 @@ a component with a message that the requested page was not found.
 
 - [SideNavLocalized](src/main/java/biz/softfor/vaadin/SideNavLocalized.java) -
 side menu. Usage example as a SideNav inheritor:
-[MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java#L42).
+[MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java#L48).
 
 - [Text](src/main/java/biz/softfor/vaadin/Text.java) - common words and phrases
 in enterprise applications. These strings are used as keys for the
@@ -263,60 +263,60 @@ for a given user:
 - [BoolDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/BoolDbGridColumn.java) -
 a component for displaying Boolean values, can have the state "undefined",
 necessary for displaying and filtering NULL values. Usage example:
-[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L35).
+[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L33).
 <p align="center"><img src="doc/images/BoolDbGridColumn.png" alt="BoolDbGridColumn"></p>
 
 - [DateDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/DateDbGridColumn.java) -
 component for displaying dates and filtering by range. Usage example:
-[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L57)
+[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L61)
 <p align="center"><img src="doc/images/DateDbGridColumn.png" alt="DateDbGridColumn"></p>
 
 - [ComboBoxDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/ComboBoxDbGridColumn.java) -
 ComboBox for displaying and filtering sets of values, can have the state
 "undefined", which is necessary for displaying and filtering NULL values.
 Usage example:
-[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L53)
+[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L56)
 <p align="center"><img src="doc/images/ComboBoxDbGridColumn.png" alt="ComboBoxDbGridColumn"></p>
 
 - [ManyToOneDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/ManyToOneDbGridColumn.java) -
 component for displaying and filtering ManyToOne columns, in other words -
 values ​​from the reference table by identifier. Usage example:
-[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L60)
+[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L69)
 
 ![ManyToOneDbGridColumn](doc/images/ManyToOneDbGridColumn.png)
 
 - [NumberDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/NumberDbGridColumn.java) -
 component for displaying and filtering Short, Integer and Long values.
 Usage example:
-[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L64).
+[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L50).
 <p align="center"><img src="doc/images/NumberDbGridColumn.png" alt="NumberDbGridColumn"></p>
 
 - [TextDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/TextDbGridColumn.java) -
 component for displaying and filtering string values. Usage example:
-[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L34).
+[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L32).
 <p align="center"><img src="doc/images/TextDbGridColumn.png" alt="TextDbGridColumn"></p>
 
 ## Components of the biz.softfor.vaadin.field package
 
 - [DateRangePicker](src/main/java/biz/softfor/vaadin/field/DateRangePicker.java) -
 selecting a date range. Usage example:
-[DateDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/DateDbGridColumn.java#L31)
+[DateDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/DateDbGridColumn.java#L37)
 
 - [ManyToOneField](src/main/java/biz/softfor/vaadin/field/ManyToOneField.java) -
 selecting a value from a reference table. Usage example:
-[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L117).
+[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L113).
 
 ![ManyToOneField](doc/images/ManyToOneField.png)
 
 - [ToManyField](src/main/java/biz/softfor/vaadin/field/ToManyField.java) -
 displaying and editing the list of **OneToMany** and **ManyToMany** relationships.
 Usage example for OneToMany (Contacts):
-[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L141).
+[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L135).
 
 ![OneToManyField](doc/images/OneToManyField.png)
 
 And for ManyToMany (Groups):
-[UserForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/UserForm.java#L31).
+[UserForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/UserForm.java#L33).
 
 ![ManyToManyField](doc/images/ManyToManyField.png)
 In read-only mode, the delete and add buttons are not available.
@@ -328,14 +328,14 @@ contains a tabular display of data with sorting and filtering capabilities.
 Unlike DbGrid, it works with data pre-loaded into memory. And therefore the Grid
 content is filtered immediately as you type. Usage example (Contacts, Partner
 files, Users):
-[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L47).
+[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L45).
 
 ![GridField](doc/images/GridField.png)
 
 - [GridFields](src/main/java/biz/softfor/vaadin/field/grid/GridFields.java) -
 a list of GridField fields for displaying related ***ToMany** records together
 with DbGrid as part of EntityView. Usage example:
-[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L44).
+[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L42).
 
 - [GridFieldColumn](src/main/java/biz/softfor/vaadin/field/grid/GridFieldColumn.java) -
 base class for components that describe a GridField column and implement methods
@@ -359,12 +359,12 @@ ComboBox for displaying and filtering sets of values, can have the state
 - [NumberGridFieldColumn](src/main/java/biz/softfor/vaadin/field/grid/NumberGridFieldColumn.java) -
 component for displaying and filtering Short, Integer and Long values.
 Usage example:
-[RoleGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleGridFieldColumns.java#L47).
+[RoleGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleGridFieldColumns.java#L36).
 <p align="center"><img src="doc/images/NumberGridFieldColumn.png" alt="NumberGridFieldColumn"></p>
 
 - [TextGridFieldsColumn](src/main/java/biz/softfor/vaadin/field/grid/TextGridFieldsColumn.java) -
 component for displaying and filtering string values. Usage example:
-[RoleGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleGridFieldColumns.java#L25).
+[RoleGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleGridFieldColumns.java#L26).
 <p align="center"><img src="doc/images/TextGridFieldsColumn.png" alt="TextGridFieldsColumn"></p>
 
 ## Components of the biz.softfor.vaadin.security package

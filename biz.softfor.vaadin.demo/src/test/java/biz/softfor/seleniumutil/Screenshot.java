@@ -13,9 +13,10 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 public class Screenshot {
 
   public final static String SCREENSHOT_DIR = "./screenlog/";
+  public final static String SCREENSHOT_NAME_TPL = "yyyyMMdd_HHmmss_SSS";
 
   public static Supplier<String> dateTimeMs(String dir) {
-    return () -> dir + new SimpleDateFormat("yyyyMMdd_HHmmss_SSS")
+    return () -> dir + new SimpleDateFormat(SCREENSHOT_NAME_TPL)
     .format(new Date()) + ".png";
   }
 

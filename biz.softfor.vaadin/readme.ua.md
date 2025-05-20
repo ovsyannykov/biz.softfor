@@ -192,7 +192,7 @@ Java Bean Validation. Крім наведеного вище, ось більш 
 
 - [EntityFormColumns](src/main/java/biz/softfor/vaadin/EntityFormColumns.java) -
 *Map* компонентів, дозволених для перегляду та редагування. Приклад використання:
-[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L97).
+[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L96).
 
 - [EntityView](src/main/java/biz/softfor/vaadin/EntityView.java) - відображає
 дані в табличній формі, включаючи відношення **ManyToMany** та **OneToMany**,
@@ -215,14 +215,14 @@ biz.softfor.locales=en,uk
 знайдете попередження про кожну таку заміну. Докладніше про це дивіться у
 [biz.softfor.i18nutil](../biz.softfor.i18nutil)
 Приклад використання:
-[MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java#L51).
+[MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java#L57).
 
 ![LangSelector](doc/images/LangSelector.png)
 
 - [MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java) - містить меню,
 заголовок програми, перемикач мови, кнопки входу/виходу та реєстрації/профілю.
 Приклад використання:
-[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L27).
+[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L26).
 
 - [MenuItemData](src/main/java/biz/softfor/vaadin/MenuItemData.java) - містить
 дані для створення ієрархічного меню. Приклад використання:
@@ -233,7 +233,7 @@ biz.softfor.locales=en,uk
 
 - [SideNavLocalized](src/main/java/biz/softfor/vaadin/SideNavLocalized.java) -
 бічне меню. Приклад використання як спадкоємця SideNav:
-[MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java#L42).
+[MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java#L48).
 
 - [Text](src/main/java/biz/softfor/vaadin/Text.java) - загальновживані слова
 та фрази в корпоративних додатках. Ці рядки використовуються як ключі для
@@ -266,60 +266,60 @@ biz.softfor.locales=en,uk
 компонент для відображення булевих значень, може мати стан
 "не визначено", необхідний для відображення та фільтрації NULL-значень.
 Приклад використання:
-[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L35).
+[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L33).
 <p align="center"><img src="doc/images/BoolDbGridColumn.png" alt="BoolDbGridColumn"></p>
 
 - [DateDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/DateDbGridColumn.java) -
 компонент для відображення дат та фільтрації за діапазоном. Приклад використання:
-[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L57)
+[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L61)
 <p align="center"><img src="doc/images/DateDbGridColumn.png" alt="DateDbGridColumn"></p>
 
 - [ComboBoxDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/ComboBoxDbGridColumn.java) -
 ComboBox для відображення та фільтрації наборів значень може мати стан
 "не визначено", необхідний для відображення та фільтрації NULL-значень.
 Приклад використання:
-[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L53)
+[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L56)
 <p align="center"><img src="doc/images/ComboBoxDbGridColumn.png" alt="ComboBoxDbGridColumn"></p>
 
 - [ManyToOneDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/ManyToOneDbGridColumn.java) -
 компонент для відображення та фільтрації ManyToOne-колонки, іншими словами -
 значення з довідника щодо ідентифікатора. Приклад використання:
-[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L60)
+[PartnerDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerDbGridColumns.java#L69)
 
 ![ManyToOneDbGridColumn](doc/images/ManyToOneDbGridColumn.png)
 
 - [NumberDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/NumberDbGridColumn.java) -
 компонент для відображення та фільтрації Short, Integer та Long значень.
 Приклад використання:
-[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L64).
+[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L50).
 <p align="center"><img src="doc/images/NumberDbGridColumn.png" alt="NumberDbGridColumn"></p>
 
 - [TextDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/TextDbGridColumn.java) -
 компонент для відображення та фільтрації текстових значень. Приклад використання:
-[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L34).
+[RoleDbGridColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleDbGridColumns.java#L32).
 <p align="center"><img src="doc/images/TextDbGridColumn.png" alt="TextDbGridColumn"></p>
 
 ## Компоненти пакету biz.softfor.vaadin.field
 
 - [DateRangePicker](src/main/java/biz/softfor/vaadin/field/DateRangePicker.java) -
 вибір діапазону дат. Приклад використання:
-[DateDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/DateDbGridColumn.java#L31)
+[DateDbGridColumn](src/main/java/biz/softfor/vaadin/dbgrid/DateDbGridColumn.java#L37)
 
 - [ManyToOneField](src/main/java/biz/softfor/vaadin/field/ManyToOneField.java) -
 вибір значення із довідника. Приклад використання:
-[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L117).
+[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L113).
 
 ![ManyToOneField](doc/images/ManyToOneField.png)
 
 - [ToManyField](src/main/java/biz/softfor/vaadin/field/ToManyField.java) -
 відображення та редагування списку **OneToMany** та **ManyToMany** зв'язків.
 Приклад використання для OneToMany (Contacts):
-[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L141).
+[PartnerForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnerForm.java#L135).
 
 ![OneToManyField](doc/images/OneToManyField.png)
 
 Та для ManyToMany (Groups):
-[UserForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/UserForm.java#L31).
+[UserForm](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/UserForm.java#L33).
 
 ![ManyToManyField](doc/images/ManyToManyField.png)
 У режимі "тільки для читання" немає кнопок видалення та додавання.
@@ -331,14 +331,14 @@ ComboBox для відображення та фільтрації наборі�
 На відміну від DbGrid працює із попередньо завантаженими у пам'ять даними.
 І тому фільтрація вмісту Grid виконується відразу під час введення.
 Приклад використання (Contacts, Partner files, Users):
-[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L47).
+[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L45).
 
 ![GridField](doc/images/GridField.png)
 
 - [GridFields](src/main/java/biz/softfor/vaadin/field/grid/GridFields.java) -
 список полів GridField для відображення пов'язаних ***ToMany** записів спільно з
 DbGrid у складі EntityView. Приклад використання:
-[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L44).
+[PartnersView](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/partner/PartnersView.java#L42).
 
 - [GridFieldColumn](src/main/java/biz/softfor/vaadin/field/grid/GridFieldColumn.java) -
 базовий клас для компонентів, що описують колонку GridField та реалізують методи
@@ -364,12 +364,12 @@ ComboBox для відображення та фільтрації наборі�
 - [NumberGridFieldColumn](src/main/java/biz/softfor/vaadin/field/grid/NumberGridFieldColumn.java) -
 компонент для відображення та фільтрації Short, Integer та Long значень. Приклад
 використання:
-[RoleGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleGridFieldColumns.java#L47).
+[RoleGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleGridFieldColumns.java#L36).
 <p align="center"><img src="doc/images/NumberGridFieldColumn.png" alt="NumberGridFieldColumn"></p>
 
 - [TextGridFieldsColumn](src/main/java/biz/softfor/vaadin/field/grid/TextGridFieldsColumn.java) -
 компонент для відображення та фільтрації текстових значень. Приклад використання:
-[RoleGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleGridFieldColumns.java#L25).
+[RoleGridFieldColumns](../biz.softfor.vaadin.demo/src/main/java/biz/softfor/vaadin/user/RoleGridFieldColumns.java#L26).
 <p align="center"><img src="doc/images/TextGridFieldsColumn.png" alt="TextGridFieldsColumn"></p>
 
 ## Компоненти пакету biz.softfor.vaadin.security

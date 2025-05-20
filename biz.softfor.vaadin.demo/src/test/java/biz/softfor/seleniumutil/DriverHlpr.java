@@ -13,7 +13,6 @@ public class DriverHlpr {
   public final static Duration LWAIT = Duration.ofSeconds(50);
   public final static Duration POLLING_WAIT = Duration.ofMillis(500);
   public final static Duration JS_WAIT = Duration.ofMillis(120);
-  public final static String SCREENSHOT_NAME_TPL = "yyyyMMdd_HHmmss_SSS";
 
   public final RemoteWebDriver driver;
   public final Actions act;

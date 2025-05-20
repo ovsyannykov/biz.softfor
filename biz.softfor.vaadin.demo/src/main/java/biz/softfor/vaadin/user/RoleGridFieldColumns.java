@@ -20,32 +20,20 @@ import org.springframework.context.annotation.Scope;
 public class RoleGridFieldColumns extends GridFieldColumns<Long, Role> {
 
   public RoleGridFieldColumns(SecurityMgr securityMgr) {
-    super(securityMgr
+    super(
+      securityMgr
     , Role.class
     , new TextGridFieldsColumn<>(Role_.NAME, Role::getName)
-    , new BoolGridFieldColumn<>(
-        Role_.IS_URL
-      , BooleansEnum.DEFINED_VALUES
-      , Role::getIsUrl
-      )
-    , new BoolGridFieldColumn<>(
-        Role_.UPDATE_FOR
-      , BooleansEnum.DEFINED_VALUES
-      , Role::getUpdateFor
-      )
-    , new BoolGridFieldColumn<>(
-        Role_.DISABLED
-      , BooleansEnum.DEFINED_VALUES
-      , Role::getDisabled
-      )
-    , new BoolGridFieldColumn<>(
-        Role_.ORPHAN
-      , BooleansEnum.DEFINED_VALUES
-      , Role::getDisabled
-      )
+    , new BoolGridFieldColumn<>
+      (Role_.IS_URL, BooleansEnum.DEFINED_VALUES, Role::getIsUrl)
+    , new BoolGridFieldColumn<>
+      (Role_.UPDATE_FOR, BooleansEnum.DEFINED_VALUES, Role::getUpdateFor)
+    , new BoolGridFieldColumn<>
+      (Role_.DISABLED, BooleansEnum.DEFINED_VALUES, Role::getDisabled)
+    , new BoolGridFieldColumn<>
+      (Role_.ORPHAN, BooleansEnum.DEFINED_VALUES, Role::getDisabled)
     , new TextGridFieldsColumn<>(Role_.OBJ_NAME, Role::getObjName)
-    , new NumberGridFieldColumn<Role, Long, LongField>
-      (Role_.ID, LongField.class, Role::getId)
+    , new NumberGridFieldColumn<>(Role_.ID, LongField.class, Role::getId)
     );
   }
 

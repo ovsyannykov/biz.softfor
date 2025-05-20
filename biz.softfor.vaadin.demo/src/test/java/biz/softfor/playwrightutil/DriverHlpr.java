@@ -7,7 +7,6 @@ public class DriverHlpr {
 
   public final static WaitForOptions wait = new WaitForOptions().setTimeout(10000);
   public final static WaitForOptions lwait = new WaitForOptions().setTimeout(50000);
-  public final static String SCREENSHOT_NAME_TPL = "yyyyMMdd_HHmmss_SSS";
 
   public final Page page;
   public final int port;

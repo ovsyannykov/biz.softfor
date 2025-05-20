@@ -17,6 +17,7 @@ import biz.softfor.vaadin.security.LoginView;
 import biz.softfor.vaadin.security.ProfileView;
 import biz.softfor.vaadin.user.RolesView;
 import biz.softfor.vaadin.user.UsersView;
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.junit.UsePlaywright;
 import org.junit.jupiter.api.Test;
@@ -54,13 +55,21 @@ public class ForDocTest {
 
     name = "GridField";
     page.navigate(StdPath.locationUri(port, PartnersView.PATH));
+    Locator gridFieldLocator = page.locator
+    ("//vaadin-vertical-layout/vaadin-vertical-layout[.//span[text()='Contacts']]");
+    Object gridFieldStyle = null;
     String entityViewGridId = EntityView.gridId(Partner.class);
     page.locator("#" + entityViewGridId).waitFor(DriverHlpr.wait);
+    screenshot.get(page, name + 0);
     String[] rows = { "First Co", "John", "Mike", "Plimuth Tax Cons." };
     for(int i = 0; i < rows.length; ++i) {
+      if(i == 0) {
+        gridFieldStyle = VaadinTestUtil.highlight(gridFieldLocator);
+      }
       page.click("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='" + rows[i] + "']");
-      screenshot.get(page, name + i);
+      screenshot.get(page, name + (i + 1));
     }
+    VaadinTestUtil.unhighlight(gridFieldLocator, gridFieldStyle);
 
     name = "EntityView";
     screenshot.get(page, name + 0);
@@ -83,9 +92,7 @@ public class ForDocTest {
 
     name = "EntityForm";
     String entityFormId = EntityForm.id(Partner.class);
-    String entityRowId = "//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='Legal entity']";
-    page.click(entityRowId);
-    page.dblclick(entityRowId);
+    page.dblclick("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='Legal entity']");
     page.locator("#" + entityFormId).waitFor(DriverHlpr.wait);
     screenshot.get(page, name);
 
@@ -108,100 +115,122 @@ public class ForDocTest {
 
     name = "ManyToOneField";
     String manyToOneField = "//*[@id='" + entityFormId + "']//vaadin-custom-field[label[text()='Location type']]";
-    page.locator(manyToOneField).scrollIntoViewIfNeeded();
+    Locator manyToOneFieldLocator = page.locator(manyToOneField);
+    manyToOneFieldLocator.scrollIntoViewIfNeeded();
     screenshot.get(page, name + 0);
-    page.click(manyToOneField + "//vaadin-button[1]");
+    Object manyToOneFieldStyle = VaadinTestUtil.highlight(manyToOneFieldLocator);
+    screenshot.get(page, name + 1);
+    page.click(manyToOneField + "/vaadin-text-field/vaadin-button[2]");
     String locationTypeGridId = ToManyField.gridId(Partner_.LOCATION_TYPE);
-    Thread.sleep(100);
     String manyToOneFieldSelectedXp = "//*[@id='" + locationTypeGridId + "']/vaadin-grid-cell-content[text()='branch'][1]";
     page.locator(manyToOneFieldSelectedXp).scrollIntoViewIfNeeded();
     page.click(manyToOneFieldSelectedXp);
-    screenshot.get(page, name + 1);
+    screenshot.get(page, name + 2);
     page.locator("#" + ToManyField.selectId()).click();
     page.locator("#" + locationTypeGridId).waitFor(VaadinTestUtil.DETACHED);
-    screenshot.get(page, name + 2);
+    screenshot.get(page, name + 3);
+    VaadinTestUtil.unhighlight(manyToOneFieldLocator, manyToOneFieldStyle);
     page.click("#" + EntityForm.saveId());
     page.locator("#" + entityViewGridId).waitFor(DriverHlpr.wait);
-    String filterLocationTypeCss = "#" + GridColumn.columnFilterId(Partner_.LOCATION_TYPE) + " vaadin-button:nth-child(2)";
-    page.locator(filterLocationTypeCss).scrollIntoViewIfNeeded();
-    screenshot.get(page, name + 3);
+    Locator manyToOneCell = page.locator("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='branch']");
+    manyToOneCell.scrollIntoViewIfNeeded();
+    Object manyToOneCellStyle = VaadinTestUtil.highlight(manyToOneCell);
+    screenshot.get(page, name + 4);
+    VaadinTestUtil.unhighlight(manyToOneCell, manyToOneCellStyle);
 
     name = "ManyToOneDbGridColumn";
+    Locator m2oDbGridColumn = page.locator("#" + GridColumn.columnFilterId(Partner_.LOCATION_TYPE));
     page.click("#" + DbGrid.clearId(Partner.class));
     page.click("#" + filtrateId);
-    page.locator(filterLocationTypeCss).scrollIntoViewIfNeeded();
+    m2oDbGridColumn.scrollIntoViewIfNeeded();
     screenshot.get(page, name + 0);
-    page.click(filterLocationTypeCss);
-    page.locator("#" + locationTypeGridId).scrollIntoViewIfNeeded();
+    Object m2oDbGridColumnStyle = VaadinTestUtil.highlight(m2oDbGridColumn);
     screenshot.get(page, name + 1);
+    m2oDbGridColumn.locator("//vaadin-button[2]").click();
+    page.locator("#" + locationTypeGridId).scrollIntoViewIfNeeded();
+    screenshot.get(page, name + 2);
     page.click("//*[@id='" + locationTypeGridId + "']/vaadin-grid-cell-content"
     + "[text()='main office']/preceding-sibling::*[1]/vaadin-checkbox");
-    screenshot.get(page, name + 2);
+    screenshot.get(page, name + 3);
     page.locator("#" + ToManyField.selectId()).click();
     page.locator("#" + locationTypeGridId).waitFor(VaadinTestUtil.DETACHED);
-    screenshot.get(page, name + 3);
+    screenshot.get(page, name + 4);
     page.click("#" + filtrateId);
     page.locator("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='office']")
     .waitFor(VaadinTestUtil.DETACHED);
-    screenshot.get(page, name + 4);
+    screenshot.get(page, name + 5);
+    VaadinTestUtil.unhighlight(m2oDbGridColumn, m2oDbGridColumnStyle);
 
     name = "ManyToManyField";
+    Locator m2mFieldRo
+    = page.locator("//*[@id='" + EntityView.id(User.class) + "']/vaadin-split-layout/vaadin-vertical-layout/vaadin-vertical-layout[.//span[text()='Groups']]");
+    Locator m2mField = page.locator("#" + EntityForm.fieldId(User_.GROUPS));
     page.navigate(StdPath.locationUri(port, UsersView.PATH));
     entityViewGridId = EntityView.gridId(User.class);
     page.locator("#" + entityViewGridId).waitFor(DriverHlpr.wait);
+    screenshot.get(page, name + 0);
+    Object m2mFieldRoStyle = VaadinTestUtil.highlight(m2mFieldRo);
+    screenshot.get(page, name + 1);
     String[] entities = { "admin", "user", "manager" };
     for(int i = 0; i < entities.length; ++i) {
       page.click("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='" + entities[i] + "']");
-      screenshot.get(page, name + i);
+      screenshot.get(page, name + (i + 2));
     }
     entityFormId = EntityForm.id(User.class);
     page.dblclick("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='manager']");
     page.locator("#" + entityFormId).waitFor(DriverHlpr.wait);
-    page.locator("#" + EntityForm.fieldId(User_.GROUPS)).scrollIntoViewIfNeeded();
-    screenshot.get(page, name + 3);
+    m2mField.scrollIntoViewIfNeeded();
+    screenshot.get(page, name + 5);
+    Object m2mFieldStyle = VaadinTestUtil.highlight(m2mField);
+    screenshot.get(page, name + 6);
     String m2mGridId = EntityForm.fieldGridId(User_.GROUPS);
     page.click("#" + ToManyField.addId(User_.GROUPS));
     String dialogSlctId = ToManyField.gridId(User_.GROUPS);
-    page.locator("#" + dialogSlctId).waitFor(DriverHlpr.wait);
-    Thread.sleep(100);
-    screenshot.get(page, name + 4);
+    page.locator("#" + dialogSlctId).scrollIntoViewIfNeeded();
+    screenshot.get(page, name + 7);
     String[] addRows = { "CITIES_EDITORS", "COUNTRIES_EDITORS", "USER" };
     for(String addRow : addRows) {
       page.click("//*[@id='" + dialogSlctId + "']/vaadin-grid-cell-content"
       + "[text()='" + addRow + "']/preceding-sibling::*[1]/vaadin-checkbox");
     }
-    screenshot.get(page, name + 5);
-    page.locator("#" + ToManyField.selectId()).click();
+    screenshot.get(page, name + 8);
+    page.click("#" + ToManyField.selectId());
     page.locator("#" + dialogSlctId).waitFor(VaadinTestUtil.DETACHED);
-    screenshot.get(page, name + 6);
+    screenshot.get(page, name + 9);
     String deletedRowXp = "//*[@id='" + m2mGridId + "']/vaadin-grid-cell-content[text()='USER']";
     page.click(deletedRowXp);
-    screenshot.get(page, name + 7);
+    screenshot.get(page, name + 10);
     page.click("#" + ToManyField.deleteId(User_.GROUPS));
     page.locator(deletedRowXp).waitFor(VaadinTestUtil.HIDDEN);
-    screenshot.get(page, name + 8);
+    screenshot.get(page, name + 11);
+    VaadinTestUtil.unhighlight(m2mField, m2mFieldStyle);
     page.click("#" + EntityForm.saveId());
     page.locator("#" + entityFormId).waitFor(VaadinTestUtil.HIDDEN);
-    screenshot.get(page, name + 9);
+    screenshot.get(page, name + 12);
+    VaadinTestUtil.unhighlight(m2mFieldRo, m2mFieldRoStyle);
 
     name = "UserDbGridFilter";
     page.navigate(StdPath.locationUri(port, RolesView.PATH));
     entityViewGridId = EntityView.gridId(Role.class);
     page.locator("#" + entityViewGridId).waitFor(DriverHlpr.wait);
     screenshot.get(page, name + 0);
-    dialogSlctId = ToManyField.gridId(User.TITLE);
-    page.click("//vaadin-form-layout/vaadin-custom-field/vaadin-horizontal-layout/vaadin-button");
-    page.locator("//*[@id='" + dialogSlctId + "']").waitFor(DriverHlpr.wait);
-    Thread.sleep(100);
+    Locator gridFilter = page.locator("//vaadin-custom-field[label[text()='User']]");
+    Object gridFilterStyle = VaadinTestUtil.highlight(gridFilter);
     screenshot.get(page, name + 1);
-    page.click("//*[@id='" + dialogSlctId + "']/vaadin-grid-cell-content[text()='" + ADMIN_USER + "']");
+    dialogSlctId = ToManyField.gridId(User.TITLE);
+    gridFilter.locator("xpath=/vaadin-text-field/vaadin-button[2]").click();
+    page.locator("//*[@id='" + dialogSlctId + "']").scrollIntoViewIfNeeded();
     screenshot.get(page, name + 2);
+    page.click("//*[@id='" + dialogSlctId + "']/vaadin-grid-cell-content[text()='" + ADMIN_USER + "']");
+    screenshot.get(page, name + 3);
     page.click("#" + ToManyField.selectId());
     page.locator("#" + dialogSlctId).waitFor(VaadinTestUtil.DETACHED);
-    screenshot.get(page, name + 3);
+    screenshot.get(page, name + 4);
     page.click("#" + DbGrid.filtrateId(Role.class));
     page.waitForSelector("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='Users']");
-    screenshot.get(page, name + 4);
+    screenshot.get(page, name + 5);
+    page.click("#" + DbGrid.clearId(Role.class));
+    VaadinTestUtil.unhighlight(gridFilter, gridFilterStyle);
 
     name = "ProfileView";
     page.navigate(StdPath.locationUri(port, ProfileView.PATH));

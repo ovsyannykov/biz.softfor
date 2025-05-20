@@ -30,21 +30,12 @@ public class RoleDbGridColumns extends DbGridColumns<Long, Role> {
   public RoleDbGridColumns(SecurityMgr securityMgr) {
     super(Role.TABLE, securityMgr, Role.class
     , new TextDbGridColumn<>(Role_.NAME, RoleFltr::setName)
-    , new BoolDbGridColumn<>(
-        Role_.ORPHAN
-      , BooleansEnum.DEFINED_VALUES
-      , Role::getOrphan
-      )
-    , new BoolDbGridColumn<>(
-        Role_.DENIED_FOR_ALL
-      , BooleansEnum.DEFINED_VALUES
-      , Role::getDeniedForAll
-      )
-    , new BoolDbGridColumn<>(
-        Role_.DISABLED
-      , BooleansEnum.DEFINED_VALUES
-      , Role::getDisabled
-      )
+    , new BoolDbGridColumn<>
+      (Role_.ORPHAN, BooleansEnum.DEFINED_VALUES, Role::getOrphan)
+    , new BoolDbGridColumn<>
+      (Role_.DENIED_FOR_ALL, BooleansEnum.DEFINED_VALUES, Role::getDeniedForAll)
+    , new BoolDbGridColumn<>
+      (Role_.DISABLED, BooleansEnum.DEFINED_VALUES, Role::getDisabled)
     , new ComboBoxDbGridColumn<>(
         Role_.DEFAULT_ACCESS
       , DefaultAccess.VALUES
@@ -53,16 +44,12 @@ public class RoleDbGridColumns extends DbGridColumns<Long, Role> {
       )
     , new BoolDbGridColumn<>
       (Role_.IS_URL, BooleansEnum.DEFINED_VALUES, Role::getIsUrl)
-    , new BoolDbGridColumn<>(
-        Role_.UPDATE_FOR
-      , BooleansEnum.DEFINED_VALUES
-      , Role::getUpdateFor
-      )
+    , new BoolDbGridColumn<>
+      (Role_.UPDATE_FOR, BooleansEnum.DEFINED_VALUES, Role::getUpdateFor)
     , new TextDbGridColumn<>(Role_.OBJ_NAME, RoleFltr::setObjName)
     , new NumberDbGridColumn<Role, Long, LongField, RoleFltr>
       (Role_.ID, LongField.class, RoleFltr::assignId)
-    , new TextDbGridColumn<>
-      (Role_.DESCRIPTION, RoleFltr::setDescription)
+    , new TextDbGridColumn<>(Role_.DESCRIPTION, RoleFltr::setDescription)
     );
   }
 
