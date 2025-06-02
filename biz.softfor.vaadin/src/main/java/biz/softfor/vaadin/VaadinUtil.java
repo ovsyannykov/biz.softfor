@@ -4,6 +4,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.textfield.HasAutocomplete;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.dom.Style;
@@ -63,6 +64,11 @@ public class VaadinUtil {
       }
       ui.navigate(to, qps);
     }
+  }
+
+  public static void autocompleteOff(HasAutocomplete field) {
+    field.getElement()
+    .setAttribute(HasAutocomplete.AUTOCOMPLETE_ATTRIBUTE, "new-password");
   }
 
   public static void returnToRetPath() {

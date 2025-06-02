@@ -17,6 +17,8 @@ public class RegistrationForm extends ProfileForm {
   , PasswordEncoder passwordEncoder
   ) {
     super(Text.REGISTRATION, columns, validator, passwordEncoder);
+    password.setRequiredIndicatorVisible(true);
+    confirmPassword.setRequiredIndicatorVisible(true);
   }
 
 }

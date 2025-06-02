@@ -5,7 +5,7 @@ import biz.softfor.user.jpa.UserWor;
 import biz.softfor.user.jpa.User_;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.Text;
-import static biz.softfor.vaadin.security.ProfileForm.Passwords_do_not_match;
+import biz.softfor.vaadin.VaadinUtil;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.PasswordField.PasswordFieldI18n;
 import com.vaadin.flow.data.binder.ValidationResult;
@@ -27,7 +27,7 @@ public class ProfileForm extends EntityForm<Long, User, UserWor> {
 
   private final PasswordEncoder passwordEncoder;
   protected final PasswordField password;
-  private final PasswordField confirmPassword;
+  protected final PasswordField confirmPassword;
   private boolean enablePasswordValidation;
 
   protected ProfileForm(
@@ -39,13 +39,13 @@ public class ProfileForm extends EntityForm<Long, User, UserWor> {
     super(title, columns, validator);
     this.passwordEncoder = passwordEncoder;
     password = (PasswordField)columns.get(User_.PASSWORD);
-    confirmPassword = new PasswordField();
-    confirmPassword.setRequiredIndicatorVisible(true);
-    propertiesPane.add(confirmPassword);
-    confirmPassword.addValueChangeListener(e -> {
+    VaadinUtil.autocompleteOff(password);
+    confirmPassword = new PasswordField(e -> {
       enablePasswordValidation = true;
       binder.validate();
     });
+    VaadinUtil.autocompleteOff(confirmPassword);
+    propertiesPane.add(confirmPassword);
     binder.forField(password).withValidator(this::passwordValidator)
     .bind(User_.PASSWORD);
   }
@@ -58,6 +58,9 @@ public class ProfileForm extends EntityForm<Long, User, UserWor> {
   ) {
     this(Text.PROFILE, columns, validator, passwordEncoder);
     fields.remove(User_.PASSWORD);
+    password.setRequiredIndicatorVisible(false);
+    password.addValueChangeListener(e -> confirmPassword
+    .setRequiredIndicatorVisible(StringUtils.isNotEmpty(e.getValue())));
   }
 
   @Override
@@ -81,9 +84,8 @@ public class ProfileForm extends EntityForm<Long, User, UserWor> {
   protected User onSave(User data) {
     User result = super.onSave(data);
     String pwd = result.getPassword();
-    if(pwd != null) {
-      result.setPassword(passwordEncoder.encode(pwd));
-    }
+    pwd = StringUtils.isBlank(pwd) ? null : passwordEncoder.encode(pwd);
+    result.setPassword(pwd);
     return result;
   }
 

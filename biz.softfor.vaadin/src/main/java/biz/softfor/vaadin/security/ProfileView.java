@@ -33,13 +33,10 @@ public class ProfileView extends BasicView {
 
   public final static String PATH = Text.PROFILE;
 
-  private final SecurityMgr securityMgr;
   private final UserSvc service;
 
-  public ProfileView
-  (SecurityMgr securityMgr, ProfileForm profileForm, UserSvc service) {
+  public ProfileView(ProfileForm profileForm, UserSvc service) {
     super(Text.PROFILE);
-    this.securityMgr = securityMgr;
     this.service = service;
     String username = SecurityUtil.getAuthentication().getName();
     UserRequest.Read request = new UserRequest.Read();
@@ -73,7 +70,6 @@ public class ProfileView extends BasicView {
         request.data = (UserWor)diffCtx.data;
         request.fields = diffCtx.updateToNull;
         request.filter.assignId(itemWor.getId());
-        securityMgr.updateCheck(service, request, SecurityUtil.groups());
         CommonResponse<UserWor> response = service.update(request);
         if(response.isOk()) {
           VaadinUtil.returnToRetPath();
