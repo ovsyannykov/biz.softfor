@@ -1,17 +1,17 @@
 --defaultAccess: 0-ALL, 1-AUTHENTICATED, 2-NOBODY
 --updateFor: 0-read, 1-update
 --typ: 0-class, 1-field, 2-method,URL
-insert into roles(defaultAccess, isUrl, disabled, orphan, updateFor, objName, id, name, description) values
- (0,0,0,0,0,'biz.softfor.partner.jpa.Partner.partnerName',roleId(0,'biz.softfor.partner.jpa.Partner.partnerName',1),'Partner#partnerName','biz.softfor.partner.jpa Partner#partnerName')
-,(0,0,0,0,1,'biz.softfor.partner.jpa.Partner.partnerName',roleId(1,'biz.softfor.partner.jpa.Partner.partnerName',1),'Partner#partnerName (update)','biz.softfor.partner.jpa Partner#partnerName (update)')
-,(0,0,0,0,0,'biz.softfor.partner.jpa.Partner.partnerDetails',roleId(0,'biz.softfor.partner.jpa.Partner.partnerDetails',1),'Partner#partner details','biz.softfor.partner.jpa Partner#partner details')
-,(0,0,0,0,1,'biz.softfor.partner.jpa.Partner.partnerDetails',roleId(1,'biz.softfor.partner.jpa.Partner.partnerDetails',1),'Partner#partner details (update)','biz.softfor.partner.jpa Partner#partner details (update)')
-,(0,0,0,0,0,'biz.softfor.partner.jpa.Partner.locationType',roleId(0,'biz.softfor.partner.jpa.Partner.locationType',1),'Partner#location type','biz.softfor.partner.jpa Partner#location type')
-,(0,0,0,0,1,'biz.softfor.partner.jpa.Partner.locationType',roleId(1,'biz.softfor.partner.jpa.Partner.locationType',1),'Partner#location type (update)','biz.softfor.partner.jpa Partner#location type (update)')
-,(0,0,0,0,0,'biz.softfor.address.jpa.Country.name',roleId(0,'biz.softfor.address.jpa.Country.name',1),'Country#name','biz.softfor.address.jpa.Country#name')
-,(0,0,0,0,0,'biz.softfor.address.jpa.Country.fullname',roleId(0,'biz.softfor.address.jpa.Country.fullname',1),'Country#fullname','biz.softfor.address.jpa.Country#fullname')
-,(1,0,0,0,0,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',roleId(0,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',1),'Authorized','Authorized')
-,(2,0,0,1,1,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',roleId(1,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',1),'Authorized (update)','Authorized (update)')
+insert into roles(defaultAccess, isUrl, orphan, updateFor, objName, id, name, description) values
+ (0,0,0,0,'biz.softfor.partner.jpa.Partner.partnerName',roleId(0,'biz.softfor.partner.jpa.Partner.partnerName',1),'Partner#partnerName','biz.softfor.partner.jpa Partner#partnerName')
+,(0,0,0,1,'biz.softfor.partner.jpa.Partner.partnerName',roleId(1,'biz.softfor.partner.jpa.Partner.partnerName',1),'Partner#partnerName (update)','biz.softfor.partner.jpa Partner#partnerName (update)')
+,(0,0,0,0,'biz.softfor.partner.jpa.Partner.partnerDetails',roleId(0,'biz.softfor.partner.jpa.Partner.partnerDetails',1),'Partner#partner details','biz.softfor.partner.jpa Partner#partner details')
+,(0,0,0,1,'biz.softfor.partner.jpa.Partner.partnerDetails',roleId(1,'biz.softfor.partner.jpa.Partner.partnerDetails',1),'Partner#partner details (update)','biz.softfor.partner.jpa Partner#partner details (update)')
+,(0,0,0,0,'biz.softfor.partner.jpa.Partner.locationType',roleId(0,'biz.softfor.partner.jpa.Partner.locationType',1),'Partner#location type','biz.softfor.partner.jpa Partner#location type')
+,(0,0,0,1,'biz.softfor.partner.jpa.Partner.locationType',roleId(1,'biz.softfor.partner.jpa.Partner.locationType',1),'Partner#location type (update)','biz.softfor.partner.jpa Partner#location type (update)')
+,(0,0,0,0,'biz.softfor.address.jpa.Country.name',roleId(0,'biz.softfor.address.jpa.Country.name',1),'Country#name','biz.softfor.address.jpa.Country#name')
+,(0,0,0,0,'biz.softfor.address.jpa.Country.fullname',roleId(0,'biz.softfor.address.jpa.Country.fullname',1),'Country#fullname','biz.softfor.address.jpa.Country#fullname')
+,(1,0,0,0,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',roleId(0,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',1),'Authorized','Authorized')
+,(2,0,1,1,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',roleId(1,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',1),'Authorized (update)','Authorized (update)')
 ;
 insert into userGroups(name) values
  ('TezztMgr')--2

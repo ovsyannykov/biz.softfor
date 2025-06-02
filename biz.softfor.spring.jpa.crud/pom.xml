@@ -29,7 +29,7 @@
         <executions>
           <execution>
             <id>unpack</id>
-            <phase>generate-sources</phase>
+            <phase>generate-test-sources</phase>
             <goals>
               <goal>unpack</goal>
             </goals>
@@ -67,6 +67,7 @@
         <executions>
           <execution>
             <id>merge-files</id>
+            <phase>generate-test-sources</phase>
             <goals>
               <goal>merge</goal>
             </goals>

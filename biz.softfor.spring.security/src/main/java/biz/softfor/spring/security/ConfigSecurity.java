@@ -66,7 +66,6 @@ public class ConfigSecurity {
   (EntityManager em, PlatformTransactionManager tm) {
     return username -> {
       CriteriaBuilder cb = em.getCriteriaBuilder();
-      Holder<List<Tuple>> resHldr = new Holder<>();
       CriteriaQuery<Tuple> cq = cb.createQuery(Tuple.class);
       Root<User> root = cq.from(User.class);
       cq.select(cb.tuple(
@@ -76,17 +75,17 @@ public class ConfigSecurity {
       ));
       cq.where(cb.equal(root.get(User_.USERNAME), username));
       cq.orderBy(cb.asc(root.get(User_.ID)));
-      new TransactionTemplate(tm).executeWithoutResult
-      (status -> resHldr.value = em.createQuery(cq).getResultList());
-      if(resHldr.value == null || resHldr.value.isEmpty()) {
+      List<Tuple> res = new TransactionTemplate(tm).execute
+      (status -> em.createQuery(cq).getResultList());
+      if(res == null || res.isEmpty()) {
         throw new UsernameNotFoundException
         (i18n.message(User.User_not_found, username));
       }
-      Collection<String> roles = new ArrayList<>(resHldr.value.size());
-      for(Tuple t : resHldr.value) {
+      Collection<String> roles = new ArrayList<>(res.size());
+      for(Tuple t : res) {
         roles.add(Constants.ROLE_PREFIX + t.get(2, String.class));
       }
-      Tuple t = resHldr.value.get(0);
+      Tuple t = res.get(0);
       return new UserDetailsEx
       (t.get(0, Long.class), username, t.get(1, String.class), roles);
     };

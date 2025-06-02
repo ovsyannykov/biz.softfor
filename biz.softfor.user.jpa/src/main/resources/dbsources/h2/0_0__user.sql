@@ -11,7 +11,6 @@ create table roles (
 , defaultAccess tinyint not null default 0 --0-ALL, 1-AUTHENTICATED, 2-NOBODY
 , isUrl tinyint not null default 0
 , updateFor tinyint not null default 0 --0-read, 1-update
-, disabled tinyint not null default 0 --0-enabled, 1-disabled
 , orphan tinyint not null default 0 --0-not orphan, 1-orphan
 , deniedForAll tinyint not null default 0
 , isType tinyint not null default 0 --0-member/field/method, 1-type/class/parent
@@ -24,10 +23,13 @@ alter table roles add constraint u_roles_objName_updateFor unique (objName, upda
 --defaultAccess: 0-ALL, 1-AUTHENTICATED, 2-NOBODY
 --updateFor: 0-read, 1-update
 --typ: 0-class, 1-field, 2-method,URL
-insert into roles(defaultAccess, isUrl, disabled, orphan, updateFor, objName, id, name, description) values
- (0,0,0,0,0,'biz.softfor.user.jpa.Role',roleId(0,'biz.softfor.user.jpa.Role',0),'Roles','Roles')
-,(0,0,0,0,0,'biz.softfor.user.jpa.User',roleId(0,'biz.softfor.user.jpa.User',0),'Users','Users')
-,(0,0,0,0,0,'biz.softfor.user.jpa.UserGroup',roleId(0,'biz.softfor.user.jpa.UserGroup',0),'User Groups','User Groups')
+insert into roles(defaultAccess, isUrl, orphan, updateFor, objName, id, name, description) values
+ (0,0,0,0,'biz.softfor.user.jpa.Role',roleId(0,'biz.softfor.user.jpa.Role',0),'Roles','Roles')
+,(0,0,0,1,'biz.softfor.user.jpa.Role',roleId(1,'biz.softfor.user.jpa.Role',0),'Roles (update)','Roles (update)')
+,(0,0,0,0,'biz.softfor.user.jpa.User',roleId(0,'biz.softfor.user.jpa.User',0),'Users','Users')
+,(0,0,0,1,'biz.softfor.user.jpa.User',roleId(1,'biz.softfor.user.jpa.User',0),'Users (update)','Users (update)')
+,(0,0,0,0,'biz.softfor.user.jpa.UserGroup',roleId(0,'biz.softfor.user.jpa.UserGroup',0),'User Groups','User Groups')
+,(0,0,0,1,'biz.softfor.user.jpa.UserGroup',roleId(1,'biz.softfor.user.jpa.UserGroup',0),'User Groups (update)','User Groups (update)')
 ;
 
 create table userGroups (
@@ -46,8 +48,11 @@ alter table roles_groups add constraint fk_roles_groups_roles foreign key(roleId
 alter table roles_groups add constraint fk_roles_groups_userGroups foreign key(groupId) references userGroups(id);
 insert into roles_groups(groupId, roleId) values
  (1, (SELECT id from roles WHERE objName='biz.softfor.user.jpa.UserGroup' AND updateFor=0))
+,(1, (SELECT id from roles WHERE objName='biz.softfor.user.jpa.UserGroup' AND updateFor=1))
 ,(1, (SELECT id from roles WHERE objName='biz.softfor.user.jpa.Role' AND updateFor=0))
+,(1, (SELECT id from roles WHERE objName='biz.softfor.user.jpa.Role' AND updateFor=1))
 ,(1, (SELECT id from roles WHERE objName='biz.softfor.user.jpa.User' AND updateFor=0))
+,(1, (SELECT id from roles WHERE objName='biz.softfor.user.jpa.User' AND updateFor=1))
 ;
 
 create table users (

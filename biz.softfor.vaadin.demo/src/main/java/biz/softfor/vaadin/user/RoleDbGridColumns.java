@@ -34,8 +34,6 @@ public class RoleDbGridColumns extends DbGridColumns<Long, Role> {
       (Role_.ORPHAN, BooleansEnum.DEFINED_VALUES, Role::getOrphan)
     , new BoolDbGridColumn<>
       (Role_.DENIED_FOR_ALL, BooleansEnum.DEFINED_VALUES, Role::getDeniedForAll)
-    , new BoolDbGridColumn<>
-      (Role_.DISABLED, BooleansEnum.DEFINED_VALUES, Role::getDisabled)
     , new ComboBoxDbGridColumn<>(
         Role_.DEFAULT_ACCESS
       , DefaultAccess.VALUES

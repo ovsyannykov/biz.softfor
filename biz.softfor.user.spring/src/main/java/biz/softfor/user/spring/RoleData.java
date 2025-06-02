@@ -1,14 +1,10 @@
 package biz.softfor.user.spring;
 
 import biz.softfor.util.security.DefaultAccess;
-import static biz.softfor.util.security.DefaultAccess.AUTHORIZED;
-import static biz.softfor.util.security.DefaultAccess.EVERYBODY;
-import static biz.softfor.util.security.DefaultAccess.NOBODY;
 import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -16,28 +12,21 @@ import lombok.extern.java.Log;
 import org.apache.commons.collections4.CollectionUtils;
 
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Log
 public final class RoleData {
 
-  public final static RoleData EMPTY = new RoleData(0, false, true, false, false
-  , DefaultAccess.EVERYBODY, "EMPTY", Collections.EMPTY_SET);
-
-  public final long id;
+  @EqualsAndHashCode.Include public final long id;
   public boolean deniedForAll;
-  public boolean disabled;
   public final boolean updateFor;
   public final boolean isUrl;
   public final String objName;
-  @EqualsAndHashCode.Exclude public DefaultAccess defaultAccess;
-  @EqualsAndHashCode.Exclude public final Set<String> groups;
-  @EqualsAndHashCode.Exclude public DefaultAccess effDefaultAccess;
-  @EqualsAndHashCode.Exclude public final Set<String> effGroups;
+  public final RoleAccess access;
+  public RoleAccess effective;
 
   public RoleData(
     long id
   , boolean deniedForAll
-  , boolean disabled
   , boolean updateFor
   , boolean isUrl
   , DefaultAccess defaultAccess
@@ -46,75 +35,94 @@ public final class RoleData {
   ) {
     this.id = id;
     this.deniedForAll = deniedForAll;
-    this.disabled = disabled;
     this.updateFor = updateFor;
     this.isUrl = isUrl;
     this.objName = objName;
-    this.defaultAccess = defaultAccess;
-    this.groups = groups;
-    this.effDefaultAccess = this.defaultAccess;
-    this.effGroups = new HashSet<>(this.groups);
+    this.access = new RoleAccess(defaultAccess, groups);
+    this.effective = new RoleAccess();
   }
 
-  public void calcEffectiveAccess(SecurityMgr securityMgr) {
-    List<Long> members = securityMgr.parent2Members.get(id);
-    if(members == null) {
+  String toStr() {
+    return (updateFor ? "~" + objName : objName) + " (" + id + ")";
+  }
+
+  private void mergeTypeData(
+    SecurityMgr securityMgr
+  , Deque<RoleData> parents
+  , ParentRoles parentRoles
+  , boolean reset
+  ) {
+    Long typeId = parentRoles.type();
+    if(typeId != null) {//User#groups
+      RoleData typeData = securityMgr.rolesData.get(typeId);
+      if(!parents.contains(typeData)) {
+        parents.push(typeData);
+        typeData.recount(securityMgr, parents);
+        parents.pop();
+        if(reset) {
+          reset();
+        }
+        merge(typeData.effective);
+      }
+    }
+  }
+
+  void recount(SecurityMgr securityMgr, Deque<RoleData> parents) {
+    if(SecurityMgr.DEBUG) System.out.println("effRecount access " + toStr() + ": " + access.defaultAccess.name() + " " + access.groups);
+    if(securityMgr.parent2Members.get(id) == null) {//User#email, User#groups
       ParentRoles parentRoles = securityMgr.member2Parent.get(id);
-      effReset();
-      RoleData host = securityMgr.rolesData.get(parentRoles.host());
-      effCalcFromParent(host, securityMgr);
-      if(parentRoles.type() != null) {
-        RoleData type = securityMgr.rolesData.get(parentRoles.type());
-        effCalcFromParent(type, securityMgr);
+      RoleData hostData = securityMgr.rolesData.get(parentRoles.host());
+      reset();
+      mergeTypeData(securityMgr, parents, parentRoles, false);
+      merge(hostData.access);
+    } else {//User
+      RoleAccess membersAccess
+      = new RoleAccess(DefaultAccess.NOBODY, new HashSet<>());
+      for(Long memberId : securityMgr.parent2Members.get(id)) {
+        RoleData memberData = securityMgr.rolesData.get(memberId);
+        ParentRoles parentRoles = securityMgr.member2Parent.get(memberData.id);
+        memberData.mergeTypeData(securityMgr, parents, parentRoles, true);
+        if(membersAccess.defaultAccess.id > memberData.effective.defaultAccess.id) {
+          membersAccess.defaultAccess = memberData.effective.defaultAccess;
+        }
+        membersAccess.groups.addAll(memberData.effective.groups);
+      }
+      reset();
+      merge(membersAccess);
+    }
+    if(SecurityMgr.DEBUG) System.out.println("effRecount effective " + toStr() + ": " + effective.defaultAccess.name() + " " + effective.groups);
+  }
+
+  private void merge(RoleAccess parent) {
+    if(CollectionUtils.isEmpty(effective.groups)) {
+      switch(effective.defaultAccess) {
+        case DefaultAccess.EVERYBODY -> {
+          effective.defaultAccess = parent.defaultAccess;
+          effective.groups.addAll(parent.groups);
+        }
+        case DefaultAccess.AUTHORIZED -> {
+          if(parent.defaultAccess == DefaultAccess.NOBODY) {
+            effective.defaultAccess = DefaultAccess.NOBODY;
+          }
+          effective.groups.addAll(parent.groups);
+        }
+        case DefaultAccess.NOBODY -> {}
       }
     } else {
-      for(Long m : members) {
-        RoleData mrd = securityMgr.rolesData.get(m);
-        mrd.effReset();
-        mrd.effCalcFromParent(this, securityMgr);
+      if(!parent.groups.isEmpty()) {
+        effective.groups.retainAll(parent.groups);
+      }
+      if(effective.groups.isEmpty()) {
+        effective.defaultAccess = DefaultAccess.NOBODY;
+        log.warning(MessageFormat.format("Role is inaccessible: {0}", toStr()));
       }
     }
   }
 
-  public void effCalcFromParent(RoleData parent, SecurityMgr securityMgr) {
-    if(!parent.disabled) {
-      if(CollectionUtils.isEmpty(effGroups)) {
-        switch(defaultAccess) {
-          case EVERYBODY -> {
-            effDefaultAccess = parent.defaultAccess;
-            effGroups.addAll(parent.groups);
-          }
-          case AUTHORIZED -> {
-            if(parent.defaultAccess == DefaultAccess.NOBODY) {
-              effDefaultAccess = DefaultAccess.NOBODY;
-            }
-            effGroups.addAll(parent.groups);
-          }
-          case NOBODY -> {}
-        }
-      } else {
-        for(Iterator<String> i = effGroups.iterator(); i.hasNext();) {
-          if(!securityMgr.isAllowed(parent.id, List.of(i.next()))) {
-            i.remove();
-          }
-        }
-        if(effGroups.isEmpty()) {
-          effDefaultAccess = DefaultAccess.NOBODY;
-          log.warning(() -> MessageFormat.format
-          ("Role is inaccessible: {0}", toString()));
-        }
-      }
-    }
-  }
-
-  public void effReset() {
-    effDefaultAccess = defaultAccess;
-    effGroups.clear();
-    effGroups.addAll(groups);
-  }
-
-  public String toStr() {
-    return id + " (" + (updateFor ? "~" + objName : objName) + ")";
+  private void reset() {
+    effective.defaultAccess = access.defaultAccess;
+    effective.groups.clear();
+    effective.groups.addAll(access.groups);
   }
 
 }

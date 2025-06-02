@@ -1,21 +1,21 @@
 --defaultAccess: 0-ALL, 1-AUTHENTICATED, 2-NOBODY
 --updateFor: 0-read, 1-update
 --typ: 0-class, 1-field, 2-method,URL
-insert into roles(defaultAccess, isUrl, disabled, orphan, updateFor, objName, id, name, description) values
- (0,0,0,0,0,'biz.softfor.address.jpa.City',roleId(0,'biz.softfor.address.jpa.City',0),'City','biz.softfor.address.jpa City')
-,(0,0,0,0,1,'biz.softfor.address.jpa.City',roleId(1,'biz.softfor.address.jpa.City',0),'City (update)','biz.softfor.address.jpa City (update)')
-,(0,0,0,0,0,'biz.softfor.address.jpa.Country',roleId(0,'biz.softfor.address.jpa.Country',0),'Country','biz.softfor.address.jpa Country')
-,(0,0,0,0,1,'biz.softfor.address.jpa.Country',roleId(1,'biz.softfor.address.jpa.Country',0),'Country (update)','biz.softfor.address.jpa Country (update)')
-,(0,0,0,0,0,'biz.softfor.address.jpa.State',roleId(0,'biz.softfor.address.jpa.State',0),'State','biz.softfor.address.jpa State')
-,(0,0,0,0,1,'biz.softfor.address.jpa.State',roleId(1,'biz.softfor.address.jpa.State',0),'State (update)','biz.softfor.address.jpa State (update)')
-,(0,0,0,0,0,'biz.softfor.address.jpa.State.name',roleId(0,'biz.softfor.address.jpa.State.name',1),'State#name','biz.softfor.address.jpa State#name')
-,(0,0,0,0,1,'biz.softfor.address.jpa.State.name',roleId(1,'biz.softfor.address.jpa.State.name',1),'State#name (update)','biz.softfor.address.jpa State#name (update)')
-,(0,0,0,0,0,'biz.softfor.partner.jpa.Partner.partnerName',roleId(0,'biz.softfor.partner.jpa.Partner.partnerName',1),'Partner#partnerName','biz.softfor.partner.jpa Partner#partnerName')
-,(0,0,0,0,1,'biz.softfor.partner.jpa.Partner.partnerName',roleId(1,'biz.softfor.partner.jpa.Partner.partnerName',1),'Partner#partnerName (update)','biz.softfor.partner.jpa Partner#partnerName (update)')
-,(0,0,0,0,0,'biz.softfor.partner.jpa.Partner.personDetails',roleId(0,'biz.softfor.partner.jpa.Partner.personDetails',1),'Partner#person details','biz.softfor.partner.jpa Partner#person details')
-,(0,0,0,0,1,'biz.softfor.partner.jpa.Partner.personDetails',roleId(1,'biz.softfor.partner.jpa.Partner.personDetails',1),'Partner#person details (update)','biz.softfor.partner.jpa Partner#person details (update)')
-,(0,0,0,0,0,'biz.softfor.partner.jpa.Partner.locationType',roleId(0,'biz.softfor.partner.jpa.Partner.locationType',1),'Partner#location type','biz.softfor.partner.jpa Partner#location type')
-,(0,0,0,0,1,'biz.softfor.partner.jpa.Partner.locationType',roleId(1,'biz.softfor.partner.jpa.Partner.locationType',1),'Partner#location type (update)','biz.softfor.partner.jpa Partner#location type (update)')
+insert into roles(defaultAccess, isUrl, orphan, updateFor, objName, id, name, description) values
+ (0,0,0,0,'biz.softfor.address.jpa.City',roleId(0,'biz.softfor.address.jpa.City',0),'City','biz.softfor.address.jpa City')
+,(0,0,0,1,'biz.softfor.address.jpa.City',roleId(1,'biz.softfor.address.jpa.City',0),'City (update)','biz.softfor.address.jpa City (update)')
+,(0,0,0,0,'biz.softfor.address.jpa.Country',roleId(0,'biz.softfor.address.jpa.Country',0),'Country','biz.softfor.address.jpa Country')
+,(0,0,0,1,'biz.softfor.address.jpa.Country',roleId(1,'biz.softfor.address.jpa.Country',0),'Country (update)','biz.softfor.address.jpa Country (update)')
+,(0,0,0,0,'biz.softfor.address.jpa.State',roleId(0,'biz.softfor.address.jpa.State',0),'State','biz.softfor.address.jpa State')
+,(0,0,0,1,'biz.softfor.address.jpa.State',roleId(1,'biz.softfor.address.jpa.State',0),'State (update)','biz.softfor.address.jpa State (update)')
+,(0,0,0,0,'biz.softfor.address.jpa.State.name',roleId(0,'biz.softfor.address.jpa.State.name',1),'State#name','biz.softfor.address.jpa State#name')
+,(0,0,0,1,'biz.softfor.address.jpa.State.name',roleId(1,'biz.softfor.address.jpa.State.name',1),'State#name (update)','biz.softfor.address.jpa State#name (update)')
+,(0,0,0,0,'biz.softfor.partner.jpa.Partner.partnerName',roleId(0,'biz.softfor.partner.jpa.Partner.partnerName',1),'Partner#partnerName','biz.softfor.partner.jpa Partner#partnerName')
+,(0,0,0,1,'biz.softfor.partner.jpa.Partner.partnerName',roleId(1,'biz.softfor.partner.jpa.Partner.partnerName',1),'Partner#partnerName (update)','biz.softfor.partner.jpa Partner#partnerName (update)')
+,(0,0,0,0,'biz.softfor.partner.jpa.Partner.personDetails',roleId(0,'biz.softfor.partner.jpa.Partner.personDetails',1),'Partner#person details','biz.softfor.partner.jpa Partner#person details')
+,(0,0,0,1,'biz.softfor.partner.jpa.Partner.personDetails',roleId(1,'biz.softfor.partner.jpa.Partner.personDetails',1),'Partner#person details (update)','biz.softfor.partner.jpa Partner#person details (update)')
+,(0,0,0,0,'biz.softfor.partner.jpa.Partner.locationType',roleId(0,'biz.softfor.partner.jpa.Partner.locationType',1),'Partner#location type','biz.softfor.partner.jpa Partner#location type')
+,(0,0,0,1,'biz.softfor.partner.jpa.Partner.locationType',roleId(1,'biz.softfor.partner.jpa.Partner.locationType',1),'Partner#location type (update)','biz.softfor.partner.jpa Partner#location type (update)')
 ;
 insert into userGroups(name) values
  ('MANAGER')--2

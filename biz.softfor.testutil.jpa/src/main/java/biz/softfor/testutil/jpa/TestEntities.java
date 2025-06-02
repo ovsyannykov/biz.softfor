@@ -3,7 +3,6 @@ package biz.softfor.testutil.jpa;
 import biz.softfor.jpa.IdEntity;
 import biz.softfor.testutil.Check;
 import biz.softfor.testutil.IgnoringFields;
-import biz.softfor.util.Holder;
 import biz.softfor.util.Json;
 import biz.softfor.util.api.Identifiable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -91,20 +90,18 @@ public class TestEntities<K extends Number, E extends Identifiable<K>> {
   , String... fetchFields
   ) {
     em.clear();
-    Holder<List<E>> actualHolder = new Holder<>();
-    new TransactionTemplate(tm).executeWithoutResult(status -> {
-      Iterable<K> ids = ids(indexes);
-      actualHolder.value = new SelectQuery<>(em, entityClass, fetchFields).apply(ids);
-      assertThat(actualHolder.value).as(() -> "Expected data not found by ids=" + ids).isNotEmpty();
-    });
+    Iterable<K> ids = ids(indexes);
+    List<E> res = new TransactionTemplate(tm).execute
+    (status -> new SelectQuery<>(em, entityClass, fetchFields).apply(ids));
+    assertThat(res).as(() -> "Expected data not found by ids=" + ids).isNotEmpty();
     String name = "actual";
     FilterProvider jsonFilter = ignoringFields.jsonFilter();
-    log.info(() -> name + "=" + Json.serializep(om, actualHolder.value, jsonFilter));
+    log.info(() -> name + "=" + Json.serializep(om, res, jsonFilter));
     Iterable<E> expected = data(indexes);
     log.info(() -> "expected=" + Json.serializep(om, expected, jsonFilter));
     String[] ignoring = ArrayUtils.addAll(ignoringFields.names(), IGNORED_FIELDS);
     log.info(() -> "ignoring=" + Json.serializep(om, ignoring));
-    check.data(name, actualHolder.value, expected, ignoring);
+    check.data(name, res, expected, ignoring);
   }
 
   public Set<E> data(Iterable<Integer> indexes) {

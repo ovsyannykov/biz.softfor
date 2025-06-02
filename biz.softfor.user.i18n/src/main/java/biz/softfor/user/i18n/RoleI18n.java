@@ -36,10 +36,6 @@ public class RoleI18n {
       ENGLISH, "For editing?"
     , UKRAINIAN, "Для оновлення?"
     ));
-    add(Role_.DISABLED, of(
-      ENGLISH, "Disabled"
-    , UKRAINIAN, "Вимкнено"
-    ));
     add(Role_.ORPHAN, of(
       ENGLISH, "Orphan"
     , UKRAINIAN, "Не пов'язаний"

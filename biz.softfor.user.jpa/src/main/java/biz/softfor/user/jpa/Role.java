@@ -27,7 +27,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 //natural id: (objName, updateFor)
-//editable: name, description, defaultAccess, disabled
+//editable: name, description, defaultAccess
 //read-only: orphan, deniedForAll
 @NoArgsConstructor
 @Entity
@@ -54,10 +54,6 @@ public class Role implements Identifiable<Long>, Serializable {
 
   @Column
   private Boolean updateFor;
-
-  @Column
-  @NotNull
-  private Boolean disabled;
 
   @Column
   private Boolean orphan;
@@ -144,7 +140,6 @@ public class Role implements Identifiable<Long>, Serializable {
     defaultAccess = calc.defaultAccess();
     isUrl = calc.isUrl();
     updateFor = calc.updateFor;
-    disabled = false;
     orphan = false;
     deniedForAll = calc.deniedForAll();
     objName = calc.objName();

@@ -17,6 +17,101 @@
     <relativePath/>
   </parent>
 
+  <build>
+    <filters>
+      <filter>${project.testResources}/application.properties</filter>
+    </filters>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>biz.softfor</groupId>
+                  <artifactId>biz.softfor.user.jpa</artifactId>
+                  <version>${biz.softfor.user.jpa.version}</version>
+                  <overWrite>false</overWrite>
+                  <includes>${project.dbsources}/${spring.sql.init.platform}/0_0__user.sql</includes>
+                  <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+                  <fileMappers>
+                    <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                      <pattern>dbsources/${spring.sql.init.platform}/0_0__user.sql</pattern>
+                      <replacement>db/${spring.sql.init.platform}/0_0__init.sql</replacement>
+                    </org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                  </fileMappers>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>biz.softfor</groupId>
+                  <artifactId>biz.softfor.partner.jpa</artifactId>
+                  <version>${biz.softfor.partner.jpa.version}</version>
+                  <overWrite>false</overWrite>
+                  <includes>
+                    ${project.dbsources}/${spring.sql.init.platform}/0_0__address.sql
+                    ,${project.dbsources}/${spring.sql.init.platform}/0_0__partner.sql
+                  </includes>
+                  <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+                  <fileMappers>
+                    <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                      <pattern>dbsources/${spring.sql.init.platform}/0_0__address.sql</pattern>
+                      <replacement>db/${spring.sql.init.platform}/0_1__address.sql</replacement>
+                    </org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                    <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                      <pattern>dbsources/${spring.sql.init.platform}/0_0__partner.sql</pattern>
+                      <replacement>db/${spring.sql.init.platform}/0_2__partner.sql</replacement>
+                    </org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
+                  </fileMappers>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.reflectionsutil</artifactId>
+            <version>${biz.softfor.reflectionsutil.version}</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <scripts>
+                <script><![CDATA[
+                  String resourcesDir = project.properties.getProperty('project.testResources').replace('\\','/');
+                  biz.softfor.reflectionsutil.ReflectionsUtil.scan(
+                    resourcesDir
+                  , org.springframework.stereotype.Service.class
+                  , new String[] { "biz.softfor.user.spring" }
+                  , null
+                  );
+                ]]></script>
+              </scripts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <!-- annotation processors -->
     <dependency>
@@ -40,14 +135,41 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- spring -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- biz.softfor -->
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.partner.jpa</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.partner.jpa.withoutrelations</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.spring.jpa.crud</artifactId>
     </dependency>
     <dependency>
       <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.jpa.properties</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.spring.rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.sqllog</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>biz.softfor</groupId>
@@ -60,6 +182,13 @@
     <dependency>
       <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.user.jpa.withoutrelations</artifactId>
+    </dependency>
+
+    <!-- third party -->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

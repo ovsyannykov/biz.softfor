@@ -21,9 +21,6 @@ import biz.softfor.util.api.UpdateRequest;
 import biz.softfor.util.security.MethodRoleCalc;
 import biz.softfor.util.security.ActionAccess;
 import biz.softfor.util.security.DefaultAccess;
-import static biz.softfor.util.security.DefaultAccess.AUTHORIZED;
-import static biz.softfor.util.security.DefaultAccess.EVERYBODY;
-import static biz.softfor.util.security.DefaultAccess.NOBODY;
 import biz.softfor.util.security.UpdateAccess;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -35,12 +32,13 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -114,21 +112,20 @@ public class SecurityMgr {
     CriteriaBuilder cb = em.getCriteriaBuilder();
     Map<Long, Role> fromDb;
     {
-      Holder<List<Role>> resHldr = new Holder<>();
       CriteriaQuery<Role> cq = cb.createQuery(Role.class);
       cq.from(Role.class);
-      new TransactionTemplate(tm).executeWithoutResult
-      (status -> resHldr.value = em.createQuery(cq).getResultList());
+      List<Role> res = new TransactionTemplate(tm).execute
+      (status -> em.createQuery(cq).getResultList());
       if(DEBUG) {
-        String result = "Loaded from DB roles: " + resHldr.value.size()
+        String result = "Loaded from DB roles: " + res.size()
         + "\n" + "=".repeat(16) + "\n" + TO_SQL_HEAD;
-        for(Role role : resHldr.value) {
+        for(Role role : res) {
           result += toSqlInsert(role);
         }
         System.out.println(result);
       }
       fromDb = new HashMap<>(fromCode.size());
-      for(Role role : resHldr.value) {
+      for(Role role : res) {
         fromDb.put(role.getId(), role);
       }
     }
@@ -215,9 +212,6 @@ public class SecurityMgr {
             msg += ", " + Role_.DEFAULT_ACCESS + "="
             + roleFromDb.getDefaultAccess();
           }
-          if(!roleFromCode.getDisabled().equals(roleFromDb.getDisabled())) {
-            msg += ", " + Role_.DISABLED + "=" + roleFromDb.getDisabled();
-          }
           if(!msg.isEmpty()) {
             Class<?> annoClass = roleFromDb.getUpdateFor()
             ? UpdateAccess.class : ActionAccess.class;
@@ -238,36 +232,32 @@ public class SecurityMgr {
       cq.select(cb.tuple(
         root.get(Role_.ID)//0
       , root.get(Role_.DENIED_FOR_ALL)//1
-      , root.get(Role_.DISABLED)//2
-      , root.get(Role_.UPDATE_FOR)//3
-      , root.get(Role_.IS_URL)//4
-      , root.get(Role_.DEFAULT_ACCESS)//5
-      , root.get(Role_.OBJ_NAME)//6
-      , root.join(Role_.GROUPS, JoinType.LEFT).get(UserGroup_.NAME)//7
+      , root.get(Role_.UPDATE_FOR)//2
+      , root.get(Role_.IS_URL)//3
+      , root.get(Role_.DEFAULT_ACCESS)//4
+      , root.get(Role_.OBJ_NAME)//5
+      , root.join(Role_.GROUPS, JoinType.LEFT).get(UserGroup_.NAME)//6
       ));
       cq.where(cb.and(cb.equal(root.get(Role_.ORPHAN), false)));
       cq.orderBy(cb.asc(root.get(Role_.ID)));
-      Holder<List<Tuple>> resHldr = new Holder<>();
-      new TransactionTemplate(tm).executeWithoutResult(status -> resHldr.value =
-        em.createQuery(cq).setMaxResults(pageSize).getResultList()
-      );
+      List<Tuple> res = new TransactionTemplate(tm).execute
+      (status -> em.createQuery(cq).setMaxResults(pageSize).getResultList());
       Set<String> groups = new HashSet<>();
-      for(int iLast = resHldr.value.size() - 1, i = 0; i <= iLast; ++i) {
-        Tuple t = resHldr.value.get(i);
-        String group = t.get(7, String.class);
+      for(int iLast = res.size() - 1, i = 0; i <= iLast; ++i) {
+        Tuple t = res.get(i);
+        String group = t.get(6, String.class);
         if(group != null) {
           groups.add(Constants.ROLE_PREFIX + group);
         }
         Long id = t.get(0, Long.class);
-        if(i == iLast || !id.equals(resHldr.value.get(i + 1).get(0, Long.class))) {
+        if(i == iLast || !id.equals(res.get(i + 1).get(0, Long.class))) {
           boolean deniedForAll = t.get(1, Boolean.class);
-          boolean disabled = t.get(2, Boolean.class);
-          boolean updateFor = t.get(3, Boolean.class);
-          boolean isUrl = t.get(4, Boolean.class);
-          DefaultAccess defaultAccess = t.get(5, DefaultAccess.class);
-          String objName = t.get(6, String.class);
-          RoleData rd = new RoleData(id, deniedForAll, disabled, updateFor
-          , isUrl, defaultAccess, objName, groups);
+          boolean updateFor = t.get(2, Boolean.class);
+          boolean isUrl = t.get(3, Boolean.class);
+          DefaultAccess defaultAccess = t.get(4, DefaultAccess.class);
+          String objName = t.get(5, String.class);
+          RoleData rd = new RoleData
+          (id, deniedForAll, updateFor, isUrl, defaultAccess, objName, groups);
           rolesData.put(id, rd);
           groups = new HashSet<>();
         }
@@ -292,17 +282,7 @@ public class SecurityMgr {
         }
         System.out.println(out);
       }
-      for(RoleData rd : rolesData.values()) {
-        rd.calcEffectiveAccess(this);
-      }
-      if(DEBUG) {
-        ObjectMapper om = Json.objectMapper();
-        String out = "\nrolesData: " + rolesData.size() + "\n" + "=".repeat(16);
-        for(RoleData rd : rolesData.values()) {
-          out += "\n" + Json.serialize(om, rd);
-        }
-        System.out.println(out);
-      }
+      recount();
     }
   }
 
@@ -311,36 +291,31 @@ public class SecurityMgr {
     List<String> groups = readGroupNames(List.of(groupId), em);
     for(Long id : roleIds) {
       RoleData rd = rolesData.get(id);
-      rd.groups.addAll(groups);
-      rd.calcEffectiveAccess(this);
+      rd.access.groups.addAll(groups);
     }
+    recount();
   }
 
   public final boolean isAllowed(long roleId, Collection<String> groups) {
-    boolean result = false;
+    boolean result;
     RoleData rd = rolesData.get(roleId);
-    if(rd == null || rd.disabled) {
+    if(rd == null) {
       result = true;
     } else if(rd.deniedForAll) {
       result = false;
     } else {
-      DefaultAccess rdDefaultAccess;
-      Set<String> rdGroups;
-      if(parent2Members.containsKey(rd.id)) {
-        rdDefaultAccess = rd.defaultAccess;
-        rdGroups = rd.groups;
-      } else {
-        rdDefaultAccess = rd.effDefaultAccess;
-        rdGroups = rd.effGroups;
-      }
+      DefaultAccess rdDefaultAccess = rd.effective.defaultAccess;
+      Set<String> rdGroups = rd.effective.groups;
       if(CollectionUtils.isEmpty(rdGroups)) {
         result = switch(rdDefaultAccess) {
-          case EVERYBODY -> true;
-          case AUTHORIZED -> isAuthorized(groups);
-          case NOBODY -> false;
+          case DefaultAccess.EVERYBODY -> true;
+          case DefaultAccess.AUTHORIZED -> isAuthorized(groups);
+          case DefaultAccess.NOBODY -> false;
         };
       } else if(groups != null) {
         result = CollectionUtils.containsAny(groups, rdGroups);
+      } else {
+        result = false;
       }
     }
     return result;
@@ -396,35 +371,31 @@ public class SecurityMgr {
   public final void removeGroups(Collection<Integer> groupIds, EntityManager em) {
     List<String> groups = readGroupNames(groupIds, em);
     for(RoleData rd : rolesData.values()) {
-      rd.groups.removeAll(groups);
-      rd.calcEffectiveAccess(this);
+      rd.access.groups.removeAll(groups);
     }
+    recount();
   }
 
   public final void update
   (Collection<Long> roleIds, RoleWor data, EntityManager em) {
     if(!roleIds.isEmpty()) {
       DefaultAccess defaultAccess = data.getDefaultAccess();
-      Boolean disabled = data.getDisabled();
       Set<Integer> groupIds = data.getGroupIds();
       List<String> groups = CollectionUtils.isEmpty(groupIds)
       ? Collections.EMPTY_LIST : readGroupNames(groupIds, em);
       for(Long id : roleIds) {
         RoleData rd = rolesData.get(id);
         if(rd != null) {
-          if(disabled != null) {
-            rd.disabled = disabled;
-          }
           if(defaultAccess != null) {
-            rd.defaultAccess = defaultAccess;
+            rd.access.defaultAccess = defaultAccess;
           }
           if(groupIds != null) {
-            rd.groups.clear();
-            rd.groups.addAll(groups);
+            rd.access.groups.clear();
+            rd.access.groups.addAll(groups);
           }
-          rd.calcEffectiveAccess(this);
         }
       }
+      recount();
     }
   }
 
@@ -443,42 +414,33 @@ public class SecurityMgr {
     List<String> groups = readGroupNames(groupIds, em);
     for(RoleData rd : rolesData.values()) {
       if(roleIds.contains(rd.id)) {
-        if(DEBUG && !rd.groups.containsAll(groups)) {
+        if(DEBUG && !rd.access.groups.containsAll(groups)) {
           System.out.println(rd.objName + (rd.updateFor ? "(update)" : "") + ": add " + groups);
         }
-        rd.groups.addAll(groups);
+        rd.access.groups.addAll(groups);
       } else {
-        if(DEBUG && CollectionUtils.containsAny(rd.groups, groups)) {
+        if(DEBUG && CollectionUtils.containsAny(rd.access.groups, groups)) {
           System.out.println(rd.objName + (rd.updateFor ? "(update)" : "") + ": remove " + groups);
         }
-        rd.groups.removeAll(groups);
+        rd.access.groups.removeAll(groups);
       }
-      rd.calcEffectiveAccess(this);
     }
+    recount();
   }
 
-  private void effCalcFromMembers(RoleData rd, List<Long> members) {
-    if(rd.effGroups.isEmpty()) {
-
-    } else {
-      for(Iterator<String> i = rd.effGroups.iterator(); i.hasNext();) {
-        boolean isAllowed = false;
-        List<String> gs = List.of(i.next());
-        for(Long m : members) {
-          if(isAllowed(m, gs)) {
-            isAllowed = true;
-            break;
-          }
-        }
-        if(!isAllowed) {
-          i.remove();
-        }
+  private void recount() {
+    if(DEBUG) System.out.println("\neffRecount\n" + "=".repeat(16));
+    Deque<RoleData> parents = new ArrayDeque<>();
+    for(RoleData rd : rolesData.values()) {
+      rd.recount(this, parents);
+    }
+    if(DEBUG) {
+      ObjectMapper om = Json.objectMapper();
+      String out = "\nrolesData: " + rolesData.size() + "\n" + "=".repeat(16);
+      for(RoleData rd : rolesData.values()) {
+        out += "\n" + Json.serialize(om, rd);
       }
-      if(rd.effGroups.isEmpty()) {
-        rd.effDefaultAccess = DefaultAccess.NOBODY;
-        log.warning(() -> MessageFormat.format
-        ("Role {0} is inaccessible.", toString()));
-      }
+      System.out.println(out);
     }
   }
 
@@ -603,7 +565,6 @@ public class SecurityMgr {
   , Role_.DEFAULT_ACCESS
   , Role_.IS_URL
   , Role_.UPDATE_FOR
-  , Role_.DISABLED
   , Role_.ORPHAN
   , Role_.DENIED_FOR_ALL
   , Role_.NAME
@@ -617,7 +578,6 @@ public class SecurityMgr {
     , Byte.toString(role.getDefaultAccess().id)
     , role.getIsUrl()? "1" : "0"
     , role.getUpdateFor() ? "1" : "0"
-    , role.getDisabled() ? "1" : "0"
     , role.getOrphan() ? "1" : "0"
     , role.getDeniedForAll() ? "1" : "0"
     , "'" + role.getName() + "'"

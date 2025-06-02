@@ -53,8 +53,6 @@ public class RoleForm extends EntityForm<Long, Role, RoleWor> {
           updateFor.setReadOnly(true);
           put(Role_.UPDATE_FOR, updateFor);
 
-          put(Role_.DISABLED, new Checkbox(Role_.DISABLED));
-
           Checkbox orphan = new Checkbox(Role_.ORPHAN);
           orphan.setReadOnly(true);
           put(Role_.ORPHAN, orphan);

@@ -305,7 +305,7 @@ public class SecurityTest {
   @Test
   public void update(CapturedOutput output) throws Exception {
     List<String> EXPECTED_SQL = list(
-      "partnerName='TestPartnerName'"
+      "partnerName='" + PARTNER_NAME + "'"
     , "locationTypeId=NULL"
     , "update personDetails pdw1_0 set " + PersonDetailsDto.MARRIED + "=NULL"
     , "where p1_0.partnerRegdate>='2022-01-01T00:00:00.000"

@@ -187,7 +187,7 @@ public class ValidationTest {
   public void updateWithEmptyData() throws Exception {
     PartnerRequest.Update request = new PartnerRequest.Update();
     request.token = authorize(SecurityTest.ADMIN_DTO, testSvc, om);
-    request.fields = list(PartnerDto.PARTNER_NAME);
+    request.fields = list(PartnerDto.PARTNER_REGCODE);
     request.filter.assignId(0L);
     PartnerResponse res = testSvc.call(PartnerResponse.class
     , PartnerRequest.UPDATE_METHOD, PartnerRequest.UPDATE_PATH, request);
@@ -198,7 +198,7 @@ public class ValidationTest {
     .isEqualTo(0L);
     assertThat(res.getDescr()).as("res." + BasicResponse.DESCR + resJson.get())
     .contains(
-      ms.getMessage(StringUtil.fieldToName(PartnerDto.PARTNER_NAME), null, testLocale)
+      ms.getMessage(StringUtil.fieldToName(PartnerDto.PARTNER_REGCODE), null, testLocale)
       + ": " + ms.getMessage("jakarta.validation.constraints.NotBlank.message", null, testLocale)
     );
   }

@@ -29,9 +29,7 @@ public class RoleGridFieldColumns extends GridFieldColumns<Long, Role> {
     , new BoolGridFieldColumn<>
       (Role_.UPDATE_FOR, BooleansEnum.DEFINED_VALUES, Role::getUpdateFor)
     , new BoolGridFieldColumn<>
-      (Role_.DISABLED, BooleansEnum.DEFINED_VALUES, Role::getDisabled)
-    , new BoolGridFieldColumn<>
-      (Role_.ORPHAN, BooleansEnum.DEFINED_VALUES, Role::getDisabled)
+      (Role_.ORPHAN, BooleansEnum.DEFINED_VALUES, Role::getOrphan)
     , new TextGridFieldsColumn<>(Role_.OBJ_NAME, Role::getObjName)
     , new NumberGridFieldColumn<>(Role_.ID, LongField.class, Role::getId)
     );

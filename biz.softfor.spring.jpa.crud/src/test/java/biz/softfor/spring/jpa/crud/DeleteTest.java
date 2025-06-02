@@ -15,7 +15,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -88,12 +87,10 @@ public class DeleteTest extends PartnersTestBasic {
     for(int i = 0; i < data.partners.data.size(); ++i) {
       Partner entity = data.partners.data.get(i);
       if(Objects.equals(entity.getId(), id)) {
-        Holder<Partner> holder = new Holder<>();
-        new TransactionTemplate(tm).executeWithoutResult(
-          status -> holder.value = em.find(Partner.class, id)
-        );
-        assertThat(holder.value)
-        .as(() -> "Partner(id=" + id + ") must not exist.").isNull();
+        Partner res = new TransactionTemplate(tm).execute
+        (status -> em.find(Partner.class, id));
+        assertThat(res).as(() -> "Partner(id=" + id + ") must not exist.")
+        .isNull();
       } else {
         data.partners.check(list(i), data.partnerIgnoringFields
         , TestPartners.PARTNER_FETCH_RELATIONS);
@@ -129,12 +126,9 @@ public class DeleteTest extends PartnersTestBasic {
       User entity = data.users.data.get(i);
       Long id = entity.getId();
       if(ids.contains(id)) {
-        Holder<User> holder = new Holder<>();
-        new TransactionTemplate(tm).executeWithoutResult(
-          status -> holder.value = em.find(User.class, id)
-        );
-        assertThat(holder.value)
-        .as(() -> "User(id=" + id + ") must not exist.").isNull();
+        User res = new TransactionTemplate(tm).execute
+        (status -> em.find(User.class, id));
+        assertThat(res).as(() -> "User(id=" + id + ") must not exist.").isNull();
       } else {
         data.users.check(list(i), data.userIgnoringFields
         , TestPartners.USER_FETCH_RELATIONS);

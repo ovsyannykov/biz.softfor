@@ -232,7 +232,6 @@ public class TestPartners extends TestData {
     result.setDefaultAccess(DefaultAccess.EVERYBODY);
     result.setIsUrl(Boolean.FALSE);
     result.setUpdateFor(Boolean.FALSE);
-    result.setDisabled(Boolean.FALSE);
     result.setOrphan(Boolean.FALSE);
     result.setDeniedForAll(Boolean.FALSE);
     result.setName(Role_.NAME + label);

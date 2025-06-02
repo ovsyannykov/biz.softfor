@@ -123,43 +123,6 @@ public class SecurityMgrUpdateTest {
   }
 
   @Test
-  public void disableEnable() throws Exception {
-    long ACTION_ID = new FieldRoleCalc
-    (User.class, User.class.getDeclaredField(User_.EMAIL)).id();
-    RoleWor data = new RoleWor();
-    RoleRequest.Update roleReq = new RoleRequest.Update(data);
-    roleReq.filter.assignId(ACTION_ID);
-    UserRequest.Read req = new UserRequest.Read();
-    req.filter.assignId(SecurityTest.ADMIN_ID);
-    req.fields = list(User_.EMAIL);
-    {
-      UserResponse res = testSvc.call(UserResponse.class
-      , UserRequest.READ_METHOD, UserRequest.READ_PATH, req);
-      assertThat(res.getStatus()).as(msgr.apply(res))
-      .isEqualTo(BasicResponse.ACCESS_DENIED);
-    } {
-      roleReq.data.setDisabled(true);
-      roleSvc.update(roleReq);
-    } {
-      UserResponse res = testSvc.call(UserResponse.class
-      , UserRequest.READ_METHOD, UserRequest.READ_PATH, req);
-      Supplier<String> msg = msgr.apply(res);
-      assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.OK);
-      assertThat(res.getData().size()).as(msg).isEqualTo(1);
-      assertThat(res.getData(0).getEmail()).as(msg)
-      .isEqualTo(SecurityTest.ADMIN_DTO.getEmail());
-    } {
-      roleReq.data.setDisabled(false);
-      roleSvc.update(roleReq);
-    } {
-      UserResponse res = testSvc.call(UserResponse.class
-      , UserRequest.READ_METHOD, UserRequest.READ_PATH, req);
-      assertThat(res.getStatus()).as(msgr.apply(res))
-      .isEqualTo(BasicResponse.ACCESS_DENIED);
-    }
-  }
-
-  @Test
   public void defaultAccess() throws Exception {
     Field everybodyField = TeztEntity.class.getDeclaredField(TeztEntityDto.EVERYBODY);
     long ROLE_ID = new FieldRoleCalc(TeztEntity.class, everybodyField).id();
@@ -251,24 +214,24 @@ public class SecurityMgrUpdateTest {
     + HttpRequestsMgrUrlByClassTestCtlr.URL_BY_CLASS;
     AbstractRequest req = new AbstractRequest();
     {
-      CommonResponse res = testSvc.call(CommonResponse.class
-      , HTTP_METHOD, ENDPOINT, req);
+      CommonResponse res
+      = testSvc.call(CommonResponse.class, HTTP_METHOD, ENDPOINT, req);
       Supplier<String> msg = msgr.apply(res);
       assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.OK);
     } {
       roleReq.data.setDefaultAccess(DefaultAccess.AUTHORIZED);
       roleSvc.update(roleReq);
     } {
-      CommonResponse res = testSvc.call(CommonResponse.class
-      , HTTP_METHOD, ENDPOINT, req);
+      CommonResponse res
+      = testSvc.call(CommonResponse.class, HTTP_METHOD, ENDPOINT, req);
       assertThat(res.getStatus()).as(msgr.apply(res))
       .isEqualTo(BasicResponse.ACCESS_DENIED);
     } {
       roleReq.data.setDefaultAccess(DefaultAccess.EVERYBODY);
       roleSvc.update(roleReq);
     } {
-      CommonResponse res = testSvc.call(CommonResponse.class
-      , HTTP_METHOD, ENDPOINT, req);
+      CommonResponse res
+      = testSvc.call(CommonResponse.class, HTTP_METHOD, ENDPOINT, req);
       Supplier<String> msg = msgr.apply(res);
       assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.OK);
     }

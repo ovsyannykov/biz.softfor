@@ -85,8 +85,8 @@ public class HttpRequestsMgr {
   (Supplier<Authentication> authentication, RequestAuthorizationContext ctx) {
     boolean result;
     RoleData rd = get(ctx.getRequest());
-    if(rd.effGroups.isEmpty()) {
-      result = switch(rd.effDefaultAccess) {
+    if(rd.effective.groups.isEmpty()) {
+      result = switch(rd.effective.defaultAccess) {
         case EVERYBODY -> true;
         case AUTHORIZED -> SecurityUtil.isAuthorized(authentication.get());
         case NOBODY -> false;
