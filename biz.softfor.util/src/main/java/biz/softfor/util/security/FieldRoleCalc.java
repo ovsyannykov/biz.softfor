@@ -14,14 +14,10 @@ public class FieldRoleCalc extends RoleCalc {
   private final Class<?> p;
   private final Field o;
 
-  public FieldRoleCalc(Class<?> parent, Field v) {
+  public FieldRoleCalc(Field v) {
     super(FIELD);
-    p = parent;
+    p = v.getDeclaringClass();
     o = v;
-  }
-
-  public FieldRoleCalc(Class<?> parent, String name) {
-    this(parent, Reflection.declaredField(parent, name));
   }
 
   @Override

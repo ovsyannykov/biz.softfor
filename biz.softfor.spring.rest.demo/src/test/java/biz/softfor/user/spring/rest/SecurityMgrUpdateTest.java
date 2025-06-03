@@ -81,7 +81,7 @@ public class SecurityMgrUpdateTest {
   @Test
   public void addRemoveRole() throws Exception {
     Field everybodyField = TeztEntity.class.getDeclaredField(TeztEntityDto.EVERYBODY);
-    long ROLE_ID = new FieldRoleCalc(TeztEntity.class, everybodyField).id();
+    long ROLE_ID = new FieldRoleCalc(everybodyField).id();
     int GROUP_ID = 1;
     RoleWor data = new RoleWor();
     RoleRequest.Update roleReq = new RoleRequest.Update(data);
@@ -125,7 +125,7 @@ public class SecurityMgrUpdateTest {
   @Test
   public void defaultAccess() throws Exception {
     Field everybodyField = TeztEntity.class.getDeclaredField(TeztEntityDto.EVERYBODY);
-    long ROLE_ID = new FieldRoleCalc(TeztEntity.class, everybodyField).id();
+    long ROLE_ID = new FieldRoleCalc(everybodyField).id();
     RoleWor data = new RoleWor();
     RoleRequest.Update roleReq = new RoleRequest.Update(data);
     roleReq.filter.assignId(ROLE_ID);

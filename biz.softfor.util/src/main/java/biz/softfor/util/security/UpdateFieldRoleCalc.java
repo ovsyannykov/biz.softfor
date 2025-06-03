@@ -9,9 +9,9 @@ public class UpdateFieldRoleCalc extends UpdateRoleCalc {
   private final Class<?> p;
   private final Field o;
 
-  public UpdateFieldRoleCalc(Class<?> parent, Field v) {
+  public UpdateFieldRoleCalc(Field v) {
     super(RoleCalc.FIELD);
-    p = parent;
+    p = v.getDeclaringClass();
     o = v;
   }
 
@@ -22,12 +22,13 @@ public class UpdateFieldRoleCalc extends UpdateRoleCalc {
 
   @Override
   public String defaultDescription() {
-    return new FieldRoleCalc(p, o).description();
+    return p.getPackageName() + " " + defaultName();
   }
 
   @Override
   public String defaultName() {
-    return new FieldRoleCalc(p, o).name();
+    return
+    StringUtil.camelCaseToSentenceCase(p.getSimpleName() + "#" + o.getName());
   }
 
   @Override

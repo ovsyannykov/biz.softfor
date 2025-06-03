@@ -9,14 +9,13 @@ import biz.softfor.jpa.crud.querygraph.ManyToManyInf;
 import biz.softfor.util.Reflection;
 import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.Identifiable;
+import biz.softfor.util.security.AbstractRoleCalc;
 import biz.softfor.util.security.ActionAccess;
 import biz.softfor.util.security.ClassRoleCalc;
 import biz.softfor.util.security.DefaultAccess;
 import biz.softfor.util.security.FieldRoleCalc;
-import biz.softfor.util.security.RoleCalc;
 import biz.softfor.util.security.UpdateAccess;
 import biz.softfor.util.security.UpdateFieldRoleCalc;
-import biz.softfor.util.security.UpdateRoleCalc;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -435,7 +434,30 @@ public class WithoutRelationsGen extends CodeGen {
           ctorFromWor.addStatement("$N = $N.$N()"
           , fieldName, CodeGenUtil.PARAM_NAME, getterName);
         }
-        addActionAccess(fieldBldr, clazz, dclField);
+        AbstractRoleCalc calc = new FieldRoleCalc(dclField);
+        AnnotationSpec.Builder aBldr = AnnotationSpec.builder(ActionAccess.class)
+        .addMember(CodeGenUtil.ANNOTATION_VALUE, "$S", calc.name())
+        .addMember(ActionAccess.DESCRIPTION, "$S", calc.description())
+        .addMember(ActionAccess.ID, "$LL", calc.id())
+        .addMember(
+          ActionAccess.DEFAULT_ACCESS
+        , "$T.$L"
+        , DefaultAccess.class
+        , calc.defaultAccess().name()
+        );
+        fieldBldr.addAnnotation(aBldr.build());
+        AbstractRoleCalc uCalc = new UpdateFieldRoleCalc(dclField);
+        AnnotationSpec.Builder uaBldr = AnnotationSpec.builder(UpdateAccess.class)
+        .addMember(CodeGenUtil.ANNOTATION_VALUE, "$S", uCalc.name())
+        .addMember(UpdateAccess.DESCRIPTION, "$S", uCalc.description())
+        .addMember(UpdateAccess.ID, "$LL", uCalc.id())
+        .addMember(
+          UpdateAccess.DEFAULT_ACCESS
+        , "$T.$L"
+        , DefaultAccess.class
+        , uCalc.defaultAccess().name()
+        );
+        fieldBldr.addAnnotation(uaBldr.build());
         CodeGenUtil.addField(
           classBldr
         , fieldBldr
@@ -521,34 +543,6 @@ public class WithoutRelationsGen extends CodeGen {
     .addField(FieldSpec.builder(long.class, SERIAL_VERSION_UID
     , Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
     .initializer("$L", serialVersionUID).build());
-  }
-
-  private static void addActionAccess
-  (FieldSpec.Builder fieldBldr, Class<?> parent, Field dclField) {
-    RoleCalc calc = new FieldRoleCalc(parent, dclField);
-    AnnotationSpec.Builder aBldr = AnnotationSpec.builder(ActionAccess.class)
-    .addMember(CodeGenUtil.ANNOTATION_VALUE, "$S", calc.name())
-    .addMember(ActionAccess.DESCRIPTION, "$S", calc.description())
-    .addMember(ActionAccess.ID, "$LL", calc.id())
-    .addMember(
-      ActionAccess.DEFAULT_ACCESS
-    , "$T.$L"
-    , DefaultAccess.class
-    , calc.defaultAccess().name()
-    );
-    fieldBldr.addAnnotation(aBldr.build());
-    UpdateRoleCalc uCalc = new UpdateFieldRoleCalc(parent, dclField);
-    AnnotationSpec.Builder uaBldr = AnnotationSpec.builder(UpdateAccess.class)
-    .addMember(CodeGenUtil.ANNOTATION_VALUE, "$S", uCalc.name())
-    .addMember(UpdateAccess.DESCRIPTION, "$S", uCalc.description())
-    .addMember(UpdateAccess.ID, "$LL", uCalc.id())
-    .addMember(
-      UpdateAccess.DEFAULT_ACCESS
-    , "$T.$L"
-    , DefaultAccess.class
-    , uCalc.defaultAccess().name()
-    );
-    fieldBldr.addAnnotation(uaBldr.build());
   }
 
 }

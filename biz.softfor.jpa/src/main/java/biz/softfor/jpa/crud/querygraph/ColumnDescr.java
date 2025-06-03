@@ -405,8 +405,8 @@ public class ColumnDescr {
       }
     }
     required = lRequired;
-    roleId = new FieldRoleCalc(parent, field).id();
-    updateRoleId = new UpdateFieldRoleCalc(parent, field).id();
+    roleId = new FieldRoleCalc(field).id();
+    updateRoleId = new UpdateFieldRoleCalc(field).id();
     if(Identifiable.ID.equals(name)) {
       validationGroup = null;
     } else {

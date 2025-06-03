@@ -8,7 +8,6 @@ import biz.softfor.util.security.ClassRoleCalc;
 import biz.softfor.util.security.FieldRoleCalc;
 import biz.softfor.util.security.UpdateClassRoleCalc;
 import biz.softfor.util.security.UpdateFieldRoleCalc;
-import biz.softfor.util.security.UpdateRoleCalc;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -41,7 +40,7 @@ public class EntitiesScanRoles implements ScanRoles {
       if(!type.isAnnotationPresent(Generated.class)) {
         AbstractRoleCalc calc = new ClassRoleCalc(type);
         if(!calc.ignore()) {
-          UpdateRoleCalc updateCalc = new UpdateClassRoleCalc(type);
+          AbstractRoleCalc updateCalc = new UpdateClassRoleCalc(type);
           Role role = new Role(calc);
           Long roleId = role.getId();
           if(!fromCode.containsKey(roleId)) {
@@ -55,9 +54,9 @@ public class EntitiesScanRoles implements ScanRoles {
             List<Long> updateChildren = new ArrayList<>();
             parent2Members.put(updateRoleId, updateChildren);
             for(Field field : Reflection.declaredProperties(type)) {
-              AbstractRoleCalc fieldCalc = new FieldRoleCalc(type, field);
+              AbstractRoleCalc fieldCalc = new FieldRoleCalc(field);
               if(!fieldCalc.ignore()) {
-                UpdateRoleCalc updateFieldCalc = new UpdateFieldRoleCalc(type, field);
+                AbstractRoleCalc updateFieldCalc = new UpdateFieldRoleCalc(field);
                 Role fieldRole = new Role(fieldCalc);
                 Long fieldRoleId = fieldRole.getId();
                 fromCode.put(fieldRoleId, fieldRole);
@@ -76,7 +75,7 @@ public class EntitiesScanRoles implements ScanRoles {
                   Class<?> fieldType = (isOneToOne || isManyToOne) ? field.getType()
                   : Reflection.genericParameter(field);
                   AbstractRoleCalc fieldTypeCalc = new ClassRoleCalc(fieldType);
-                  UpdateRoleCalc updateFieldTypeCalc
+                  AbstractRoleCalc updateFieldTypeCalc
                   = new UpdateClassRoleCalc(fieldType);
                   parentRoles = new ParentRoles(role.getId(), fieldTypeCalc.id());
                   updateParentRoles

@@ -59,7 +59,7 @@ public class SecurityMgrTest {
     List<Param> p = new ArrayList<>();
     p.add(new Param(
       "Simple field by type"
-    , new UpdateFieldRoleCalc(User.class, User.class.getDeclaredField(User_.EMAIL))
+    , new UpdateFieldRoleCalc(User.class.getDeclaredField(User_.EMAIL))
     ));
     p.add(new Param(
       "Relation type by members"
@@ -67,11 +67,11 @@ public class SecurityMgrTest {
     ));
     p.add(new Param(
       "Relation field by members of its type"
-    , new FieldRoleCalc(State.class, State.class.getDeclaredField(State_.COUNTRY))
+    , new FieldRoleCalc(State.class.getDeclaredField(State_.COUNTRY))
     ));
     p.add(new Param(
       "Relation field by members including a relation field by members of its type"
-    , new FieldRoleCalc(District.class, District.class.getDeclaredField(District_.STATE))
+    , new FieldRoleCalc(District.class.getDeclaredField(District_.STATE))
     ));
     return p.stream()
     //.skip(0).limit(1)
