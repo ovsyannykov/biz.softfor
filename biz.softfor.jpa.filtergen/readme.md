@@ -1,4 +1,10 @@
 <p>
+  <a href="license.md">
+    <img src="https://img.shields.io/github/license/ovsyannykov/biz.softfor"/>
+  </a>
+</p>
+
+<p>
   <a href="readme.ua.md">UA</a>
   <a href="readme.ru.md">RU</a>
 </p>
