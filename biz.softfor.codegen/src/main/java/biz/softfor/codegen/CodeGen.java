@@ -4,10 +4,12 @@ import biz.softfor.util.Reflection;
 import jakarta.persistence.Entity;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
@@ -44,9 +46,16 @@ public abstract class CodeGen extends AbstractProcessor {
     try {
       for(Element element : annotatedElements) {
         preProcess(element);
-        Annotation a = element.getAnnotation(supportedAnnotation);
-        String[] packages = (String[])a.getClass()
-        .getMethod(CodeGenUtil.ANNOTATION_VALUE).invoke(a);
+        AnnotationValue av = CodeGenUtil.getAnnotationProperty
+        (element, supportedAnnotation, CodeGenUtil.ANNOTATION_VALUE);
+        @SuppressWarnings("unchecked")
+        List<? extends AnnotationValue> avs
+        = (List<? extends AnnotationValue>)av.getValue();
+        String[] packages = new String[avs.size()];
+        for(int i = 0; i < packages.length; ++i) {
+          String className = avs.get(i).getValue().toString();
+          packages[i] = className.substring(0, className.lastIndexOf('.'));
+        }
         FilterBuilder fb = new FilterBuilder();
         for(String p : packages) {
           fb.includePackage(p);

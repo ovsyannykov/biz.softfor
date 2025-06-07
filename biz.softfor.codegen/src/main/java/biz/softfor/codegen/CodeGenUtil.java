@@ -35,10 +35,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.tools.JavaFileObject;
 import lombok.EqualsAndHashCode;
@@ -48,6 +53,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class CodeGenUtil {
 
+  public final static String ANNOTATION_EXCLUDE = "exclude";
   public final static String ANNOTATION_VALUE = "value";
   public final static String ID_GETTER_NAME = getterName(Identifiable.ID);
   public final static String ID_SETTER_NAME = setterName(Identifiable.ID);
@@ -61,7 +67,7 @@ public class CodeGenUtil {
   public final static String[] API_EXCLUDED_PACKAGES
   = { Entity.class.getPackageName() };
 
-  private final static Set<String> created = new HashSet();
+  private final static Set<String> created = new HashSet<>();
   private final static Consumer<TypeSpec.Builder> noConstructors = reqBldr -> {};
   private final static BiConsumer<TypeSpec.Builder, TypeName>
   addConstructors4Create = (reqBldr, dataCN) -> {
@@ -403,11 +409,38 @@ public class CodeGenUtil {
   }
 
   public static Object getAnnotationProperty
-  (AnnotatedElement element, Class<? extends Annotation> annotationClass, String property)
+  (AnnotatedElement element, Class<? extends Annotation> clazz, String property)
   throws IllegalAccessException, InvocationTargetException
   , NoSuchMethodException, SecurityException {
-    Annotation a = getAnnotation(element, annotationClass);
+    Annotation a = getAnnotation(element, clazz);
     return a == null ? null : a.getClass().getMethod(property).invoke(a);
+  }
+
+  public static AnnotationMirror getAnnotation
+  (Element element, Class<? extends Annotation> clazz) {
+    AnnotationMirror result = null;
+    String clazzName = clazz.getName();
+    for(AnnotationMirror a : element.getAnnotationMirrors()) {
+      if(a.getAnnotationType().toString().equals(clazzName)) {
+        result = a;
+      }
+    }
+    return result;
+  }
+
+  public static AnnotationValue getAnnotationProperty
+  (Element element, Class<? extends Annotation> clazz, String property) {
+    AnnotationValue result = null;
+    AnnotationMirror a = getAnnotation(element, clazz);
+    if(a != null) {
+      for(Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry
+      : a.getElementValues().entrySet()) {
+        if(entry.getKey().getSimpleName().toString().equals(property)) {
+          result = entry.getValue();
+        }
+      }
+    }
+    return result;
   }
 
   public static String getterName(String fieldName) {

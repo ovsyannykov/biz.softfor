@@ -2,7 +2,6 @@ package biz.softfor.user.spring;
 
 import biz.softfor.util.security.DefaultAccess;
 import java.text.MessageFormat;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;

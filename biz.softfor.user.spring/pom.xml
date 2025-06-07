@@ -115,6 +115,12 @@
   <dependencies>
     <!-- annotation processors -->
     <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.servicegen</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <optional>true</optional>
@@ -161,10 +167,6 @@
       <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.spring.jpa.properties</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.spring.rest</artifactId>
     </dependency>
     <dependency>
       <groupId>biz.softfor</groupId>

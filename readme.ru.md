@@ -1,13 +1,8 @@
-<p>
-  <a href="license.md">
-    <img src="https://img.shields.io/github/license/ovsyannykov/biz.softfor"/>
-  </a>
-</p>
+[![GitHub License](https://img.shields.io/github/license/ovsyannykov/biz.softfor)](license.md)
 
-<p>
-  <a href="readme.md">EN</a>
-  <a href="readme.ua.md">UA</a>
-</p>
+[![UA](https://img.shields.io/badge/UA-yellow)](readme.ua.md)
+[![EN](https://img.shields.io/badge/EN-blue)](readme.md)
+
 <h1 align="center">biz.softfor</h1>
 
 ![Demo](biz.softfor.vaadin.demo/doc/images/readme.png)
@@ -32,15 +27,13 @@ JPA, Hibernate, Spring Boot и Vaadin c простым определением 
 messages-файлов локализации.
 - [biz.softfor.jpa](biz.softfor.jpa) - библиотека классов для создания
 CRUD-сервисов на основе JPA и Hibernate.
-- [biz.softfor.jpa.apigen](biz.softfor.jpa.apigen) - базовый класс для
-процессоров аннотаций, генерирующих классы для работы с CRUD API: DTO, запросов
-и ответов.
-- [biz.softfor.jpa.filtergen](biz.softfor.jpa.filtergen) - базовый класс для
-процессоров аннотаций, генерирующих классы фильтров для запросов чтения,
-обновления и удаления.
+- [biz.softfor.jpa.apigen](biz.softfor.jpa.apigen) - процессор аннотаций,
+генерирующий классы для работы с CRUD API: DTO, запросов и ответов.
+- [biz.softfor.jpa.filtergen](biz.softfor.jpa.filtergen) - процессор аннотаций,
+генерирующий классы фильтров для запросов чтения, обновления и удаления.
 - [biz.softfor.jpa.withoutrelationsgen](biz.softfor.jpa.withoutrelationsgen) -
-базовый класс для процессоров аннотации @Entity, генерирующих по определённым
-правилам классы Entity без @OneToMany, @ManyToOne и @ManyToMany аннотаций.
+процессор аннотаций, генерирующий по определённым правилам классы Entity без
+@OneToMany, @ManyToOne и @ManyToMany аннотаций.
 - [biz.softfor.logback](biz.softfor.logback) - Spring Boot стартер,
 унифицирующий параметры логирования приложений, в которые он включен как
 зависимость.
@@ -67,8 +60,8 @@ Boot стартер, содержащий REST контроллеры, рабо�
 - [biz.softfor.reflectionsutil](biz.softfor.reflectionsutil) - утилита для
 сканирования и сохранения в файл списка классов, аннотированных заданной
 аннотацией.
-- [biz.softfor.spring](biz.softfor.spring) - Spring Boot стартер, конфигурирующий
-JSON-mapper, бин локализации и определяющий ряд констант.
+- [biz.softfor.spring](biz.softfor.spring) - Spring Boot стартер,
+конфигурирующий JSON-mapper, бин локализации и определяющий ряд констант.
 - [biz.softfor.spring.i18nrest](biz.softfor.spring.i18nrest) - Spring Boot
 стартер, конфигурирующий локализацию REST-сервиса через HTTP заголовок
 "Accept-Language".
@@ -89,6 +82,8 @@ Spring Boot стартер, определяющий healthcheck-контрол�
 - [biz.softfor.spring.security.service](biz.softfor.spring.security.service) -
 Spring Boot стартер, содержащий бины и вспомогательные методы для Spring
 Security в REST-сервисах.
+- [biz.softfor.spring.servicegen](biz.softfor.spring.servicegen) - процессор
+аннотаций, генерирующий классы CRUD-сервисов.
 - [biz.softfor.spring.ws](biz.softfor.spring.ws) - Spring Boot стартер,
 облегчающий построение SOAP-сервисов.
 - [biz.softfor.spring.ws.client.demo](biz.softfor.spring.ws.client.demo) -

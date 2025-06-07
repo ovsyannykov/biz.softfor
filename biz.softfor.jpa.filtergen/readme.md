@@ -1,13 +1,8 @@
-<p>
-  <a href="license.md">
-    <img src="https://img.shields.io/github/license/ovsyannykov/biz.softfor"/>
-  </a>
-</p>
+[![GitHub License](https://img.shields.io/github/license/ovsyannykov/biz.softfor)](license.md)
 
-<p>
-  <a href="readme.ua.md">UA</a>
-  <a href="readme.ru.md">RU</a>
-</p>
+[![UA](https://img.shields.io/badge/UA-yellow)](readme.ua.md)
+[![RU](https://img.shields.io/badge/RU-black)](readme.ru.md)
+
 <h1 align="center">biz.softfor.jpa.filtergen</h1>
 
 — is an **annotation processor** for generating filter classes **```*Fltr```**
@@ -254,16 +249,19 @@ for resetting all filter fields **```reset```**.
 
 — [biz.softfor.user.api](../biz.softfor.user.api.filter).
 
-- In the api package, we create a package-info.java file, in which we put
-the **@GenFilter** annotation above the package with the name of the original
-package with Entity classes:
+- In the api package, we create a file **package-info.java**, in which we put
+the **@GenFilter** annotation above the package, in which we specify the classes
+in the packages with which the processor will look for the **@Entity** annotation:
 
 ```java
-@GenFilter({ "biz.softfor.user.jpa" })
+@GenFilter({ biz.softfor.user.jpa.GenFilterMarker.class })
 package biz.softfor.user.api;
 
 import biz.softfor.jpa.filtergen.GenFilter;
 ```
+
+Since we do not want to have the original Entity classes in dependencies, we create
+another corresponding package with a single empty GenFilterMarker interface.
 
 - In the [pom file](../biz.softfor.user.api.filter/pom.xml) of the project,
 we add a dependency on our annotation processor:

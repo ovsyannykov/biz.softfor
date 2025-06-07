@@ -1,13 +1,8 @@
-<p>
-  <a href="license.md">
-    <img src="https://img.shields.io/github/license/ovsyannykov/biz.softfor"/>
-  </a>
-</p>
+[![GitHub License](https://img.shields.io/github/license/ovsyannykov/biz.softfor)](license.md)
 
-<p>
-  <a href="readme.ua.md">UA</a>
-  <a href="readme.ru.md">RU</a>
-</p>
+[![UA](https://img.shields.io/badge/UA-yellow)](readme.ua.md)
+[![RU](https://img.shields.io/badge/RU-black)](readme.ru.md)
+
 <h1 align="center">biz.softfor</h1>
 
 ![Demo](biz.softfor.vaadin.demo/doc/images/readme.png)
@@ -32,16 +27,13 @@ annotation processors.
 localization messages files.
 - [biz.softfor.jpa](biz.softfor.jpa) - class library for creating CRUD services
 based on JPA and Hibernate.
-- [biz.softfor.jpa.apigen](biz.softfor.jpa.apigen) - base class for annotation
-processors that generate classes for working with CRUD API: DTOs, requests, and
-responses.
-- [biz.softfor.jpa.filtergen](biz.softfor.jpa.filtergen) - base class for
-annotation processors that generate filter classes for read, update, and delete
-queries.
+- [biz.softfor.jpa.apigen](biz.softfor.jpa.apigen) - annotation processor that
+generates classes for working with CRUD API: DTO, requests and responses.
+- [biz.softfor.jpa.filtergen](biz.softfor.jpa.filtergen) - annotation processor
+that generates filter classes for read, update, and delete queries.
 - [biz.softfor.jpa.withoutrelationsgen](biz.softfor.jpa.withoutrelationsgen) -
-base class for @Entity annotation processors that generate entity classes
-without @OneToMany, @ManyToOne, and @ManyToMany annotations according to certain
-rules.
+annotation processor that generates Entity classes without @OneToMany,
+@ManyToOne and @ManyToMany annotations according to certain rules.
 - [biz.softfor.logback](biz.softfor.logback) - Spring Boot starter unifying
 logging parameters of applications in which it is included as a dependency.
 - [biz.softfor.partner.api](biz.softfor.partner.api) - contains generated CRUD
@@ -88,6 +80,8 @@ starter containing beans and helper methods for Spring Security.
 - [biz.softfor.spring.security.service](biz.softfor.spring.security.service) -
 Spring Boot starter containing beans and helper methods for Spring Security in
 REST services.
+- [biz.softfor.spring.servicegen](biz.softfor.spring.servicegen) - annotation
+processor that generates CRUD service classes.
 - [biz.softfor.spring.ws](biz.softfor.spring.ws) - Spring Boot starter,
 facilitating the construction of SOAP services.
 - [biz.softfor.spring.ws.client.demo](biz.softfor.spring.ws.client.demo) -

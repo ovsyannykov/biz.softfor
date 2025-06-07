@@ -9,7 +9,6 @@ import biz.softfor.user.jpa.Role_;
 import biz.softfor.user.jpa.UserGroup;
 import biz.softfor.user.jpa.UserGroup_;
 import biz.softfor.util.Constants;
-import biz.softfor.util.Holder;
 import biz.softfor.util.Json;
 import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.AbstractRequest;

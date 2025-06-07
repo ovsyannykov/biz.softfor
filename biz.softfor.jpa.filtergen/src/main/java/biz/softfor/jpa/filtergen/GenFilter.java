@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 public @interface GenFilter {
 
-  public String[] value() default {};
+  public Class<?>[] value() default {};
 
 }

@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +52,8 @@ public class ApiGen extends CodeGen {
   = AnnotationSpec.builder(SuppressWarnings.class)
   .addMember("value", "$S", "empty-statement")
   .build();
+  private final static String CONTROLLER_SFX = "Ctlr";
+  private final static String ANNOTATION_RESTCONTROLLERS = "restControllers";
 
   private final static boolean DEBUG = false;
 
@@ -60,8 +63,20 @@ public class ApiGen extends CodeGen {
 
   @Override
   protected void preProcess(Element element) {
-    Annotation a = element.getAnnotation(RestController.class);
-    String[] packages = element.getAnnotation(GenApi.class).restControllers();
+    String[] packages = new String[] {};
+    AnnotationValue av = CodeGenUtil.getAnnotationProperty
+    (element, supportedAnnotation, ANNOTATION_RESTCONTROLLERS);
+    if(av != null) {
+      List<? extends AnnotationValue> avs
+      = (List<? extends AnnotationValue>)av.getValue();
+      if(!avs.isEmpty()) {
+        packages = new String[avs.size()];
+        for(int i = 0; i < packages.length; ++i) {
+          String className = avs.get(i).getValue().toString();
+          packages[i] = className.substring(0, className.lastIndexOf('.'));
+        }
+      }
+    }
     FilterBuilder fb = new FilterBuilder();
     for(String p : packages) {
       fb.includePackage(p);
@@ -323,7 +338,7 @@ public class ApiGen extends CodeGen {
       TypeSpec.Builder request = CodeGenUtil.newCrudRequests
       (clazzSimpleName, idClazzName, dtoClazzName, filterClazzName);
 
-      String ctlrName = clazzSimpleName + "Ctlr";
+      String ctlrName = clazzSimpleName + CONTROLLER_SFX;
       for(Class<?> ctlrClass : restControllers) {
         if(ctlrName.equals(ctlrClass.getSimpleName())) {
           for(Method method : ctlrClass.getMethods()) {

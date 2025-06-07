@@ -41,6 +41,7 @@
     <module>${modulesPath}/biz.softfor.spring.rest.pingdb.jpa</module>
     <module>${modulesPath}/biz.softfor.spring.security</module>
     <module>${modulesPath}/biz.softfor.spring.security.service</module>
+    <module>${modulesPath}/biz.softfor.spring.servicegen</module>
     <module>${modulesPath}/biz.softfor.spring.ws</module>
     <module>${modulesPath}/biz.softfor.spring.ws.client.demo</module>
     <module>${modulesPath}/biz.softfor.spring.ws.demo</module>

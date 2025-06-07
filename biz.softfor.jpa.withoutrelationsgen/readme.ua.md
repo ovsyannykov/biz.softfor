@@ -1,13 +1,8 @@
-<p>
-  <a href="license.md">
-    <img src="https://img.shields.io/github/license/ovsyannykov/biz.softfor"/>
-  </a>
-</p>
+[![GitHub License](https://img.shields.io/github/license/ovsyannykov/biz.softfor)](license.md)
 
-<p>
-  <a href="readme.md">EN</a>
-  <a href="readme.ru.md">RU</a>
-</p>
+[![EN](https://img.shields.io/badge/EN-blue)](readme.md)
+[![RU](https://img.shields.io/badge/RU-black)](readme.ru.md)
+
 <h1 align="center">biz.softfor.jpa.withoutrelationsgen</h1>
 
 — це **процесор анотацій** для генерації **Entity**-класів без анотацій
@@ -499,9 +494,9 @@ private LocalDate partnerRegdate;
 
 — [biz.softfor.user.jpa.withoutrelations](../biz.softfor.user.jpa.withoutrelations).
 
-- У пакеті з ім'ям, як у вихідного, створюємо файл **package-info.java**, у
-якому над пакетом ставимо анотацію **@GenWithoutRelations** з ім'ям вихідного
-пакету з Entity-класами:
+- В api-пакеті створюємо файл **package-info.java**, у якому над пакетом ставимо
+анотацію **@GenWithoutRelations**, в якій вказуємо класи, в пакетах з якими
+процесор шукатиме анотацію **@Entity**:
 
 ```java
 @GenWithoutRelations({ "biz.softfor.user.jpa" })

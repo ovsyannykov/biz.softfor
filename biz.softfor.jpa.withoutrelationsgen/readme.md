@@ -1,13 +1,8 @@
-<p>
-  <a href="license.md">
-    <img src="https://img.shields.io/github/license/ovsyannykov/biz.softfor"/>
-  </a>
-</p>
+[![GitHub License](https://img.shields.io/github/license/ovsyannykov/biz.softfor)](license.md)
 
-<p>
-  <a href="readme.ua.md">UA</a>
-  <a href="readme.ru.md">RU</a>
-</p>
+[![UA](https://img.shields.io/badge/UA-yellow)](readme.ua.md)
+[![RU](https://img.shields.io/badge/RU-black)](readme.ru.md)
+
 <h1 align="center">biz.softfor.jpa.withoutrelationsgen</h1>
 
 — is an **annotation processor** for generating **Entity** classes without
@@ -507,10 +502,10 @@ this class. This allows you to **selectively validate only the changed** fields.
 
 — [biz.softfor.user.jpa.withoutrelations](../biz.softfor.user.jpa.withoutrelations).
 
-- In a package with the same name as the original, create a file
-**package-info.java**, in which above the package we put the annotation
-**@GenWithoutRelations** with the name of the original package
-with Entity classes:
+- In the api package, we create a file **package-info.java**, in which we put
+the **@GenWithoutRelations** annotation above the package, in which we specify
+the classes in the packages with which the processor will look for the
+**@Entity** annotation:
 
 ```java
 @GenWithoutRelations({ "biz.softfor.user.jpa" })

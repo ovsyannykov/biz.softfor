@@ -1,13 +1,8 @@
-<p>
-  <a href="license.md">
-    <img src="https://img.shields.io/github/license/ovsyannykov/biz.softfor"/>
-  </a>
-</p>
+[![GitHub License](https://img.shields.io/github/license/ovsyannykov/biz.softfor)](license.md)
 
-<p>
-  <a href="readme.ua.md">UA</a>
-  <a href="readme.md">EN</a>
-</p>
+[![UA](https://img.shields.io/badge/UA-yellow)](readme.ua.md)
+[![EN](https://img.shields.io/badge/EN-blue)](readme.md)
+
 <h1 align="center">biz.softfor.vaadin.demo</h1>
 
 ![Demo](doc/images/readme.png)

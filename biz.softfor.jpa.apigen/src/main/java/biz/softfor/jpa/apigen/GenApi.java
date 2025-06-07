@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 public @interface GenApi {
 
-  public String[] value() default {};
-  public String[] restControllers() default {};
+  public Class<?>[] value() default {};
+  public Class<?>[] restControllers() default {};
 
 }

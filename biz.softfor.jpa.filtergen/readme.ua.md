@@ -1,13 +1,8 @@
-<p>
-  <a href="license.md">
-    <img src="https://img.shields.io/github/license/ovsyannykov/biz.softfor"/>
-  </a>
-</p>
+[![GitHub License](https://img.shields.io/github/license/ovsyannykov/biz.softfor)](license.md)
 
-<p>
-  <a href="readme.md">EN</a>
-  <a href="readme.ru.md">RU</a>
-</p>
+[![EN](https://img.shields.io/badge/EN-blue)](readme.md)
+[![RU](https://img.shields.io/badge/RU-black)](readme.ru.md)
+
 <h1 align="center">biz.softfor.jpa.filtergen</h1>
 
 — це **процесор анотацій** для генерації класів фільтрів **```*Fltr```** із
@@ -253,15 +248,19 @@ private Range<LocalDate> partnerRegdate;
 
 — [biz.softfor.user.api](../biz.softfor.user.api.filter).
 
-- У api-пакеті створюємо файл package-info.java, у якому над пакетом ставимо
-анотацію **@GenFilter** з ім'ям вихідного пакета з Entity-класами:
+- В api-пакеті створюємо файл **package-info.java**, у якому над пакетом ставимо
+анотацію **@GenFilter**, в якій вказуємо класи, в пакетах з якими процесор
+шукатиме анотацію **@Entity**:
 
 ```java
-@GenFilter({ "biz.softfor.user.jpa" })
+@GenFilter({ biz.softfor.user.jpa.GenFilterMarker.class })
 package biz.softfor.user.api;
 
 import biz.softfor.jpa.filtergen.GenFilter;
 ```
+
+Оскільки ми не хочемо мати в залежності вихідні Entity-класи, ми створюємо
+ще відповідний пакет із єдиним порожнім інтерфейсом GenFilterMarker.
 
 - У [pom-файлі](../biz.softfor.user.api.filter/pom.xml) проекту додаємо
 залежність від нашого процесора анотацій:

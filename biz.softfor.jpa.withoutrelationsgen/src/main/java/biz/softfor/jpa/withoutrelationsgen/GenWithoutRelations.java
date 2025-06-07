@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.SOURCE)
 public @interface GenWithoutRelations {
 
-  public String[] value() default {};
+  public Class<?>[] value() default {};
 
 }

@@ -1,13 +1,8 @@
-<p>
-  <a href="license.md">
-    <img src="https://img.shields.io/github/license/ovsyannykov/biz.softfor"/>
-  </a>
-</p>
+[![GitHub License](https://img.shields.io/github/license/ovsyannykov/biz.softfor)](license.md)
 
-<p>
-  <a href="readme.md">EN</a>
-  <a href="readme.ru.md">RU</a>
-</p>
+[![EN](https://img.shields.io/badge/EN-blue)](readme.md)
+[![RU](https://img.shields.io/badge/RU-black)](readme.ru.md)
+
 <h1 align="center">biz.softfor</h1>
 
 ![Demo](biz.softfor.vaadin.demo/doc/images/readme.png)
@@ -31,15 +26,13 @@ Hibernate, Spring Boot та Vaadin з простим визначенням ск
 messages-файлів локалізації.
 - [biz.softfor.jpa](biz.softfor.jpa) - бібліотека класів для створення
 CRUD-сервісів на основі JPA та Hibernate.
-- [biz.softfor.jpa.apigen](biz.softfor.jpa.apigen) - базовий клас для
-процесорів анотацій, що генерують класи для роботи з CRUD API: DTO, запитів
-та відповідей.
-- [biz.softfor.jpa.filtergen](biz.softfor.jpa.filtergen) - базовий клас для
-процесорів анотацій, що генерують класи фільтрів для запитів читання,
-оновлення та видалення.
+- [biz.softfor.jpa.apigen](biz.softfor.jpa.apigen) - процесор анотацій,
+що генерує класи для роботи з CRUD API: DTO, запитів та відповідей.
+- [biz.softfor.jpa.filtergen](biz.softfor.jpa.filtergen) - процесор анотацій,
+що генерує класи фільтрів для запитів читання, оновлення та видалення.
 - [biz.softfor.jpa.withoutrelationsgen](biz.softfor.jpa.withoutrelationsgen) -
-базовий клас для процесорів анотації @Entity, що генерують за певними
-правилам класи Entity без @OneToMany, @ManyToOne та @ManyToMany анотацій.
+процесор анотацій, що генерує за певними правилами класи Entity без
+@OneToMany, @ManyToOne та @ManyToMany анотацій.
 - [biz.softfor.logback](biz.softfor.logback) - Spring Boot стартер, уніфікуючий
 параметри логування додатків, до яких він включений як залежність.
 - [biz.softfor.partner.api](biz.softfor.partner.api) - містить згенеровані
@@ -86,6 +79,8 @@ Spring Boot стартер, що містить healthcheck-контролер �
 - [biz.softfor.spring.security.service](biz.softfor.spring.security.service) -
 Spring Boot стартер, що містить біни та допоміжні методи для Spring Security у
 REST-сервісах.
+- [biz.softfor.spring.servicegen](biz.softfor.spring.servicegen) - процесор
+анотацій, що генерує класи CRUD-сервісів.
 - [biz.softfor.spring.ws](biz.softfor.spring.ws) - Spring Boot стартер, що
 полегшує побудову SOAP-сервісів.
 - [biz.softfor.spring.ws.client.demo](biz.softfor.spring.ws.client.demo) -

@@ -330,6 +330,11 @@
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
+        <artifactId>biz.softfor.spring.servicegen</artifactId>
+        <version>0.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.spring.sqllog</artifactId>
         <version>3.4.4</version>
       </dependency>

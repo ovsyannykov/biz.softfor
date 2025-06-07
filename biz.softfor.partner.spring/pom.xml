@@ -20,8 +20,8 @@
   <dependencies>
     <!-- annotation processors -->
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.servicegen</artifactId>
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>
