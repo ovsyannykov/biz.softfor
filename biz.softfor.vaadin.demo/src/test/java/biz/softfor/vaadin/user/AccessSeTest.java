@@ -26,6 +26,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
@@ -49,7 +50,11 @@ public class AccessSeTest {
 
   @BeforeEach
   public void beforeEach() throws Exception {
-    drvHlpr = new DriverHlpr(new ChromeDriver(), port);
+    ChromeOptions options = new ChromeOptions();
+    options.addArguments("--no-sandbox");
+    options.addArguments("--disable-dev-shm-usage");
+    options.addArguments("--headless");
+    drvHlpr = new DriverHlpr(new ChromeDriver(options), port);
     drvHlpr.driver.manage().window().setSize(new Dimension(1280, 800));
   }
 

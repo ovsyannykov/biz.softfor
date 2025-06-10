@@ -5,7 +5,6 @@ import static biz.softfor.i18nutil.I18nUtil.add;
 import biz.softfor.util.Constants;
 import static java.util.Locale.ENGLISH;
 import static java.util.Map.of;
-import org.junit.jupiter.api.Test;
 
 @I18n
 public class I18nUtilTest {
@@ -24,7 +23,7 @@ public class I18nUtilTest {
     ));
   }
 
-  @Test
+  //@org.junit.jupiter.api.Test
   public void testMain() throws Exception {
     I18nUtil.genMessages("./bak", this.getClass().getPackageName());
   }

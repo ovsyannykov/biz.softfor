@@ -1,4 +1,5 @@
 [![GitHub License](https://img.shields.io/github/license/ovsyannykov/biz.softfor)](license.md)
+[![Java CI with Maven](https://github.com/ovsyannykov/biz.softfor/actions/workflows/maven.yml/badge.svg)](https://github.com/ovsyannykov/biz.softfor/actions/workflows/maven.yml)
 
 [![EN](https://img.shields.io/badge/EN-blue)](readme.md)
 [![RU](https://img.shields.io/badge/RU-black)](readme.ru.md)
