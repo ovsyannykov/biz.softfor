@@ -93,7 +93,7 @@ public class AccessSeTest {
     assertThat(drvHlpr.driver.findElements(gridColumnHeaderBy))
     .as(checkColumnDsc).isEmpty();
 
-    //login as "admin" and check that the "Address" -> "Cities" menu item not exists
+    //login as "admin" and check that the "Address" -> "Cities" menu item also not exists
     VaadinTestUtil.login(drvHlpr, ADMIN_USER, ADMIN_PWD, screenshot);//0
     drvHlpr.driver.get(sectPath);
     drvHlpr.lwait.until(drv -> !drv.findElements(By.xpath(sectXpath)).isEmpty());

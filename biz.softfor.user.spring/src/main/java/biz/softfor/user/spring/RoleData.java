@@ -84,7 +84,12 @@ public final class RoleData {
         if(membersAccess.defaultAccess.id > memberData.effective.defaultAccess.id) {
           membersAccess.defaultAccess = memberData.effective.defaultAccess;
         }
-        membersAccess.groups.addAll(memberData.effective.groups);
+        if(memberData.effective.groups.isEmpty()) {
+          membersAccess.groups.clear();
+          break;
+        } else {
+          membersAccess.groups.addAll(memberData.effective.groups);
+        }
       }
       reset();
       merge(membersAccess);
@@ -118,7 +123,7 @@ public final class RoleData {
     }
   }
 
-  private void reset() {
+  void reset() {
     effective.defaultAccess = access.defaultAccess;
     effective.groups.clear();
     effective.groups.addAll(access.groups);

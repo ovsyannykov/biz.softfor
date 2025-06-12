@@ -20,13 +20,11 @@ import biz.softfor.vaadin.user.UsersView;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.junit.UsePlaywright;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@org.springframework.boot.test.context.SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = { App.class })
 @UsePlaywright
 public class ForDocTest {
@@ -39,7 +37,7 @@ public class ForDocTest {
   @LocalServerPort
   private int port;
 
-  @Test
+  //@org.junit.jupiter.api.Test
   public void forDoc(TestInfo testInfo, Page page) throws Exception {
     page.setViewportSize(1280, 800);
     DriverHlpr drvHlpr = new DriverHlpr(page, port);

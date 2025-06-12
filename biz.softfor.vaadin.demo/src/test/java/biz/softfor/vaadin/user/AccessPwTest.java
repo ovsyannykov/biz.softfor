@@ -63,7 +63,7 @@ public class AccessPwTest {
     assertThat(page.locator(checkItemXpath).all()).as(checkItemDsc).isEmpty();
     assertThat(page.locator(gridColumnHeaderXpath).all()).as(checkColumnDsc).isEmpty();
 
-    //login as "admin" and check that the "Address" -> "Countries" menu item not exists
+    //login as "admin" and check that the "Address" -> "Countries" menu item also not exists
     VaadinTestUtil.login(drvHlpr, ADMIN_USER, ADMIN_PWD, screenshot);
     page.navigate(sectPath);
     page.locator("#" + sectViewId).waitFor(DriverHlpr.lwait);

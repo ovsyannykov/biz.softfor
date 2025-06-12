@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,17 @@ public class SecurityMgrTest {
     System.out.println("isAllowed=" + isAllowed);
     Assertions.assertThat(isAllowed).as("Access to " + p.roleCalc.description())
     .isFalse();
+  }
+
+  @Test
+  public void isAllowedForNotLimitedClassWithNotLimitedField() throws Exception {
+    AbstractRoleCalc roleCalc = new ClassRoleCalc(District.class);
+    System.out.println("\nIs allowed for not restricted class with not restricted field");
+    System.out.println("role=" + roleCalc.id() + " (" + roleCalc.description() + ")");
+    boolean isAllowed = securityMgr.isAllowed(roleCalc.id(), List.of());
+    System.out.println("isAllowed=" + isAllowed);
+    Assertions.assertThat(isAllowed).as("Access to " + roleCalc.description())
+    .isTrue();
   }
 
 }

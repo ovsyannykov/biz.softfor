@@ -429,6 +429,9 @@ public class SecurityMgr {
 
   private void recount() {
     if(DEBUG) System.out.println("\neffRecount\n" + "=".repeat(16));
+    for(RoleData rd : rolesData.values()) {
+      rd.reset();
+    }
     Deque<RoleData> parents = new ArrayDeque<>();
     for(RoleData rd : rolesData.values()) {
       rd.recount(this, parents);
