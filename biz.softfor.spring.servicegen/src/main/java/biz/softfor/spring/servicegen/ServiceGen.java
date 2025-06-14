@@ -6,6 +6,7 @@ import biz.softfor.spring.jpa.crud.CrudSvc;
 import biz.softfor.util.Reflection;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -16,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 public class ServiceGen extends CodeGen {
 
-  private final static String SERVICE_PART_PACKAGE_NAME = ".spring";
-  private final static String SERVICE_SFX = "Svc";
   private List<String> exclude;
 
   public ServiceGen() {
@@ -28,7 +27,7 @@ public class ServiceGen extends CodeGen {
   protected void preProcess(Element element) {
     exclude = new ArrayList<>();
     AnnotationValue av = CodeGenUtil.getAnnotationProperty
-    (element, supportedAnnotation, CodeGenUtil.ANNOTATION_EXCLUDE);
+    (element, supportedAnnotation, CodeGenUtil.EXCLUDE_ANNO_PROP);
     if(av != null) {
       List<? extends AnnotationValue> avs
       = (List<? extends AnnotationValue>)av.getValue();
@@ -43,28 +42,15 @@ public class ServiceGen extends CodeGen {
   , IllegalArgumentException, InvocationTargetException, NoSuchFieldException
   , NoSuchMethodException, SecurityException {
     if(!CodeGenUtil.isLinkClass(clazz)) {
-      String clazzPackageName = clazz.getPackageName();
-      String clazzSimpleName = clazz.getSimpleName();
-      ClassName className = ClassName.get(
-        clazzPackageName.replace
-        (Reflection.JPA_PART_PACKAGE_NAME, SERVICE_PART_PACKAGE_NAME)
-      , clazzSimpleName + SERVICE_SFX
-      );
+      ClassName className = (ClassName)CodeGenUtil.svcClassName(clazz);
       if(!exclude.contains(className.canonicalName())) {
-        Class<?> idClass = Reflection.idClass(clazz);
-        ClassName worClazzName = ClassName.get
-        (clazzPackageName, Reflection.worClassName(clazzSimpleName));
-        ClassName filterClazzName = ClassName.get(
-          Reflection.apiPackageName(clazzPackageName)
-        , Reflection.filterClassName(clazzSimpleName)
-        );
         TypeSpec.Builder classBldr = TypeSpec.classBuilder(className)
         .superclass(ParameterizedTypeName.get(
           ClassName.get(CrudSvc.class)
-        , ClassName.get(idClass)
+        , ClassName.get(Reflection.idClass(clazz))
         , ClassName.get(clazz)
-        , worClazzName
-        , filterClazzName
+        , CodeGenUtil.worClassName(clazz)
+        , CodeGenUtil.filterClassName(clazz)
         ))
         .addAnnotation(Service.class)
         ;

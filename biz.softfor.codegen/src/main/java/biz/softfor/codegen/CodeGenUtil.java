@@ -53,8 +53,11 @@ import org.apache.commons.lang3.StringUtils;
 
 public class CodeGenUtil {
 
-  public final static String ANNOTATION_EXCLUDE = "exclude";
-  public final static String ANNOTATION_VALUE = "value";
+  public final static String EXCLUDE_ANNO_PROP = "exclude";
+  public final static String METHOD_ANNO_PROP = "method";
+  public final static String PATH_ANNO_PROP = "path";
+  public final static String VALUE_ANNO_PROP = "value";
+
   public final static String ID_GETTER_NAME = getterName(Identifiable.ID);
   public final static String ID_SETTER_NAME = setterName(Identifiable.ID);
   public final static String ID_SUFFIX = "_Id";
@@ -66,6 +69,9 @@ public class CodeGenUtil {
   = { ActionAccess.class.getName(), JsonFilter.class.getName() };
   public final static String[] API_EXCLUDED_PACKAGES
   = { Entity.class.getPackageName() };
+  public final static String SERVICE_PART_PACKAGE_NAME = ".spring";
+  public final static String SERVICE_SFX = "Svc";
+  public final static String RESTCONTROLLER_SFX = "Ctlr";
 
   private final static Set<String> created = new HashSet<>();
   private final static Consumer<TypeSpec.Builder> noConstructors = reqBldr -> {};
@@ -382,16 +388,16 @@ public class CodeGenUtil {
     return methodName + StringUtils.capitalize(fieldName);
   }
 
-  public static TypeName filterTypeName(Class<?> srcFieldClass) {
+  public static ClassName filterClassName(Class<?> clazz) {
     return ClassName.get(
-      Reflection.apiPackageName(srcFieldClass.getPackageName())
-    , Reflection.filterClassName(srcFieldClass.getSimpleName())
+      Reflection.apiPackageName(clazz.getPackageName())
+    , Reflection.filterClassName(clazz.getSimpleName())
     );
   }
 
   public static AnnotationSpec generated(String srcClassName) {
     return AnnotationSpec.builder(Generated.class)
-    .addMember(ANNOTATION_VALUE, "$S", srcClassName)
+    .addMember(VALUE_ANNO_PROP, "$S", srcClassName)
     .build();
   }
 
@@ -467,7 +473,7 @@ public class CodeGenUtil {
   public static boolean isLinkClass(Class<?> clazz)
   throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
     Class<?> v
-    = (Class<?>)getAnnotationProperty(clazz, IdClass.class, ANNOTATION_VALUE);
+    = (Class<?>)getAnnotationProperty(clazz, IdClass.class, VALUE_ANNO_PROP);
     return v != null && v.getSimpleName().endsWith(ID_SUFFIX);
   }
 
@@ -535,6 +541,19 @@ public class CodeGenUtil {
     if(java.lang.reflect.Modifier.isVolatile(modifiers)) {
       fieldBldr.addModifiers(Modifier.VOLATILE);
     }
+  }
+
+  public static ClassName svcClassName(Class<?> clazz) {
+    return ClassName.get(
+      clazz.getPackageName().replace
+      (Reflection.JPA_PART_PACKAGE_NAME, SERVICE_PART_PACKAGE_NAME)
+    , clazz.getSimpleName() + CodeGenUtil.SERVICE_SFX
+    );
+  }
+
+  public static ClassName worClassName(Class<?> clazz) {
+    return ClassName.get
+    (clazz.getPackageName(), Reflection.worClassName(clazz.getSimpleName()));
   }
 
   public static void writeSrc(

@@ -6,7 +6,6 @@ import biz.softfor.user.jpa.User;
 import biz.softfor.user.jpa.UserGroup_;
 import biz.softfor.user.jpa.User_;
 import biz.softfor.util.Constants;
-import biz.softfor.util.Holder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.CriteriaBuilder;

@@ -22,7 +22,7 @@ public final class PredicateProvider {
   public final static String DELETE = "delete";
   public final static String UPDATE = "update";
   public final static String The_filter_must_be_not_empty
-  = "The filter for {1} must be not empty.";
+  = "The filter for {0} must be not empty.";
 
   private final String action;
   private final CriteriaBuilder cb;

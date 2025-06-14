@@ -361,7 +361,7 @@ public class ManyToManyTest extends PartnersTestBasic {
     .isInstanceOf(ClientError.class)
     .hasMessage(MessageFormat.format(
       PredicateProvider.The_filter_must_be_not_empty
-    , PredicateProvider.DELETE
+    , PredicateProvider.UPDATE
     ));
     validator.assertTotal();
   }

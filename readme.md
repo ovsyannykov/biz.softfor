@@ -76,6 +76,9 @@ handler, request logging, etc.
 service.
 - [biz.softfor.spring.rest.pingdb.jpa](biz.softfor.spring.rest.pingdb.jpa) -
 Spring Boot starter defining a healthcheck controller for the database.
+- [biz.softfor.spring.restcontrollergen](biz.softfor.spring.restcontrollergen) -
+an annotation processor that generates REST controller classes based on
+CRUD services.
 - [biz.softfor.spring.security](biz.softfor.spring.security) - Spring Boot
 starter containing beans and helper methods for Spring Security.
 - [biz.softfor.spring.security.service](biz.softfor.spring.security.service) -

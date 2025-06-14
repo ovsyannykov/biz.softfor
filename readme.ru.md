@@ -78,6 +78,9 @@ JPA, Hibernate, Flyway и DataSource.
 демонстрационный REST-сервис.
 - [biz.softfor.spring.rest.pingdb.jpa](biz.softfor.spring.rest.pingdb.jpa) -
 Spring Boot стартер, определяющий healthcheck-контроллер для базы данных.
+- [biz.softfor.spring.restcontrollergen](biz.softfor.spring.restcontrollergen) -
+процессор аннотаций, генерирующий классы REST-контроллеров на основе
+CRUD-сервисов.
 - [biz.softfor.spring.security](biz.softfor.spring.security) - Spring Boot
 стартер, содержащий бины и вспомогательные методы для Spring Security.
 - [biz.softfor.spring.security.service](biz.softfor.spring.security.service) -

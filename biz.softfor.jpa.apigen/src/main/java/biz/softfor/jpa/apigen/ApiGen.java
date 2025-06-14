@@ -50,9 +50,8 @@ public class ApiGen extends CodeGen {
   = { ActionAccess.class.getName(), Type.class.getName() };
   private final static AnnotationSpec SUPPRESS_WARNINGS
   = AnnotationSpec.builder(SuppressWarnings.class)
-  .addMember("value", "$S", "empty-statement")
+  .addMember(CodeGenUtil.VALUE_ANNO_PROP, "$S", "empty-statement")
   .build();
-  private final static String CONTROLLER_SFX = "Ctlr";
   private final static String ANNOTATION_RESTCONTROLLERS = "restControllers";
 
   private final static boolean DEBUG = false;
@@ -338,7 +337,7 @@ public class ApiGen extends CodeGen {
       TypeSpec.Builder request = CodeGenUtil.newCrudRequests
       (clazzSimpleName, idClazzName, dtoClazzName, filterClazzName);
 
-      String ctlrName = clazzSimpleName + CONTROLLER_SFX;
+      String ctlrName = clazzSimpleName + CodeGenUtil.RESTCONTROLLER_SFX;
       for(Class<?> ctlrClass : restControllers) {
         if(ctlrName.equals(ctlrClass.getSimpleName())) {
           for(Method method : ctlrClass.getMethods()) {
@@ -346,18 +345,20 @@ public class ApiGen extends CodeGen {
             = CodeGenUtil.getAnnotation(method, RequestMapping.class);
             if(requestMapping != null) {
               String[] requestMappingPath = (String[])CodeGenUtil
-              .getAnnotationProperty(method, RequestMapping.class, "path");
+              .getAnnotationProperty
+              (method, RequestMapping.class, CodeGenUtil.PATH_ANNO_PROP);
               if(requestMappingPath == null) {
                 requestMappingPath = (String[])CodeGenUtil.getAnnotationProperty
-                (method, RequestMapping.class, CodeGenUtil.ANNOTATION_VALUE);
+                (method, RequestMapping.class, CodeGenUtil.VALUE_ANNO_PROP);
               }
               String[] ctlrMappingPath = { "" };
               if(CodeGenUtil.getAnnotation(ctlrClass, RequestMapping.class) != null) {
                 ctlrMappingPath = (String[])CodeGenUtil
-                .getAnnotationProperty(ctlrClass, RequestMapping.class, "path");
+                .getAnnotationProperty
+                (ctlrClass, RequestMapping.class, CodeGenUtil.PATH_ANNO_PROP);
                 if(ctlrMappingPath == null) {
                   ctlrMappingPath = (String[])CodeGenUtil.getAnnotationProperty
-                  (ctlrClass, RequestMapping.class, CodeGenUtil.ANNOTATION_VALUE);
+                  (ctlrClass, RequestMapping.class, CodeGenUtil.VALUE_ANNO_PROP);
                 }
               }
               String ucaseMethodName
@@ -372,8 +373,12 @@ public class ApiGen extends CodeGen {
               , ucaseMethodName + "_METHOD"
               , Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC
               )
-              .initializer("$S", ((Object[])CodeGenUtil.getAnnotationProperty
-              (method, RequestMapping.class, "method"))[0].toString());
+              .initializer(
+                "$S"
+              , ((Object[])CodeGenUtil.getAnnotationProperty
+                (method, RequestMapping.class, CodeGenUtil.METHOD_ANNO_PROP))
+                [0].toString()
+              );
               request
               .addField(pathFieldBldr.build())
               .addField(httpMethodFieldBldr.build());

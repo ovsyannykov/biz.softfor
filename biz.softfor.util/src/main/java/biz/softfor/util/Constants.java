@@ -1,7 +1,5 @@
 package biz.softfor.util;
 
-import java.util.List;
-
 public interface Constants {
 
   public final static String DESCR = "descr";
@@ -24,7 +22,6 @@ public interface Constants {
 
   public final static String ROLE_PREFIX = "ROLE_";
   public final static String ROLE_ANONYMOUS = ROLE_PREFIX + "ANONYMOUS";
-  public final static List<String> ANONYMOUS_ROLES = List.of(ROLE_ANONYMOUS);
 
   public final static int SERVER_PORT_DEFAULT = 8080;
   public final static String WS_ROOT_DEFAULT = "/ws";

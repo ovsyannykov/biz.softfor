@@ -66,8 +66,8 @@ public class ValidationTest {
   private Validator validator;
 
   private RestAssuredCall testSvc;
-  private Locale testLocale = I18nUtil.UKRAINIAN;
-  //private Locale testLocale = Locale.ENGLISH;
+  private final Locale testLocale = I18nUtil.UKRAINIAN;
+  //private final Locale testLocale = Locale.ENGLISH;
 
   @BeforeEach
   public void beforeEach() {

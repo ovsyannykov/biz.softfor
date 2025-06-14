@@ -79,11 +79,11 @@ public class FilterGen extends CodeGen {
           resetMethod.addStatement("$N = null", fieldName);
           if(CodeGenUtil.isAnnotationPresent(dclField, OneToOne.class)
           || CodeGenUtil.isAnnotationPresent(dclField, ManyToOne.class)) {
-            fieldType = CodeGenUtil.filterTypeName(dclClass);
+            fieldType = CodeGenUtil.filterClassName(dclClass);
           } else if(CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)
           || CodeGenUtil.isAnnotationPresent(dclField, ManyToMany.class)) {
             Class<?> joinClass = Reflection.genericParameter(dclField);
-            fieldType = CodeGenUtil.filterTypeName(joinClass);
+            fieldType = CodeGenUtil.filterClassName(joinClass);
           } else {
             fieldType = TypeName.get(dclClass);
             if(Enum.class.isAssignableFrom(dclClass)

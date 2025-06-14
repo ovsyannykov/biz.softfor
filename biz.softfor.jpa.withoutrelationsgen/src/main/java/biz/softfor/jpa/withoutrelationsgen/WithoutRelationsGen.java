@@ -108,7 +108,7 @@ public class WithoutRelationsGen extends CodeGen {
     if(aa != null) {
       long aaId = new ClassRoleCalc(clazz).id();
       AnnotationSpec.Builder aaBldr = AnnotationSpec.builder(ActionAccess.class)
-      .addMember(CodeGenUtil.ANNOTATION_VALUE, "$S", aa.value())
+      .addMember(CodeGenUtil.VALUE_ANNO_PROP, "$S", aa.value())
       .addMember(ActionAccess.DESCRIPTION, "$S", aa.description())
       .addMember(ActionAccess.ID, "$LL", aaId)
       .addMember(ActionAccess.DEFAULT_ACCESS, "$T.$L", DefaultAccess.class
@@ -130,8 +130,7 @@ public class WithoutRelationsGen extends CodeGen {
       .addAnnotation(Override.class)
       .addAnnotation(
         AnnotationSpec.builder(SuppressWarnings.class)
-        .addMember(
-          CodeGenUtil.ANNOTATION_VALUE
+        .addMember(CodeGenUtil.VALUE_ANNO_PROP
         , "$S"
         , "EqualsWhichDoesntCheckParameterClass"
         )
@@ -436,7 +435,7 @@ public class WithoutRelationsGen extends CodeGen {
         }
         AbstractRoleCalc calc = new FieldRoleCalc(dclField);
         AnnotationSpec.Builder aBldr = AnnotationSpec.builder(ActionAccess.class)
-        .addMember(CodeGenUtil.ANNOTATION_VALUE, "$S", calc.name())
+        .addMember(CodeGenUtil.VALUE_ANNO_PROP, "$S", calc.name())
         .addMember(ActionAccess.DESCRIPTION, "$S", calc.description())
         .addMember(ActionAccess.ID, "$LL", calc.id())
         .addMember(
@@ -448,7 +447,7 @@ public class WithoutRelationsGen extends CodeGen {
         fieldBldr.addAnnotation(aBldr.build());
         AbstractRoleCalc uCalc = new UpdateFieldRoleCalc(dclField);
         AnnotationSpec.Builder uaBldr = AnnotationSpec.builder(UpdateAccess.class)
-        .addMember(CodeGenUtil.ANNOTATION_VALUE, "$S", uCalc.name())
+        .addMember(CodeGenUtil.VALUE_ANNO_PROP, "$S", uCalc.name())
         .addMember(UpdateAccess.DESCRIPTION, "$S", uCalc.description())
         .addMember(UpdateAccess.ID, "$LL", uCalc.id())
         .addMember(

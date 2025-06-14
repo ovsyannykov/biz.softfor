@@ -20,6 +20,12 @@
   <dependencies>
     <!-- annotation processors -->
     <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.restcontrollergen</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <optional>true</optional>

@@ -3,6 +3,7 @@ package biz.softfor.spring.security;
 import biz.softfor.util.Constants;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,6 +13,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityUtil {
+
+  public final static List<String> ANONYMOUS_ROLES
+  = List.of(Constants.ROLE_ANONYMOUS);
 
   public static Collection<? extends GrantedAuthority> authorities
   (Collection<String> groups) {
@@ -35,7 +39,7 @@ public class SecurityUtil {
 
   public static Collection<String> groups() {
     Authentication a = getAuthentication();
-    return a == null ? Constants.ANONYMOUS_ROLES : groups(a.getAuthorities());
+    return a == null ? ANONYMOUS_ROLES : groups(a.getAuthorities());
   }
 
   public static Collection<String> groups

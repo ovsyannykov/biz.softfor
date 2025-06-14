@@ -47,7 +47,7 @@ public abstract class CodeGen extends AbstractProcessor {
       for(Element element : annotatedElements) {
         preProcess(element);
         AnnotationValue av = CodeGenUtil.getAnnotationProperty
-        (element, supportedAnnotation, CodeGenUtil.ANNOTATION_VALUE);
+        (element, supportedAnnotation, CodeGenUtil.VALUE_ANNO_PROP);
         @SuppressWarnings("unchecked")
         List<? extends AnnotationValue> avs
         = (List<? extends AnnotationValue>)av.getValue();

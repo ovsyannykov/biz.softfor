@@ -39,6 +39,7 @@
     <module>${modulesPath}/biz.softfor.spring.rest</module>
     <module>${modulesPath}/biz.softfor.spring.rest.demo</module>
     <module>${modulesPath}/biz.softfor.spring.rest.pingdb.jpa</module>
+    <module>${modulesPath}/biz.softfor.spring.restcontrollergen</module>
     <module>${modulesPath}/biz.softfor.spring.security</module>
     <module>${modulesPath}/biz.softfor.spring.security.service</module>
     <module>${modulesPath}/biz.softfor.spring.servicegen</module>
