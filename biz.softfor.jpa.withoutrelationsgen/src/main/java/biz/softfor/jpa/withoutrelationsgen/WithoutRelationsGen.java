@@ -91,12 +91,12 @@ public class WithoutRelationsGen extends CodeGen {
     String clazzPackageName = clazz.getPackageName();
     String clazzSimpleName = clazz.getSimpleName();
     String worSimpleName = Reflection.worClassName(clazzSimpleName);
-    ClassName worClazzName = ClassName.get(clazzPackageName, worSimpleName);
+    ClassName worClazzName = CodeGenUtil.worClassName(clazz);
     if(DEBUG) {
       System.out.println(
-        "clazzSimpleName=" + clazzSimpleName
-      + ", worSimpleName=" + worSimpleName
+        "clazz=" + clazz.getName()
       + ", idClass=" + idClass.getSimpleName()
+      + ", worClazz=" + worClazzName.canonicalName()
       );
     }
 
@@ -337,7 +337,8 @@ public class WithoutRelationsGen extends CodeGen {
           CodeGenUtil.writeSrc
           (linkIdClassBldr, m2mInf.packageName, processingEnv);
 
-          boolean haveJoinTable = CodeGenUtil.isAnnotationPresent(dclField, JoinTable.class);
+          boolean haveJoinTable
+          = CodeGenUtil.isAnnotationPresent(dclField, JoinTable.class);
 
           AnnotationSpec.Builder joinManyToOne
           = AnnotationSpec.builder(ManyToOne.class)
@@ -482,25 +483,23 @@ public class WithoutRelationsGen extends CodeGen {
       if(assertAnno == null) {
         assertAnno = method.getAnnotation(AssertFalse.class);
       }
+      String mname = method.getName();
       if(DEBUG) {
-        System.out.println("assertAnno=" + assertAnno + ", method=" + method.getName());
+        System.out.println("assertAnno=" + assertAnno + ", method=" + mname);
       }
-      MethodSpec.Builder assertBldr = MethodSpec.methodBuilder(method.getName())
+      MethodSpec.Builder assertBldr = MethodSpec.methodBuilder(mname)
       .addModifiers(Modifier.PUBLIC).returns(boolean.class)
-      .addAnnotation(AnnotationSpec.get(assertAnno)).addAnnotation(JsonIgnore.class)
-      .addStatement("return $N.$N(this)", worSimpleName + "Validation", method.getName())
+      .addAnnotation(AnnotationSpec.get(assertAnno))
+      .addAnnotation(JsonIgnore.class)
+      .addStatement("return $N.$N(this)", worSimpleName + "Validation", mname)
       ;
       classBldr.addMethod(assertBldr.build());
     }
     CodeGenUtil.writeSrc(classBldr, clazzPackageName, processingEnv);
 
-    ClassName clazzArgName = ClassName.get(idClass);
-    ClassName filterClazzName = ClassName.get(
-      Reflection.apiPackageName(clazzPackageName)
-    , Reflection.filterClassName(clazzSimpleName)
-    );
+    ClassName filterClazzName = CodeGenUtil.filterClassName(clazz);
     TypeSpec.Builder request = CodeGenUtil.newCrudRequests
-    (clazzSimpleName, clazzArgName, worClazzName, filterClazzName);
+    (clazzSimpleName, ClassName.get(idClass), worClazzName, filterClazzName);
     CodeGenUtil.writeSrc(request, clazzPackageName, processingEnv);
   }
 
@@ -529,7 +528,8 @@ public class WithoutRelationsGen extends CodeGen {
         f.setAccessible(true);
         v = f.getLong(null);
       }
-      catch(IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException ex) {
+      catch(IllegalAccessException | IllegalArgumentException
+      | NoSuchFieldException | SecurityException ex) {
         processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING
         , c.getName() + "." + SERIAL_VERSION_UID
         + " field is not accessible, so take it equal to 0L.");
@@ -539,9 +539,15 @@ public class WithoutRelationsGen extends CodeGen {
       }
     }
     bldr.addSuperinterface(Serializable.class)
-    .addField(FieldSpec.builder(long.class, SERIAL_VERSION_UID
-    , Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-    .initializer("$L", serialVersionUID).build());
+    .addField(
+      FieldSpec.builder(
+        long.class
+      , SERIAL_VERSION_UID
+      , Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL
+      )
+      .initializer("$L", serialVersionUID)
+      .build()
+    );
   }
 
 }

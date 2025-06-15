@@ -10,5 +10,6 @@ import java.lang.annotation.Target;
 public @interface GenFilter {
 
   public Class<?>[] value() default {};
+  public Class<?>[] exclude() default {};
 
 }

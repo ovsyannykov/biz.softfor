@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
 public @interface GenApi {
 
   public Class<?>[] value() default {};
+  public Class<?>[] exclude() default {};
   public Class<?>[] restControllers() default {};
 
 }

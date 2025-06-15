@@ -71,6 +71,7 @@ public class CodeGenUtil {
   = { Entity.class.getPackageName() };
   public final static String SERVICE_PART_PACKAGE_NAME = ".spring";
   public final static String SERVICE_SFX = "Svc";
+  private final static String RESTCONTROLLER_PART_PACKAGE_NAME = ".spring.rest";
   public final static String RESTCONTROLLER_SFX = "Ctlr";
 
   private final static Set<String> created = new HashSet<>();
@@ -332,6 +333,14 @@ public class CodeGenUtil {
     classBldr.addAnnotation(equalsAndHashCode.build());
   }
 
+  public static ClassName restControllerClassName(Class<?> clazz) {
+    return ClassName.get(
+      clazz.getPackageName().replace
+      (Reflection.JPA_PART_PACKAGE_NAME, RESTCONTROLLER_PART_PACKAGE_NAME)
+    , clazz.getSimpleName() + RESTCONTROLLER_SFX
+    );
+  }
+
   public static List<AnnotationSpec> copyAnnotations(
     Annotation[] srcAnnotations
   , String[] excludePackages
@@ -359,10 +368,10 @@ public class CodeGenUtil {
     return result;
   }
 
-  public static TypeName dtoTypeName(Class<?> srcFieldClass) {
+  public static ClassName dtoClassName(Class<?> clazz) {
     return ClassName.get(
-      Reflection.apiPackageName(srcFieldClass.getPackageName())
-    , Reflection.dtoClassName(srcFieldClass.getSimpleName())
+      Reflection.apiPackageName(clazz.getPackageName())
+    , Reflection.dtoClassName(clazz.getSimpleName())
     );
   }
 

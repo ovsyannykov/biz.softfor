@@ -49,82 +49,69 @@ public class FilterGen extends CodeGen {
   public void process(Class<?> clazz) throws IllegalAccessException
   , IllegalArgumentException, InvocationTargetException, NoSuchFieldException
   , NoSuchMethodException, SecurityException {
-    if(!CodeGenUtil.isLinkClass(clazz)) {
-      Class<?> idClass = Reflection.idClass(clazz);
-      String clazzSimpleName = clazz.getSimpleName();
-      String clazzPackageName = clazz.getPackageName();
-      String apiPackageName = Reflection.apiPackageName(clazzPackageName);
-      String filterSimpleName = Reflection.filterClassName(clazzSimpleName);
-      TypeSpec.Builder classBldr = TypeSpec.classBuilder(filterSimpleName)
-      .addAnnotation(CodeGenUtil.generated(clazz.getName()))
-      .addAnnotations(CodeGenUtil.copyAnnotations(clazz.getAnnotations()
-      , CodeGenUtil.API_EXCLUDED_PACKAGES
-      , CodeGenUtil.API_EXCLUDED_ANNOTATIONS
-      , null
-      ));
-      classBldr.superclass
-      (ParameterizedTypeName.get(FilterId.class, idClass));
-      CodeGenUtil.addToStringAndEqualsAndHashCode(classBldr, true);
-
-      MethodSpec.Builder resetMethod = MethodSpec.methodBuilder(RESET_METHOD)
-      .addStatement("super." + RESET_METHOD + "()")
-      .addModifiers(Modifier.PUBLIC);
-
-      for(Field dclField : clazz.getDeclaredFields()) {
-        String fieldName = dclField.getName();
-        if(Reflection.isProperty(dclField.getModifiers())
-        && !Identifiable.ID.equals(fieldName)) {
-          Class<?> dclClass = dclField.getType();
-          TypeName fieldType;
-          resetMethod.addStatement("$N = null", fieldName);
-          if(CodeGenUtil.isAnnotationPresent(dclField, OneToOne.class)
-          || CodeGenUtil.isAnnotationPresent(dclField, ManyToOne.class)) {
-            fieldType = CodeGenUtil.filterClassName(dclClass);
-          } else if(CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)
-          || CodeGenUtil.isAnnotationPresent(dclField, ManyToMany.class)) {
-            Class<?> joinClass = Reflection.genericParameter(dclField);
-            fieldType = CodeGenUtil.filterClassName(joinClass);
-          } else {
-            fieldType = TypeName.get(dclClass);
-            if(Enum.class.isAssignableFrom(dclClass)
-            || CodeGenUtil.isAnnotationPresent(dclField, Identifier.class)) {
-              fieldType
-              = addAssignMethod(classBldr, fieldType, fieldName, List.class);
-            } else if(Number.class.isAssignableFrom(dclClass)
-            || LocalDate.class.isAssignableFrom(dclClass)
-            || LocalDateTime.class.isAssignableFrom(dclClass)) {
-              fieldType
-              = ParameterizedTypeName.get(ClassName.get(Range.class), fieldType);
-            }
-          }
-          FieldSpec.Builder fieldBldr = CodeGenUtil.fieldBuilder(
-            dclField
-          , fieldName
-          , fieldType
-          , FILTER_EXCLUDED_PACKAGES
-          , FILTER_FIELD_EXCLUDED_ANNOTATIONS
-          );
-          CodeGenUtil.addField(classBldr, fieldBldr, fieldType, fieldName, false);
-        }
-      }
-      classBldr.addMethod(resetMethod.build());
-      CodeGenUtil.writeSrc(classBldr, apiPackageName, processingEnv);
-    }
-  }
-
-  private static TypeName addAssignMethod(
-    TypeSpec.Builder filterBldr
-  , TypeName fieldTypeName
-  , String fieldName
-  , Class<?> collectionClass
-  ) {
-    MethodSpec.Builder assignMethod
-    = MethodSpec.methodBuilder(CodeGenUtil.fieldMethodName("assign", fieldName))
-    .addParameter(ArrayTypeName.of(fieldTypeName), fieldName).varargs()
-    .addStatement("this.$N = $T.of($N)", fieldName, collectionClass, fieldName)
+    ClassName className = CodeGenUtil.filterClassName(clazz);
+    Class<?> idClass = Reflection.idClass(clazz);
+    TypeSpec.Builder classBldr = TypeSpec.classBuilder(className)
+    .superclass(ParameterizedTypeName.get(FilterId.class, idClass))
+    .addAnnotation(CodeGenUtil.generated(clazz.getName()))
+    .addAnnotations(CodeGenUtil.copyAnnotations(
+      clazz.getAnnotations()
+    , CodeGenUtil.API_EXCLUDED_PACKAGES
+    , CodeGenUtil.API_EXCLUDED_ANNOTATIONS
+    , null
+    ));
+    CodeGenUtil.addToStringAndEqualsAndHashCode(classBldr, true);
+    MethodSpec.Builder resetMethod = MethodSpec.methodBuilder(RESET_METHOD)
+    .addStatement("super." + RESET_METHOD + "()")
     .addModifiers(Modifier.PUBLIC);
-    filterBldr.addMethod(assignMethod.build());
-    return ParameterizedTypeName.get(ClassName.get(collectionClass), fieldTypeName);
+    for(Field dclField : clazz.getDeclaredFields()) {
+      String fieldName = dclField.getName();
+      if(Reflection.isProperty(dclField.getModifiers())
+      && !Identifiable.ID.equals(fieldName)) {
+        Class<?> dclClass = dclField.getType();
+        TypeName fieldType;
+        resetMethod.addStatement("$N = null", fieldName);
+        if(CodeGenUtil.isAnnotationPresent(dclField, OneToOne.class)
+        || CodeGenUtil.isAnnotationPresent(dclField, ManyToOne.class)) {
+          fieldType = CodeGenUtil.filterClassName(dclClass);
+        } else if(CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)
+        || CodeGenUtil.isAnnotationPresent(dclField, ManyToMany.class)) {
+          Class<?> joinClass = Reflection.genericParameter(dclField);
+          fieldType = CodeGenUtil.filterClassName(joinClass);
+        } else {
+          fieldType = TypeName.get(dclClass);
+          if(Enum.class.isAssignableFrom(dclClass)
+          || CodeGenUtil.isAnnotationPresent(dclField, Identifier.class)) {
+            classBldr.addMethod(
+              MethodSpec.methodBuilder
+              (CodeGenUtil.fieldMethodName("assign", fieldName))
+              .addModifiers(Modifier.PUBLIC)
+              .addParameter(ArrayTypeName.of(fieldType), fieldName).varargs()
+              .addStatement
+              ("this.$N = $T.of($N)", fieldName, List.class, fieldName)
+              .build()
+            );
+            fieldType
+            = ParameterizedTypeName.get(ClassName.get(List.class), fieldType);
+          } else if(Number.class.isAssignableFrom(dclClass)
+          || LocalDate.class.isAssignableFrom(dclClass)
+          || LocalDateTime.class.isAssignableFrom(dclClass)) {
+            fieldType
+            = ParameterizedTypeName.get(ClassName.get(Range.class), fieldType);
+          }
+        }
+        FieldSpec.Builder fieldBldr = CodeGenUtil.fieldBuilder(
+          dclField
+        , fieldName
+        , fieldType
+        , FILTER_EXCLUDED_PACKAGES
+        , FILTER_FIELD_EXCLUDED_ANNOTATIONS
+        );
+        CodeGenUtil.addField(classBldr, fieldBldr, fieldType, fieldName, false);
+      }
+    }
+    classBldr.addMethod(resetMethod.build());
+    CodeGenUtil.writeSrc(classBldr, className.packageName(), processingEnv);
   }
 
 }
