@@ -4,6 +4,7 @@ import biz.softfor.util.Reflection;
 import jakarta.persistence.Entity;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
@@ -46,6 +47,16 @@ public abstract class CodeGen extends AbstractProcessor {
     try {
       for(Element element : annotatedElements) {
         preProcess(element);
+        List<String> exclude = new ArrayList<>();
+        AnnotationValue eav = CodeGenUtil.getAnnotationProperty
+        (element, supportedAnnotation, CodeGenUtil.EXCLUDE_ANNO_PROP);
+        if(eav != null) {
+          List<? extends AnnotationValue> avs
+          = (List<? extends AnnotationValue>)eav.getValue();
+          for(AnnotationValue v : avs) {
+            exclude.add(v.getValue().toString());
+          }
+        }
         AnnotationValue av = CodeGenUtil.getAnnotationProperty
         (element, supportedAnnotation, CodeGenUtil.VALUE_ANNO_PROP);
         @SuppressWarnings("unchecked")
@@ -64,7 +75,8 @@ public abstract class CodeGen extends AbstractProcessor {
         .filterInputsBy(fb).setScanners(Scanners.TypesAnnotated);
         Reflections reflections = new Reflections(cb);
         for(Class<?> entity : reflections.getTypesAnnotatedWith(Entity.class)) {
-          if(!Reflection.isWorClass(entity)) {
+          if(!Reflection.isWorClass(entity) && !exclude.contains(entity.getName())
+          && !CodeGenUtil.isLinkClass(entity)) {
             process(entity);
           }
         }
