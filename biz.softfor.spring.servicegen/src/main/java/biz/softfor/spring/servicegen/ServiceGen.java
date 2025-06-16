@@ -4,9 +4,9 @@ import biz.softfor.codegen.CodeGen;
 import biz.softfor.codegen.CodeGenUtil;
 import biz.softfor.spring.jpa.crud.CrudSvc;
 import biz.softfor.util.Reflection;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.ParameterizedTypeName;
+import com.palantir.javapoet.TypeSpec;
 import java.lang.reflect.InvocationTargetException;
 import org.springframework.stereotype.Service;
 

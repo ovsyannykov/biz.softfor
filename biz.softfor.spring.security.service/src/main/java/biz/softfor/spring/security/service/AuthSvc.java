@@ -45,7 +45,8 @@ public class AuthSvc implements LogoutHandler {
 
   @Transactional
   public List<TokenInfo> auth(UserRequest.Create authRequest)
-  throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+  throws IllegalAccessException, InvocationTargetException
+  , InstantiationException, NoSuchMethodException {
     UsernamePasswordAuthenticationToken authToken
     = new UsernamePasswordAuthenticationToken
     (authRequest.data.getUsername(), authRequest.data.getPassword());

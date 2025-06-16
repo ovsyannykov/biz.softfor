@@ -13,14 +13,14 @@ import biz.softfor.util.api.ReadRequest;
 import biz.softfor.util.api.UpdateRequest;
 import biz.softfor.util.security.ActionAccess;
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.palantir.javapoet.AnnotationSpec;
+import com.palantir.javapoet.ClassName;
+import com.palantir.javapoet.FieldSpec;
+import com.palantir.javapoet.JavaFile;
+import com.palantir.javapoet.MethodSpec;
+import com.palantir.javapoet.ParameterizedTypeName;
+import com.palantir.javapoet.TypeName;
+import com.palantir.javapoet.TypeSpec;
 import jakarta.persistence.Entity;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.JoinColumn;
@@ -245,7 +245,7 @@ public class CodeGenUtil {
         .addStatement("$N()", "remove" + StringUtils.capitalize(fieldName))
         .beginControlFlow("if(v != null)")
         .beginControlFlow("for($T e : v)"
-        , ((ParameterizedTypeName)fieldTypeName).typeArguments.get(0))
+        , ((ParameterizedTypeName)fieldTypeName).typeArguments().get(0))
         .addStatement("e.$N($N)"
         , setterName(joinName), unidirectional ? ID_GETTER_NAME + "()" : "this")
         .endControlFlow()
@@ -268,7 +268,7 @@ public class CodeGenUtil {
         .addStatement("$N()", fieldMethodName("remove", fieldName))
         .beginControlFlow("if(v != null)")
         .beginControlFlow("for($T e : v)"
-        , ((ParameterizedTypeName)fieldTypeName).typeArguments.get(0))
+        , ((ParameterizedTypeName)fieldTypeName).typeArguments().get(0))
         .addStatement("e.$N(this)"
         , fieldMethodName("add", Inflector.getInstance().singularize(mappedByName)))
         .endControlFlow()
@@ -571,7 +571,7 @@ public class CodeGenUtil {
   , ProcessingEnvironment processingEnv
   ) {
     TypeSpec classSpec = bldr.addModifiers(Modifier.PUBLIC).build();
-    String fileName = packageName + "." + classSpec.name;
+    String fileName = packageName + "." + classSpec.name();
     if(!created.contains(fileName)) {
       created.add(fileName);
       try {
