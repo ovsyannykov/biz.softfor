@@ -159,6 +159,7 @@
                   , "biz.softfor.user.i18n"
                   , "biz.softfor.address.i18n"
                   , "biz.softfor.partner.i18n"
+                  , "biz.softfor.user.spring.i18n"
                   );
                   biz.softfor.reflectionsutil.ReflectionsUtil.scan(
                     resourcesDir
@@ -325,6 +326,12 @@
     <dependency>
       <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.user.i18n</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.user.spring.i18n</artifactId>
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>

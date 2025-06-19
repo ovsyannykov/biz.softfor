@@ -128,6 +128,7 @@ public class ValidationTest {
   @Test
   public void createNonPersonWithPersonDetails() throws Exception {
     PartnerRequest.Create request = new PartnerRequest.Create();
+    request.token = SecurityTest.authorize(SecurityTest.ADMIN_DTO, testSvc, om);
     request.data = new PartnerDto();
     request.data.setTyp(PartnerType.ORGANIZATION);
     request.data.setPartnerName("qwerty");

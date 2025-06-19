@@ -14,6 +14,7 @@ import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.AbstractRequest;
 import biz.softfor.util.api.BasicResponse;
 import biz.softfor.util.api.ClientError;
+import biz.softfor.util.api.CreateRequest;
 import biz.softfor.util.api.Identifiable;
 import biz.softfor.util.api.ReadRequest;
 import biz.softfor.util.api.UpdateRequest;
@@ -21,8 +22,10 @@ import biz.softfor.util.security.MethodRoleCalc;
 import biz.softfor.util.security.ActionAccess;
 import biz.softfor.util.security.DefaultAccess;
 import biz.softfor.util.security.UpdateAccess;
+import biz.softfor.util.security.UpdateClassRoleCalc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Table;
 import jakarta.persistence.Tuple;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -30,7 +33,6 @@ import jakarta.persistence.criteria.CriteriaUpdate;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import java.lang.reflect.InvocationTargetException;
-import java.text.MessageFormat;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,18 +55,13 @@ import org.springframework.transaction.support.TransactionTemplate;
 @Log
 public class SecurityMgr {
 
-  public final static String ACCESS_TO_METHOD_IS_DENIED
-  = "Access to method ''{0}'' is denied: ";
-  public final static String ACCESS_TO_FIELDS_IS_DENIED
-  = "Access to the {0} fields is denied.";
-  public final static String FIELDS_CONTAINS_EMPTY_ITEM
-  = "The ''{0}'' field contains empty item(s): {1}.";
-  public final static String FIELDS_CONTAINS_INVALID_ITEMS
-  = "The ''{0}'' field contains invalid item(s): {1}.";
-  public final static String FIELDS_CONTAINS_INVALID_ITEM
-  = "The ''{0}'' field contains invalid item ''{1}'' with the ''{2}'' element.";
-  public final static String FIELDS_CONTAINS_NOT_PLAIN_COLUMN
-  = "The ''{0}'' field contains not plain column(s): {1}.";
+  public final static String Access_to_fields_denied = "Access_to_fields_denied";
+  public final static String Access_to_items_denied = "Access_to_items_denied";
+  public final static String Access_to_method_denied = "Access_to_method_denied";
+  public final static String Fields_contains_empty_item = "Fields_contains_empty_item";
+  public final static String Fields_contains_invalid_item = "Fields_contains_invalid_item";
+  public final static String Fields_contains_invalid_items = "Fields_contains_invalid_items";
+  public final static String Fields_contains_not_plain_column = "Fields_contains_not_plain_column";
 
   public final int pageSize;
   public final Map<Long, RoleData> rolesData;
@@ -295,6 +292,36 @@ public class SecurityMgr {
     recount();
   }
 
+  public final void createCheck
+  (AbstractCrudSvc service, CreateRequest request, Collection<String> groups) {
+    methodCheck(service.serviceClass(), AbstractCrudSvc.CREATE_METHOD, groups);
+    if(!isAllowed(new UpdateClassRoleCalc(service.clazz()).id(), groups)) {
+      throw new ClientError(
+        i18n.message(
+          Access_to_items_denied
+        , i18n.message(((Table)service.clazz().getAnnotation(Table.class)).name())
+        )
+      , null
+      , BasicResponse.ACCESS_DENIED
+      );
+    }
+  }
+
+  public final void deleteCheck
+  (AbstractCrudSvc service, Collection<String> groups) {
+    methodCheck(service.serviceClass(), AbstractCrudSvc.DELETE_METHOD, groups);
+    if(!isAllowed(new UpdateClassRoleCalc(service.clazz()).id(), groups)) {
+      throw new ClientError(
+        i18n.message(
+          Access_to_items_denied
+        , i18n.message(((Table)service.clazz().getAnnotation(Table.class)).name())
+        )
+      , null
+      , BasicResponse.ACCESS_DENIED
+      );
+    }
+  }
+
   public final boolean isAllowed(long roleId, Collection<String> groups) {
     boolean result;
     RoleData rd = rolesData.get(roleId);
@@ -342,7 +369,7 @@ public class SecurityMgr {
   (Class<?> serviceClass, String method, Collection<String> groups) {
     if(!isMethodAllowed(serviceClass, method, groups)) {
       throw new ClientError(
-        MessageFormat.format(ACCESS_TO_METHOD_IS_DENIED, method)
+        i18n.message(Access_to_method_denied, method)
       , null
       , BasicResponse.ACCESS_DENIED
       );
@@ -356,15 +383,15 @@ public class SecurityMgr {
     Class<?> clazz = service.clazz();
     if(CollectionUtils.isEmpty(request.fields)) {
       if(request.fields == null) {
-        request.fields = new ArrayList<String>();
+        request.fields = new ArrayList<>();
       }
       expandLastRelation(request.fields, denied, clazz, "", groups, false);
     } else {
-      List<String> fields = new ArrayList<>();
-      fieldsParse(request.fields, fields, clazz, denied, groups, false);
-      request.fields = fields;
+      List<String> expanded = new ArrayList<>();
+      fieldsParse(request.fields, expanded, clazz, denied, groups, false);
+      request.fields = expanded;
     }
-    checkDenied(denied);
+    checkDenied(denied, i18n);
   }
 
   public final void removeGroups(Collection<Integer> groupIds, EntityManager em) {
@@ -405,7 +432,7 @@ public class SecurityMgr {
     Class<?> classWor = service.classWor();
     updateCheck(request.data, classWor, denied, "", groups);
     fieldsParse(request.fields, null, classWor, denied, groups, true);
-    checkDenied(denied);
+    checkDenied(denied, i18n);
   }
 
   public final void updateGroups
@@ -446,10 +473,10 @@ public class SecurityMgr {
     }
   }
 
-  private static void checkDenied(Set<String> denied) {
+  private static void checkDenied(Set<String> denied, I18n i18n) {
     if(!denied.isEmpty()) {
       throw new ClientError(
-        MessageFormat.format(ACCESS_TO_FIELDS_IS_DENIED, denied.toString())
+        i18n.message(Access_to_fields_denied, denied.toString())
       , null
       , BasicResponse.ACCESS_DENIED
       );
@@ -468,20 +495,27 @@ public class SecurityMgr {
     if(!prefix.isEmpty()) {
       prefix += StringUtil.FIELDS_DELIMITER;
     }
-    for(ColumnDescr cd : ColumnDescr.getPlainCds(parent)) {
-      long roleId = isUpdate ? cd.updateRoleId : cd.roleId;
-      if(isAllowed(roleId, groups)) {
-        fields.add(prefix + cd.name);
-      } else {
-        if(parentName.isEmpty()) {
-          throw new ClientError(
-            i18n.message(BasicResponse.Access_denied)
-          , null
-          , BasicResponse.ACCESS_DENIED
-          );
+    for(ColumnDescr cd : ColumnDescr.getCds(parent)) {
+      if(cd.isPlain() || cd.isOneToOne()) {
+        long roleId = isUpdate ? cd.updateRoleId : cd.roleId;
+        if(isAllowed(roleId, groups)) {
+          String name = prefix + cd.name;
+          if(cd.isPlain()) {
+            fields.add(name);
+          } else {
+            expandLastRelation(fields, denied, cd.clazz, name, groups, isUpdate);
+          }
         } else {
-          denied.add(parentName);
-          break;
+          if(parentName.isEmpty()) {
+            throw new ClientError(
+              i18n.message(BasicResponse.Access_denied)
+            , null
+            , BasicResponse.ACCESS_DENIED
+            );
+          } else {
+            denied.add(parentName);
+            break;
+          }
         }
       }
     }
@@ -498,8 +532,9 @@ public class SecurityMgr {
     if(fields != null) {
       for(String f : fields) {
         if(f.isBlank()) {
-          throw new ClientError(MessageFormat.format
-          (FIELDS_CONTAINS_EMPTY_ITEM, AbstractRequest.FIELDS, fields));
+          throw new ClientError(i18n.message(
+            Fields_contains_empty_item, AbstractRequest.FIELDS, fields.toString()
+          ));
         }
         Class<?> parentClass = clazz;
         String prefix = "";
@@ -507,13 +542,13 @@ public class SecurityMgr {
         for(int p = 0; p < parts.length; ++p) {
           String fn = parts[p];
           if(fn.isBlank()) {
-            throw new ClientError(MessageFormat.format
-            (FIELDS_CONTAINS_INVALID_ITEMS, AbstractRequest.FIELDS, f));
+            throw new ClientError(i18n.message
+            (Fields_contains_invalid_items, AbstractRequest.FIELDS, f));
           }
           ColumnDescr cd = ColumnDescr.get(parentClass).get(fn);
           if(cd == null) {
-            throw new ClientError(MessageFormat.format
-            (FIELDS_CONTAINS_INVALID_ITEM, AbstractRequest.FIELDS, f, fn));
+            throw new ClientError(i18n.message
+            (Fields_contains_invalid_item, AbstractRequest.FIELDS, f, fn));
           }
           if(!prefix.isEmpty()) {
             prefix += StringUtil.FIELDS_DELIMITER;
@@ -522,8 +557,8 @@ public class SecurityMgr {
           if(cd.isPlainOrRelationKey()) {
             boolean isLast = p == parts.length - 1;
             if(!isLast && !cd.isOneToOne()) {
-              throw new ClientError(MessageFormat.format
-              (FIELDS_CONTAINS_INVALID_ITEM, AbstractRequest.FIELDS, f, fn));
+              throw new ClientError(i18n.message
+              (Fields_contains_invalid_item, AbstractRequest.FIELDS, f, fn));
             }
             long roleId = isUpdate ? cd.updateRoleId : cd.roleId;
             if(isAllowed(roleId, groups)) {
@@ -540,8 +575,8 @@ public class SecurityMgr {
                 expandLastRelation
                 (expanded, denied, cd.clazz, prefix, groups, isUpdate);
               } else {
-                throw new ClientError(MessageFormat.format
-                (FIELDS_CONTAINS_NOT_PLAIN_COLUMN, AbstractRequest.FIELDS, f));
+                throw new ClientError(i18n.message
+                (Fields_contains_not_plain_column, AbstractRequest.FIELDS, f));
               }
             }
           }

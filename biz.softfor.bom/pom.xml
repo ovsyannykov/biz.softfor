@@ -395,6 +395,11 @@
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
+        <artifactId>biz.softfor.user.spring.i18n</artifactId>
+        <version>0.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.user.spring.rest</artifactId>
         <version>0.0.0</version>
       </dependency>

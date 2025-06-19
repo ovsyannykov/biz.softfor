@@ -1,5 +1,6 @@
 package biz.softfor.user.spring.rest;
 
+import biz.softfor.i18nspring.I18n;
 import biz.softfor.testutil.spring.RestAssuredCall;
 import biz.softfor.user.api.UserDto;
 import biz.softfor.user.spring.SecurityMgr;
@@ -43,6 +44,9 @@ public class DefaultAccessTest {
 
   @Autowired
   private ObjectMapper om;
+
+  @Autowired
+  private I18n i18n;
 
   @LocalServerPort
   private int port;
@@ -102,8 +106,9 @@ public class DefaultAccessTest {
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
     assertThat(res2.getStatus()).as(msg2).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res2.getDescr()).as(msg2)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TeztEntityDto.AUTHORIZED, TeztEntityDto.NOBODY).toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied
+    , list(TeztEntityDto.AUTHORIZED, TeztEntityDto.NOBODY).toString()
+    ));
   }
 
   @Test
@@ -117,8 +122,9 @@ public class DefaultAccessTest {
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
     assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res.getDescr()).as(msg)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TeztEntityDto.AUTHORIZED).toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied
+    , list(TeztEntityDto.AUTHORIZED).toString()
+    ));
 
     req.token = SecurityTest.authorize(DEFAULT_ACCESS_USER_DTO, testSvc, om);
     TeztEntityResponse res2 = testSvc.call(TeztEntityResponse.class
@@ -134,8 +140,9 @@ public class DefaultAccessTest {
     Supplier<String> msg3 = () -> "res3=" + Json.serializep(om, res3);
     assertThat(res3.getStatus()).as(msg3).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res3.getDescr()).as(msg3)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TeztEntityDto.NOBODY).toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied
+    , list(TeztEntityDto.NOBODY).toString()
+    ));
   }
 
   @Test
@@ -150,8 +157,9 @@ public class DefaultAccessTest {
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
     assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res.getDescr()).as(msg)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TeztEntityDto.AUTHORIZED, TeztEntityDto.NOBODY).toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied
+    , list(TeztEntityDto.AUTHORIZED, TeztEntityDto.NOBODY).toString()
+    ));
 
     req.token = SecurityTest.authorize(DEFAULT_ACCESS_USER_DTO, testSvc, om);
     TeztEntityResponse res2 = testSvc.call(TeztEntityResponse.class
@@ -159,8 +167,9 @@ public class DefaultAccessTest {
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
     assertThat(res2.getStatus()).as(msg2).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res2.getDescr()).as(msg2)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TeztEntityDto.NOBODY).toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied
+    , list(TeztEntityDto.NOBODY).toString()
+    ));
   }
 
   @Test
@@ -183,8 +192,9 @@ public class DefaultAccessTest {
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
     assertThat(res2.getStatus()).as(msg2).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res2.getDescr()).as(msg2)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TeztEntityDto.EVERYBODY, TeztEntityDto.AUTHORIZED).toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied
+    , list(TeztEntityDto.EVERYBODY, TeztEntityDto.AUTHORIZED).toString()
+    ));
   }
 
   @Test
@@ -202,8 +212,9 @@ public class DefaultAccessTest {
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
     assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res.getDescr()).as(msg)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TeztEntityDto.EVERYBODY).toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied
+    , list(TeztEntityDto.EVERYBODY).toString()
+    ));
 
     req.token = SecurityTest.authorize(DEFAULT_ACCESS_USER_DTO, testSvc, om);
     TeztEntityResponse res2 = testSvc.call(TeztEntityResponse.class
@@ -218,8 +229,9 @@ public class DefaultAccessTest {
     Supplier<String> msg3 = () -> "res3=" + Json.serializep(om, res3);
     assertThat(res3.getStatus()).as(msg3).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res3.getDescr()).as(msg3)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TeztEntityDto.AUTHORIZED).toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied
+    , list(TeztEntityDto.AUTHORIZED).toString()
+    ));
   }
 
   @Test
@@ -236,8 +248,9 @@ public class DefaultAccessTest {
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
     assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res.getDescr()).as(msg)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TeztEntityDto.EVERYBODY, TeztEntityDto.AUTHORIZED).toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied
+    , list(TeztEntityDto.EVERYBODY, TeztEntityDto.AUTHORIZED).toString()
+    ));
 
     req.token = SecurityTest.authorize(DEFAULT_ACCESS_USER_DTO, testSvc, om);
     TeztEntityResponse res2 = testSvc.call(TeztEntityResponse.class
@@ -245,8 +258,9 @@ public class DefaultAccessTest {
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
     assertThat(res2.getStatus()).as(msg2).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res2.getDescr()).as(msg2)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(TeztEntityDto.AUTHORIZED).toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied
+    , list(TeztEntityDto.AUTHORIZED).toString()
+    ));
   }
 
   @Test

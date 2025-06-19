@@ -90,10 +90,8 @@ public class RestControllerGen extends CodeGen {
         )
         .build()
       )
-      .addStatement(
-        securityMgr + "." + methodCheck + "($T.class, $S, $T." + groups + ")"
-      , serviceClass
-      , AbstractCrudSvc.CREATE_METHOD
+      .addStatement(securityMgr + ".createCheck(" + service + ", " + request
+        + ", $T." + groups + ")"
       , SecurityUtil.class
       )
       .addStatement("return " + service + "."
@@ -134,9 +132,7 @@ public class RestControllerGen extends CodeGen {
       .addAnnotation(requestMapping(StdPath.DELETE))
       .addParameter(request(clazz, Reflection.DELETE).build())
       .addStatement(
-        securityMgr + "." + methodCheck + "($T.class, $S, $T." + groups + ")"
-      , serviceClass
-      , AbstractCrudSvc.DELETE_METHOD
+        securityMgr + ".deleteCheck(" + service + ", $T." + groups + ")"
       , SecurityUtil.class
       )
       .addStatement("return " + service + "."

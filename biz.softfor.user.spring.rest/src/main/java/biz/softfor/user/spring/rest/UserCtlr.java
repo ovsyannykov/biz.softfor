@@ -41,8 +41,7 @@ public class UserCtlr {
 
   @RequestMapping(path = StdPath.DELETE, method = RequestMethod.POST)
   public CommonResponse delete(@RequestBody UserRequest.Delete request) {
-    securityMgr.methodCheck
-    (service.serviceClass(), AbstractCrudSvc.DELETE_METHOD, SecurityUtil.groups());
+    securityMgr.deleteCheck(service, SecurityUtil.groups());
     return service.delete(request);
   }
 

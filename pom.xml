@@ -55,6 +55,7 @@
     <module>${modulesPath}/biz.softfor.user.jpa</module>
     <module>${modulesPath}/biz.softfor.user.jpa.withoutrelations</module>
     <module>${modulesPath}/biz.softfor.user.spring</module>
+    <module>${modulesPath}/biz.softfor.user.spring.i18n</module>
     <module>${modulesPath}/biz.softfor.user.spring.rest</module>
     <module>${modulesPath}/biz.softfor.user.spring.ws</module>
     <module>${modulesPath}/biz.softfor.util</module>

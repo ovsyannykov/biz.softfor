@@ -3,6 +3,10 @@ package biz.softfor.user.spring.rest;
 import biz.softfor.address.api.StateDto;
 import biz.softfor.address.api.StateRequest;
 import biz.softfor.address.api.StateResponse;
+import biz.softfor.i18nspring.I18n;
+import biz.softfor.partner.api.ContactDetailsDto;
+import biz.softfor.partner.api.ContactDetailsRequest;
+import biz.softfor.partner.api.ContactDetailsResponse;
 import biz.softfor.partner.api.PartnerDto;
 import biz.softfor.partner.api.PartnerRequest;
 import biz.softfor.partner.api.PartnerResponse;
@@ -72,6 +76,9 @@ public class SecurityTest {
 
   @Autowired
   private ObjectMapper om;
+
+  @Autowired
+  private I18n i18n;
 
   @LocalServerPort
   private int port;
@@ -215,8 +222,9 @@ public class SecurityTest {
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2);
     assertThat(res2.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res2.getDescr()).as(msg)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , list(StateDto.COUNTRY).toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied
+    , list(StateDto.COUNTRY).toString()
+    ));
   }
 
   @Test
@@ -286,8 +294,8 @@ public class SecurityTest {
     Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
     assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
     assertThat(res.getDescr()).as(msg)
-    .isEqualTo(MessageFormat.format(SecurityMgr.ACCESS_TO_FIELDS_IS_DENIED
-    , EXPECTED_DENIED_FIELDS.toString()));
+    .isEqualTo(i18n.message(SecurityMgr.Access_to_fields_denied, EXPECTED_DENIED_FIELDS.toString()
+    ));
 
     req.token = authorize(ADMIN_DTO, testSvc, om);
     PartnerResponse res2 = testSvc.call(PartnerResponse.class
@@ -338,7 +346,7 @@ public class SecurityTest {
     Supplier<String> msg2 = () -> "res2=" + Json.serializep(om, res2) + ", status:";
     assertThat(res2.getStatus()).as(msg2).isEqualTo(BasicResponse.CLIENT);
     assertThat(res2.getDescr()).as(msg2)
-    .isEqualTo(MessageFormat.format(SecurityMgr.FIELDS_CONTAINS_NOT_PLAIN_COLUMN
+    .isEqualTo(i18n.message(SecurityMgr.Fields_contains_not_plain_column
     , AbstractRequest.FIELDS, PartnerDto.LOCATION_TYPE));
     assertThat(output).doesNotContain(EXPECTED_SQL);
 
@@ -351,6 +359,28 @@ public class SecurityTest {
     Supplier<String> msg3 = () -> "res3=" + Json.serializep(om, res3);
     assertThat(res3.getStatus()).as(msg3).isEqualTo(BasicResponse.OK);
     assertThat(output).contains(EXPECTED_SQL);
+  }
+
+  @Test
+  public void createWithRestrictedClass() throws Exception {
+    ContactDetailsRequest.Create req
+    = new ContactDetailsRequest.Create(new ContactDetailsDto());
+    req.data.setId(1L);
+    req.data.setNote("note");
+    ContactDetailsResponse res = testSvc.call(ContactDetailsResponse.class
+    , ContactDetailsRequest.CREATE_METHOD, ContactDetailsRequest.CREATE_PATH, req);
+    Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
+    assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
+  }
+
+  @Test
+  public void deleteWithRestrictedClass() throws Exception {
+    ContactDetailsRequest.Delete req = new ContactDetailsRequest.Delete();
+    req.filter.assignId(1L);
+    ContactDetailsResponse res = testSvc.call(ContactDetailsResponse.class
+    , ContactDetailsRequest.DELETE_METHOD, ContactDetailsRequest.DELETE_PATH, req);
+    Supplier<String> msg = () -> "res=" + Json.serializep(om, res);
+    assertThat(res.getStatus()).as(msg).isEqualTo(BasicResponse.ACCESS_DENIED);
   }
 
 }
