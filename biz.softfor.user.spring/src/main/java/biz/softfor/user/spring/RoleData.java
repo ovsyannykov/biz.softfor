@@ -16,6 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 public final class RoleData {
 
   @EqualsAndHashCode.Include public final long id;
+  int version;
   public boolean deniedForAll;
   public final boolean updateFor;
   public final boolean isUrl;
@@ -33,6 +34,7 @@ public final class RoleData {
   , Set<String> groups
   ) {
     this.id = id;
+    version = Integer.MIN_VALUE;
     this.deniedForAll = deniedForAll;
     this.updateFor = updateFor;
     this.isUrl = isUrl;
@@ -67,34 +69,40 @@ public final class RoleData {
   }
 
   void recount(SecurityMgr securityMgr, Deque<RoleData> parents) {
-    if(SecurityMgr.DEBUG) System.out.println("effRecount access " + toStr() + ": " + access.defaultAccess.name() + " " + access.groups);
-    if(securityMgr.parent2Members.get(id) == null) {//User#email, User#groups
-      ParentRoles parentRoles = securityMgr.member2Parent.get(id);
-      RoleData hostData = securityMgr.rolesData.get(parentRoles.host());
-      reset();
-      mergeTypeData(securityMgr, parents, parentRoles, false);
-      merge(hostData.access);
-    } else {//User
-      RoleAccess membersAccess
-      = new RoleAccess(DefaultAccess.NOBODY, new HashSet<>());
-      for(Long memberId : securityMgr.parent2Members.get(id)) {
-        RoleData memberData = securityMgr.rolesData.get(memberId);
-        ParentRoles parentRoles = securityMgr.member2Parent.get(memberData.id);
-        memberData.mergeTypeData(securityMgr, parents, parentRoles, true);
-        if(membersAccess.defaultAccess.id > memberData.effective.defaultAccess.id) {
-          membersAccess.defaultAccess = memberData.effective.defaultAccess;
+    if(version < securityMgr.version) {
+      if(SecurityMgr.DEBUG) System.out.println("effRecount access " + toStr() + ": " + access.defaultAccess.name() + " " + access.groups);
+      if(securityMgr.parent2Members.get(id) == null) {//User#email, User#groups
+        ParentRoles parentRoles = securityMgr.member2Parent.get(id);
+        RoleData hostData = securityMgr.rolesData.get(parentRoles.host());
+        reset();
+        mergeTypeData(securityMgr, parents, parentRoles, false);
+        merge(hostData.access);
+      } else {//User
+        RoleAccess membersAccess
+        = new RoleAccess(DefaultAccess.NOBODY, new HashSet<>());
+        boolean isGroupsCleared = false;
+        for(Long memberId : securityMgr.parent2Members.get(id)) {
+          RoleData memberData = securityMgr.rolesData.get(memberId);
+          ParentRoles parentRoles = securityMgr.member2Parent.get(memberData.id);
+          memberData.mergeTypeData(securityMgr, parents, parentRoles, true);
+          if(membersAccess.defaultAccess.id > memberData.effective.defaultAccess.id) {
+            membersAccess.defaultAccess = memberData.effective.defaultAccess;
+          }
+          if(!isGroupsCleared) {
+            if(memberData.effective.groups.isEmpty()) {
+              membersAccess.groups.clear();
+              isGroupsCleared = true;
+            } else {
+              membersAccess.groups.addAll(memberData.effective.groups);
+            }
+          }
         }
-        if(memberData.effective.groups.isEmpty()) {
-          membersAccess.groups.clear();
-          break;
-        } else {
-          membersAccess.groups.addAll(memberData.effective.groups);
-        }
+        reset();
+        merge(membersAccess);
       }
-      reset();
-      merge(membersAccess);
+      if(SecurityMgr.DEBUG) System.out.println("effRecount effective " + toStr() + ": " + effective.defaultAccess.name() + " " + effective.groups);
+      ++version;
     }
-    if(SecurityMgr.DEBUG) System.out.println("effRecount effective " + toStr() + ": " + effective.defaultAccess.name() + " " + effective.groups);
   }
 
   private void merge(RoleAccess parent) {

@@ -3,7 +3,9 @@ package biz.softfor.user.spring;
 import biz.softfor.util.security.DefaultAccess;
 import java.util.HashSet;
 import java.util.Set;
+import lombok.ToString;
 
+@ToString
 public class RoleAccess {
 
   public DefaultAccess defaultAccess;

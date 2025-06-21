@@ -90,8 +90,8 @@ public class RestControllerGen extends CodeGen {
         )
         .build()
       )
-      .addStatement(securityMgr + ".createCheck(" + service + ", " + request
-        + ", $T." + groups + ")"
+      .addStatement(
+        securityMgr + ".createCheck(" + service + ", $T." + groups + ")"
       , SecurityUtil.class
       )
       .addStatement("return " + service + "."

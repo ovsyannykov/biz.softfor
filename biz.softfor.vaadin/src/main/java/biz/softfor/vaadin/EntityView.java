@@ -212,11 +212,7 @@ extends BasicView {
     = Reflection.newInstance(dbGrid.entityInf.deleteRequestClass);
     Set selected = dbGrid.grid.getSelectedItems();
     request.filter.setId(Identifiable.ids((Set<Identifiable<K>>)selected));
-    securityMgr.methodCheck(
-      dbGrid.service.serviceClass()
-    , AbstractCrudSvc.CREATE_METHOD
-    , SecurityUtil.groups()
-    );
+    securityMgr.deleteCheck(dbGrid.service, SecurityUtil.groups());
     dbGrid.service.delete(request);
     binder.removeBean();
     dbGrid.updateView();
@@ -260,11 +256,7 @@ extends BasicView {
       WOR itemWor = dbGrid.entityInf.worClass
       .getConstructor(dbGrid.entityInf.clazz).newInstance(item);
       if(item.getId() == null) {
-        securityMgr.methodCheck(
-          dbGrid.service.serviceClass()
-        , AbstractCrudSvc.CREATE_METHOD
-        , SecurityUtil.groups()
-        );
+        securityMgr.createCheck(dbGrid.service, SecurityUtil.groups());
         CreateRequest<K, WOR> request = new CreateRequest<>(itemWor);
         CommonResponse<WOR> response = dbGrid.service.create(request);
         if(response.isOk()) {

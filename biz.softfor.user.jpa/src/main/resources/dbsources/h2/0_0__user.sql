@@ -20,7 +20,7 @@ create table roles (
 );
 alter table roles add constraint pk_roles primary key(id);
 alter table roles add constraint u_roles_objName_updateFor unique (objName, updateFor);
---defaultAccess: 0-ALL, 1-AUTHENTICATED, 2-NOBODY
+--defaultAccess: 0-Everybody, 1-Authorized, 2-Nobody
 --updateFor: 0-read, 1-update
 --typ: 0-class, 1-field, 2-method,URL
 insert into roles(defaultAccess, isUrl, orphan, updateFor, objName, id, name, description) values

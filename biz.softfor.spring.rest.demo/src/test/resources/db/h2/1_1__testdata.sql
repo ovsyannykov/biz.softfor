@@ -1,4 +1,4 @@
---defaultAccess: 0-ALL, 1-AUTHENTICATED, 2-NOBODY
+--defaultAccess: 0-Everybody, 1-Authorized, 2-Nobody
 --updateFor: 0-read, 1-update
 --typ: 0-class, 1-field, 2-method,URL
 insert into roles(defaultAccess, isUrl, orphan, updateFor, objName, id, name, description) values
@@ -12,7 +12,7 @@ insert into roles(defaultAccess, isUrl, orphan, updateFor, objName, id, name, de
 ,(0,0,0,0,'biz.softfor.address.jpa.Country.name',roleId(0,'biz.softfor.address.jpa.Country.name',1),'Country#name','biz.softfor.address.jpa.Country#name')
 ,(0,0,0,0,'biz.softfor.address.jpa.Country.fullname',roleId(0,'biz.softfor.address.jpa.Country.fullname',1),'Country#fullname','biz.softfor.address.jpa.Country#fullname')
 ,(1,0,0,0,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',roleId(0,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',1),'Authorized','Authorized')
-,(2,0,1,1,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',roleId(1,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',1),'Authorized (update)','Authorized (update)')
+,(2,0,0,1,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',roleId(1,'biz.softfor.user.spring.rest.testassets.TezztEntity.authorized',1),'Authorized (update)','Authorized (update)')
 ;
 insert into userGroups(name) values
  ('TezztMgr')--2

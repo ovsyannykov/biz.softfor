@@ -1,6 +1,5 @@
 package biz.softfor.user.spring.rest.testassets;
 
-import biz.softfor.jpa.crud.AbstractCrudSvc;
 import biz.softfor.spring.security.SecurityUtil;
 import biz.softfor.spring.security.service.JsonFilters;
 import biz.softfor.user.spring.SecurityMgr;
@@ -30,7 +29,7 @@ public class DefaultAccessCtlr {
   @RequestMapping(path = StdPath.CREATE, method = RequestMethod.POST)
   public CommonResponse<TeztEntityWor> create
   (@RequestBody @Validated(Create.class) TeztEntityRequest.Create request) {
-    securityMgr.methodCheck(service.serviceClass(), AbstractCrudSvc.CREATE_METHOD, SecurityUtil.groups());
+    securityMgr.createCheck(service, SecurityUtil.groups());
     return service.create(request);
   }
 

@@ -65,6 +65,7 @@ public class SecurityMgr {
 
   public final int pageSize;
   public final Map<Long, RoleData> rolesData;
+  int version;
   final Map<Long, ParentRoles> member2Parent;
   final Map<Long, List<Long>> parent2Members;
   private final I18n i18n;
@@ -88,6 +89,7 @@ public class SecurityMgr {
   , I18n i18n
   ) {
     this.pageSize = pageSize;
+    version = Integer.MIN_VALUE;
     member2Parent = new HashMap<>();
     parent2Members = new HashMap<>();
     this.i18n = i18n;
@@ -293,7 +295,7 @@ public class SecurityMgr {
   }
 
   public final void createCheck
-  (AbstractCrudSvc service, CreateRequest request, Collection<String> groups) {
+  (AbstractCrudSvc service, Collection<String> groups) {
     methodCheck(service.serviceClass(), AbstractCrudSvc.CREATE_METHOD, groups);
     if(!isAllowed(new UpdateClassRoleCalc(service.clazz()).id(), groups)) {
       throw new ClientError(
@@ -456,6 +458,7 @@ public class SecurityMgr {
 
   private void recount() {
     if(DEBUG) System.out.println("\neffRecount\n" + "=".repeat(16));
+    ++version;
     for(RoleData rd : rolesData.values()) {
       rd.reset();
     }
