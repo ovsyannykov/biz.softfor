@@ -24,7 +24,6 @@ import biz.softfor.vaadin.field.ManyToOneField;
 import biz.softfor.vaadin.field.ToManyField;
 import biz.softfor.vaadin.user.UserGridFieldColumns;
 import biz.softfor.vaadin.user.UsersDbGrid;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -93,9 +92,9 @@ public class PartnerForm extends EntityForm<Long, Partner, PartnerWor> {
   , UsersDbGrid usersDbGrid
   ) {
     super(Partner.TITLE
-    , new EntityFormColumns(
+    , new EntityFormColumns<>(
         Partner.class
-      , new LinkedHashMap<String, Component>() {{
+      , new LinkedHashMap<>() {{
           ComboBox<PartnerType> partnerType
           = new ComboBox<>(Partner_.TYP, PartnerType.VALUES);
           partnerType.setValue(PartnerType.PERSON);

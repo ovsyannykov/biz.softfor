@@ -9,7 +9,6 @@ import biz.softfor.util.security.DefaultAccess;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityFormColumns;
 import biz.softfor.vaadin.field.ToManyField;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.textfield.LongField;
@@ -32,9 +31,9 @@ public class RoleForm extends EntityForm<Long, Role, RoleWor> {
   , UserGroupsDbGrid userGroupsDbGrid
   ) {
     super(Role.TITLE
-    , new EntityFormColumns(
+    , new EntityFormColumns<>(
         Role.class
-      , new LinkedHashMap<String, Component>() {{
+      , new LinkedHashMap<>() {{
           LongField id = new LongField(Role_.ID);
           id.setReadOnly(true);
           put(Role_.ID, id);

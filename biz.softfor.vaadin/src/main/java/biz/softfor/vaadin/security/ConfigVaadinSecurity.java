@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.jose.jws.JwsAlgorithms;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+//import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,9 +29,10 @@ public class ConfigVaadinSecurity extends VaadinWebSecurity {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
-      .authorizeHttpRequests(requests -> requests
+      .authorizeHttpRequests(auth -> auth
         .requestMatchers(
-          AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/images/*.png")
+          PathPatternRequestMatcher.withDefaults().matcher
+          (HttpMethod.GET, "/images/*.png")
         ).permitAll()
       )
     ;

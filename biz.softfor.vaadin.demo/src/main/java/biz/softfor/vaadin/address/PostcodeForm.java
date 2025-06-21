@@ -9,7 +9,6 @@ import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityFormColumns;
 import biz.softfor.vaadin.field.ManyToOneField;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.validation.Validator;
@@ -29,9 +28,9 @@ public class PostcodeForm extends EntityForm<Integer, Postcode, PostcodeWor> {
   , CitiesDbGrid cities
   ) {
     super(Postcode.TITLE
-    , new EntityFormColumns(
+    , new EntityFormColumns<>(
         Postcode.class
-      , new LinkedHashMap<String, Component>() {{
+      , new LinkedHashMap<>() {{
           put(Postcode_.POSTCODE, new TextField(Postcode_.POSTCODE));
           DistrictField districtField
           = new DistrictField(Postcode_.DISTRICT, districts);

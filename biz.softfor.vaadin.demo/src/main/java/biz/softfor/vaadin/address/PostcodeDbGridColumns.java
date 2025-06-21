@@ -13,7 +13,6 @@ import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.util.api.Order;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
-import static biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn.defaultFilter;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
 import biz.softfor.vaadin.VaadinUtil;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -38,26 +37,26 @@ public class PostcodeDbGridColumns extends DbGridColumns<Integer, Postcode> {
     , securityMgr
     , Postcode.class
     , new TextDbGridColumn<>(Postcode_.POSTCODE, PostcodeFltr::setPostcode)
-    , new ManyToOneDbGridColumn<Postcode, PostcodeFltr, Integer, District>(
+    , new ManyToOneDbGridColumn<>(
         Postcode_.DISTRICT
       , VaadinUtil.defaultRenderer(m -> {
           District e = m.getDistrict();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter
+      , ManyToOneDbGridColumn.defaultFilter
         (PostcodeFltr::getDistrict, PostcodeFltr::setDistrict, DistrictFltr::new)
       , districtsDbGrid
       , District::getName
       , District::getFullname
       , List.of(District_.NAME, District_.FULLNAME)
       )
-    , new ManyToOneDbGridColumn<Postcode, PostcodeFltr, Integer, City>(
+    , new ManyToOneDbGridColumn<>(
         Postcode_.CITY
       , VaadinUtil.defaultRenderer(m -> {
           City e = m.getCity();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter
+      , ManyToOneDbGridColumn.defaultFilter
         (PostcodeFltr::getCity, PostcodeFltr::setCity, CityFltr::new)
       , citiesDbGrid
       , City::getName

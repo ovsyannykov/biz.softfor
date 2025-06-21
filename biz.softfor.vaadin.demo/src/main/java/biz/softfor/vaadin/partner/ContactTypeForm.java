@@ -6,7 +6,6 @@ import biz.softfor.partner.jpa.ContactType_;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityFormColumns;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.validation.Validator;
@@ -22,9 +21,9 @@ extends EntityForm<Short, ContactType, ContactTypeWor> {
 
   public ContactTypeForm(SecurityMgr securityMgr, Validator validator) {
     super(ContactType.TITLE
-    , new EntityFormColumns(
+    , new EntityFormColumns<>(
         ContactType.class
-      , new LinkedHashMap<String, Component>() {{
+      , new LinkedHashMap<>() {{
           TextField name = new TextField(ContactType_.NAME);
           put(ContactType_.NAME, name);
           TextField descr = new TextField(ContactType_.DESCR);

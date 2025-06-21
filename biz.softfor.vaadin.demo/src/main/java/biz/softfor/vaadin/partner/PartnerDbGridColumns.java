@@ -27,7 +27,6 @@ import biz.softfor.vaadin.dbgrid.DateDbGridColumn;
 import biz.softfor.vaadin.dbgrid.DbGridColumn;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
-import static biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn.defaultFilter;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -72,7 +71,7 @@ public class PartnerDbGridColumns extends DbGridColumns<Long, Partner> {
           Postcode e = m.getPostcode();
           return e == null ? "" : e.getPostcode();
         })
-      , defaultFilter
+      , ManyToOneDbGridColumn.defaultFilter
         (PartnerFltr::getPostcode, PartnerFltr::setPostcode, PostcodeFltr::new)
       , postcodesDbGrid
       , Postcode::getPostcode
@@ -85,7 +84,7 @@ public class PartnerDbGridColumns extends DbGridColumns<Long, Partner> {
           LocationType c = m.getLocationType();
           return c == null ? "" : c.getName();
         })
-      , defaultFilter(
+      , ManyToOneDbGridColumn.defaultFilter(
           PartnerFltr::getLocationType
         , PartnerFltr::setLocationType
         , LocationTypeFltr::new

@@ -6,7 +6,6 @@ import biz.softfor.partner.jpa.LocationType_;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityFormColumns;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.validation.Validator;
@@ -22,9 +21,9 @@ extends EntityForm<Short, LocationType, LocationTypeWor> {
 
   public LocationTypeForm(SecurityMgr securityMgr, Validator validator) {
     super(LocationType.TITLE
-    , new EntityFormColumns(
+    , new EntityFormColumns<>(
         LocationType.class
-      , new LinkedHashMap<String, Component>() {{
+      , new LinkedHashMap<>() {{
           TextField name = new TextField(LocationType_.NAME);
           put(LocationType_.NAME, name);
           TextField descr = new TextField(LocationType_.DESCR);

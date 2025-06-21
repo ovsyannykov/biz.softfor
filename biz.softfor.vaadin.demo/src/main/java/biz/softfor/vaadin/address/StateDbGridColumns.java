@@ -10,7 +10,6 @@ import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.util.api.Order;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
-import static biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn.defaultFilter;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
 import biz.softfor.vaadin.VaadinUtil;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -33,13 +32,13 @@ public class StateDbGridColumns extends DbGridColumns<Integer, State> {
     , State.class
     , new TextDbGridColumn<>(State_.NAME, StateFltr::setName)
     , new TextDbGridColumn<>(State_.FULLNAME, StateFltr::setFullname)
-    , new ManyToOneDbGridColumn<State, StateFltr, Short, Country>(
+    , new ManyToOneDbGridColumn<>(
         State_.COUNTRY
       , VaadinUtil.defaultRenderer(m -> {
           Country e = m.getCountry();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter
+      , ManyToOneDbGridColumn.defaultFilter
         (StateFltr::getCountry, StateFltr::setCountry, CountryFltr::new)
       , countriesDbGrid
       , Country::getName

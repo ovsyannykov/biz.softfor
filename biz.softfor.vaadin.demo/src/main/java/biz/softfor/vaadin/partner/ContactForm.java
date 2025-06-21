@@ -13,7 +13,6 @@ import biz.softfor.util.StringUtil;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityFormColumns;
 import biz.softfor.vaadin.field.ManyToOneField;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -35,9 +34,9 @@ public class ContactForm extends EntityForm<Long, Contact, ContactWor> {
   , AppointmentsDbGrid appointments
   ) {
     super(Contact.TITLE
-    , new EntityFormColumns(
+    , new EntityFormColumns<>(
         Contact.class
-      , new LinkedHashMap<String, Component>() {{
+      , new LinkedHashMap<>() {{
           put(Contact_.DESCR, new TextField(Contact_.DESCR));
           put(Contact_.PARTNER, new PartnerField(Contact_.PARTNER, partners));
           ManyToOneField<Short, Appointment> appointmentField = new ManyToOneField<>(

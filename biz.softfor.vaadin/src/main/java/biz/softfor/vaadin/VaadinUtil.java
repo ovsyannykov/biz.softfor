@@ -16,7 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 public class VaadinUtil {
 
-  public final static String VERSION = "24.7.3";
+  public final static String VERSION = "24.8.0";
   public final static String BUTTON_ID_OBJ = "-BUTTON";
   public final static String COLUMN_FILTER_ID_SFX = "-COLFLTR";
   public final static String FORM_ID_SFX = "-FORM";

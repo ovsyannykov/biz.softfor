@@ -6,7 +6,6 @@ import biz.softfor.address.jpa.CityType_;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityFormColumns;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.validation.Validator;
@@ -21,9 +20,9 @@ public class CityTypeForm extends EntityForm<Short, CityType, CityTypeWor> {
 
   public CityTypeForm(SecurityMgr securityMgr, Validator validator) {
     super(CityType.TITLE
-    , new EntityFormColumns(
+    , new EntityFormColumns<>(
         CityType.class
-      , new LinkedHashMap<String, Component>() {{
+      , new LinkedHashMap<>() {{
           TextField name = new TextField(CityType_.NAME);
           put(CityType_.NAME, name);
           TextField fullname = new TextField(CityType_.FULLNAME);

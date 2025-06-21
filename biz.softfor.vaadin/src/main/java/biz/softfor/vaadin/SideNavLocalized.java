@@ -15,13 +15,7 @@ public class SideNavLocalized extends SideNav implements LocaleChangeObserver {
 
   public SideNavLocalized(MenuItemData... menuItemData) {
     this.menuItemData = menuItemData;
-    MenuItemData.menu(
-      () -> this
-    , null
-    , null
-    , (e, i) -> ((SideNav)e).addItem(i)
-    , menuItemData
-    );
+    MenuItemData.menu(this, null, null, this.menuItemData);
   }
 
   @Override

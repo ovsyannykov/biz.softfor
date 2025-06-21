@@ -37,9 +37,9 @@ public class ConfigSecurityService {
     (SessionCreationPolicy.STATELESS))
     .exceptionHandling(customizer -> customizer.authenticationEntryPoint
     (new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-    .authorizeHttpRequests(requests -> {
+    .authorizeHttpRequests(auth -> {
       try {
-        requests
+        auth
         .requestMatchers(StdPath.LOGOUT).authenticated()
         .requestMatchers(StdPath.REFRESH_TOKEN).authenticated()
         .requestMatchers(requestsMgr::matches).access(requestsMgr::check)

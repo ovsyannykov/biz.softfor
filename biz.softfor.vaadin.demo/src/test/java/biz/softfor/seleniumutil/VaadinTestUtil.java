@@ -44,7 +44,7 @@ public class VaadinTestUtil {
     (By.xpath("//*[@id='" + dialogSlctId + "']//vaadin-checkbox"));
     boolean screenshotDone = false;
     for(WebElement sr : selectRow) {
-      if(!"selectAllCheckbox".equals(sr.getAttribute("id"))) {
+      if(!"selectAllCheckbox".equals(sr.getDomAttribute("id"))) {
         if(!screenshotDone) {
           drvHlpr.scrollIntoView(sr);
           screenshot.get();

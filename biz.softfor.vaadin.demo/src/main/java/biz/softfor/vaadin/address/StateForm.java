@@ -9,7 +9,6 @@ import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityFormColumns;
 import biz.softfor.vaadin.field.ManyToOneField;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.validation.Validator;
@@ -26,9 +25,9 @@ public class StateForm extends EntityForm<Integer, State, StateWor> {
   public StateForm
   (SecurityMgr securityMgr, Validator validator, CountriesDbGrid countries) {
     super(State.TITLE
-    , new EntityFormColumns(
+    , new EntityFormColumns<>(
         State.class
-      , new LinkedHashMap<String, Component>() {{
+      , new LinkedHashMap<>() {{
           TextField name = new TextField(State_.NAME);
           put(State_.NAME, name);
           TextField fullname = new TextField(State_.FULLNAME);

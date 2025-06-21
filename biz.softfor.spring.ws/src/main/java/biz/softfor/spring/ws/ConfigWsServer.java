@@ -9,15 +9,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.ws.config.annotation.WsConfigurerAdapter;
+import org.springframework.ws.config.annotation.WsConfigurer;
 import org.springframework.ws.server.EndpointInterceptor;
+import org.springframework.ws.server.endpoint.adapter.method.MethodArgumentResolver;
+import org.springframework.ws.server.endpoint.adapter.method.MethodReturnValueHandler;
 import org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor;
 import org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor;
 import org.springframework.ws.transport.http.MessageDispatcherServlet;
 import org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection;
 
 @Configuration
-public class ConfigWsServer extends WsConfigurerAdapter {
+public class ConfigWsServer implements WsConfigurer {
 
   public final static String WS_ROOT_VALUE = "${biz.softfor.ws.root:" + Constants.WS_ROOT_DEFAULT + "}";
 
@@ -54,6 +56,14 @@ public class ConfigWsServer extends WsConfigurerAdapter {
     result.setApplicationContext(applicationContext);
     result.setTransformWsdlLocations(true);
     return new ServletRegistrationBean<>(result, wsRootPath + "/*");
+  }
+
+  @Override
+  public void addArgumentResolvers(List<MethodArgumentResolver> argumentResolvers) {
+  }
+
+  @Override
+  public void addReturnValueHandlers(List<MethodReturnValueHandler> returnValueHandlers) {
   }
 
 }

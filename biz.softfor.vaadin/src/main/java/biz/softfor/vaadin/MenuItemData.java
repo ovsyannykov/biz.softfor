@@ -2,10 +2,8 @@ package biz.softfor.vaadin;
 
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.sidenav.HasSideNavItems;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class MenuItemData {
 
@@ -55,38 +53,26 @@ public class MenuItemData {
     }
   }
 
-  public static Object menu(
-    Supplier<Object> create
-  , Consumer<SideNavItem> addToParent
+  public static HasSideNavItems menu(
+    HasSideNavItems item
+  , HasSideNavItems parent
   , Class<? extends Component> parentTarget
-  , BiConsumer<Object, SideNavItem> addItem
   , MenuItemData... data
   ) {
-    Object item = create.get();
     if(data != null) {
       for(MenuItemData d : data) {
         if(d.columns == null || d.columns.isAccessible()) {
-          Supplier<Object> createItem = () -> {
-            SideNavItem result = new SideNavItem(d.title);
-            if(d.target != null) {
-              result.setPath(d.target);
-            }
-            result.setLabel(result.getTranslation(d.title));
-            return result;
-          };
-          d.navItem = (SideNavItem)menu(
-            createItem
-          , i -> addItem.accept(item, i)
-          , d.target
-          , (e, i) -> ((SideNavItem)e).addItem(i)
-          , d.subMenu
-          );
+          SideNavItem subItem = new SideNavItem(d.title);
+          if(d.target != null) {
+            subItem.setPath(d.target);
+          }
+          subItem.setLabel(subItem.getTranslation(d.title));
+          d.navItem = (SideNavItem)menu(subItem, item, d.target, d.subMenu);
         }
       }
     }
-    if(addToParent != null
-    && (parentTarget != null || !((SideNavItem)item).getItems().isEmpty())) {
-      addToParent.accept((SideNavItem)item);
+    if(parent != null && (parentTarget != null || !item.getItems().isEmpty())) {
+      parent.addItem((SideNavItem)item);
     }
     return item;
   }

@@ -16,7 +16,6 @@ import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.util.api.Order;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
-import static biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn.defaultFilter;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
 import biz.softfor.vaadin.VaadinUtil;
 import com.vaadin.flow.spring.annotation.SpringComponent;
@@ -42,37 +41,39 @@ public class CityDbGridColumns extends DbGridColumns<Integer, City> {
     , securityMgr
     , City.class
     , new TextDbGridColumn<>(City_.NAME, CityFltr::setName)
-    , new ManyToOneDbGridColumn<City, CityFltr, Short, CityType>(
+    , new ManyToOneDbGridColumn<>(
         City_.TYP
       , VaadinUtil.defaultRenderer(m -> {
           CityType e = m.getTyp();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter(CityFltr::getTyp, CityFltr::setTyp, CityTypeFltr::new)
+      , ManyToOneDbGridColumn.defaultFilter
+        (CityFltr::getTyp, CityFltr::setTyp, CityTypeFltr::new)
       , cityTypesDbGrid
       , CityType::getName
       , CityType::getName
       , List.of(CityType_.NAME)
       )
-    , new ManyToOneDbGridColumn<City, CityFltr, Integer, State>(
+    , new ManyToOneDbGridColumn<>(
         City_.STATE
       , VaadinUtil.defaultRenderer(m -> {
           State e = m.getState();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter(CityFltr::getState, CityFltr::setState, StateFltr::new)
+      , ManyToOneDbGridColumn.defaultFilter
+        (CityFltr::getState, CityFltr::setState, StateFltr::new)
       , statesDbGrid
       , State::getName
       , State::getFullname
       , List.of(State_.NAME, State_.FULLNAME)
       )
-    , new ManyToOneDbGridColumn<City, CityFltr, Integer, District>(
+    , new ManyToOneDbGridColumn<>(
         City_.DISTRICT
       , VaadinUtil.defaultRenderer(m -> {
           District e = m.getDistrict();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter
+      , ManyToOneDbGridColumn.defaultFilter
         (CityFltr::getDistrict, CityFltr::setDistrict, DistrictFltr::new)
       , districtsDbGrid
       , District::getName

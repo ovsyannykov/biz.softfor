@@ -40,6 +40,23 @@
     </repository>
   </repositories>
 
+  <build>
+    <plugins>
+      <!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgs>
+            <arg>-Xlint</arg>
+          </compilerArgs>
+          <debug>false</debug>
+        </configuration>
+      </plugin>
+      -->
+    </plugins>
+  </build>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

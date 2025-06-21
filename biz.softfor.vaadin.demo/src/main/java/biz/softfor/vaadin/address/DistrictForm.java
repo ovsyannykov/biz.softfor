@@ -6,7 +6,6 @@ import biz.softfor.address.jpa.District_;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityFormColumns;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.validation.Validator;
@@ -22,9 +21,9 @@ public class DistrictForm extends EntityForm<Integer, District, DistrictWor> {
   public DistrictForm
   (SecurityMgr securityMgr, Validator validator, StatesDbGrid states) {
     super(District.TITLE
-    , new EntityFormColumns(
+    , new EntityFormColumns<>(
         District.class
-      , new LinkedHashMap<String, Component>() {{
+      , new LinkedHashMap<>() {{
           TextField name = new TextField(District_.NAME);
           put(District_.NAME, name);
           TextField fullname = new TextField(District_.FULLNAME);

@@ -6,7 +6,6 @@ import biz.softfor.address.jpa.Country_;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityFormColumns;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.validation.Validator;
@@ -21,9 +20,9 @@ public class CountryForm extends EntityForm<Short, Country, CountryWor> {
 
   public CountryForm(SecurityMgr securityMgr, Validator validator) {
     super(Country.TITLE
-    , new EntityFormColumns(
+    , new EntityFormColumns<>(
         Country.class
-      , new LinkedHashMap<String, Component>() {{
+      , new LinkedHashMap<>() {{
           TextField name = new TextField(Country_.NAME);
           put(Country_.NAME, name);
           TextField fullname = new TextField(Country_.FULLNAME);

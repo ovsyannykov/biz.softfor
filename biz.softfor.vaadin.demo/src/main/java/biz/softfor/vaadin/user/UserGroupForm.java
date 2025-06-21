@@ -9,7 +9,6 @@ import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityFormColumns;
 import biz.softfor.vaadin.field.ToManyField;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import jakarta.validation.Validator;
@@ -31,9 +30,9 @@ public class UserGroupForm extends EntityForm<Integer, UserGroup, UserGroupWor> 
   , RolesDbGrid rolesDbGrid
   ) {
     super(UserGroup.TITLE
-    , new EntityFormColumns(
+    , new EntityFormColumns<>(
         UserGroup.class
-      , new LinkedHashMap<String, Component>() {{
+      , new LinkedHashMap<>() {{
           put(UserGroup_.NAME, new TextField(UserGroup_.NAME));
           put(UserGroup_.USERS, new ToManyField<>(
             UserGroup_.USERS
