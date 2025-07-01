@@ -1,4 +1,4 @@
-package biz.softfor.i18nspring;
+package biz.softfor.spring.messagesi18n;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;

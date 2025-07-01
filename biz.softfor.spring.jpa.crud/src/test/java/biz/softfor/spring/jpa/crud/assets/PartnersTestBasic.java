@@ -1,9 +1,9 @@
 package biz.softfor.spring.jpa.crud.assets;
 
-import biz.softfor.i18nspring.ConfigI18nSpring;
 import biz.softfor.spring.jpa.crud.ConfigJpaCrud;
 import biz.softfor.spring.jpa.crud.TestConfigJpaCrud;
 import biz.softfor.spring.jpa.properties.ConfigJpaProperties;
+import biz.softfor.spring.messagesi18n.ConfigSpringMessagesI18n;
 import biz.softfor.spring.objectmapper.ConfigObjectMapper;
 import biz.softfor.spring.sqllog.ConfigSqlLog;
 import biz.softfor.testutil.Check;
@@ -27,11 +27,11 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = {
   TestConfigJpaCrud.class
-, ConfigI18nSpring.class
 , ConfigJpaCrud.class
 , ConfigJpaProperties.class
 , ConfigObjectMapper.class
 , ConfigSqlLog.class
+, ConfigSpringMessagesI18n.class
 , ConfigTestUtil.class
 , LocalValidatorFactoryBean.class
 })

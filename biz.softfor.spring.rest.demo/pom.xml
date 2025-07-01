@@ -150,8 +150,8 @@
                 <script><![CDATA[
                   String locales = biz.softfor.util.PropertiesUtil.get(
                     project.properties.getProperty('project.resources').replace('\\','/') + "/application.properties"
-                  , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY
-                  , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY_DEFAULT_VALUE
+                  , biz.softfor.spring.messagesi18n.I18n.LOCALES_PROPERTY
+                  , biz.softfor.spring.messagesi18n.I18n.LOCALES_PROPERTY_DEFAULT_VALUE
                   );
                   String resourcesDir = project.properties.getProperty('target.resources').replace('\\','/');
                   biz.softfor.i18ngen.I18nGen.genMessages(

@@ -1,6 +1,6 @@
 package biz.softfor.spring.rest.errorhandling;
 
-import biz.softfor.i18nspring.I18n;
+import biz.softfor.spring.messagesi18n.I18n;
 import biz.softfor.util.api.BasicResponse;
 import biz.softfor.util.api.ErrorData;
 import biz.softfor.util.api.StdPath;

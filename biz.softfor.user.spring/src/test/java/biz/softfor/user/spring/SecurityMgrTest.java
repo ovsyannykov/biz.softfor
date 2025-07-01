@@ -6,9 +6,9 @@ import biz.softfor.address.jpa.District;
 import biz.softfor.address.jpa.District_;
 import biz.softfor.address.jpa.State;
 import biz.softfor.address.jpa.State_;
-import biz.softfor.i18nspring.ConfigI18nSpring;
 import biz.softfor.spring.jpa.crud.ConfigJpaCrud;
 import biz.softfor.spring.jpa.properties.ConfigJpaProperties;
+import biz.softfor.spring.messagesi18n.ConfigSpringMessagesI18n;
 import biz.softfor.spring.objectmapper.ConfigObjectMapper;
 import biz.softfor.spring.sqllog.ConfigSqlLog;
 import biz.softfor.user.jpa.User;
@@ -18,7 +18,6 @@ import biz.softfor.util.security.ClassRoleCalc;
 import biz.softfor.util.security.FieldRoleCalc;
 import biz.softfor.util.security.UpdateFieldRoleCalc;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -39,11 +38,11 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = {
   SecurityMgrTest.class
-, ConfigI18nSpring.class
 , ConfigJpaCrud.class
 , ConfigJpaProperties.class
 , ConfigObjectMapper.class
 , ConfigSqlLog.class
+, ConfigSpringMessagesI18n.class
 , ConfigUserSpring.class
 , LocalValidatorFactoryBean.class
 })

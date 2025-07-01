@@ -1,6 +1,6 @@
 package biz.softfor.spring.security;
 
-import biz.softfor.i18nspring.I18n;
+import biz.softfor.spring.messagesi18n.I18n;
 import biz.softfor.user.jpa.Role_;
 import biz.softfor.user.jpa.User;
 import biz.softfor.user.jpa.UserGroup_;
@@ -49,9 +49,9 @@ public class ConfigSecurity {
   @Bean
   public DaoAuthenticationProvider authenticationProvider
   (UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-    DaoAuthenticationProvider result = new DaoAuthenticationProvider();
+    DaoAuthenticationProvider result
+    = new DaoAuthenticationProvider(userDetailsService);
     result.setPasswordEncoder(passwordEncoder);
-    result.setUserDetailsService(userDetailsService);
     return result;
   }
 

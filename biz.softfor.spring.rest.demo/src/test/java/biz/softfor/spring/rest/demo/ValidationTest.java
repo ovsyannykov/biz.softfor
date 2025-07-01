@@ -1,7 +1,6 @@
 package biz.softfor.spring.rest.demo;
 
 import biz.softfor.i18ngen.I18nGen;
-import biz.softfor.i18nspring.I18n;
 import biz.softfor.jpa.crud.querygraph.ColumnDescr;
 import biz.softfor.partner.api.PartnerDto;
 import biz.softfor.partner.api.PartnerRequest;
@@ -10,6 +9,7 @@ import biz.softfor.partner.api.PersonDetailsDto;
 import biz.softfor.partner.jpa.Partner;
 import biz.softfor.partner.jpa.PartnerWor;
 import biz.softfor.partner.jpa.PersonDetailsWor;
+import biz.softfor.spring.messagesi18n.I18n;
 import biz.softfor.spring.webi18n.ConfigSpringWebI18n;
 import biz.softfor.testutil.spring.RestAssuredCall;
 import biz.softfor.user.spring.rest.SecurityTest;

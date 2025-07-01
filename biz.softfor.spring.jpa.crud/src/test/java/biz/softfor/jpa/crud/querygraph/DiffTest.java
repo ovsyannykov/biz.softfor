@@ -1,12 +1,12 @@
 package biz.softfor.jpa.crud.querygraph;
 
-import biz.softfor.spring.jpa.crud.TestConfigJpaCrud;
-import biz.softfor.i18nspring.ConfigI18nSpring;
 import biz.softfor.partner.jpa.PartnerDetailsWor;
 import biz.softfor.partner.jpa.PartnerWor;
 import biz.softfor.partner.jpa.PersonDetailsWor;
 import biz.softfor.spring.jpa.crud.ConfigJpaCrud;
+import biz.softfor.spring.jpa.crud.TestConfigJpaCrud;
 import biz.softfor.spring.jpa.properties.ConfigJpaProperties;
+import biz.softfor.spring.messagesi18n.ConfigSpringMessagesI18n;
 import biz.softfor.spring.objectmapper.ConfigObjectMapper;
 import biz.softfor.util.api.AbstractRequest;
 import biz.softfor.util.partner.PartnerType;
@@ -25,10 +25,10 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = {
   TestConfigJpaCrud.class
-, ConfigI18nSpring.class
 , ConfigJpaCrud.class
 , ConfigJpaProperties.class
 , ConfigObjectMapper.class
+, ConfigSpringMessagesI18n.class
 , LocalValidatorFactoryBean.class
 })
 public class DiffTest {

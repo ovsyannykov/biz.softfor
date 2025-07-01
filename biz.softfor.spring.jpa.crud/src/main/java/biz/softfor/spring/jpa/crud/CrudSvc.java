@@ -1,12 +1,12 @@
 package biz.softfor.spring.jpa.crud;
 
-import biz.softfor.i18nspring.I18n;
 import biz.softfor.jpa.crud.AbstractCrudSvc;
 import biz.softfor.jpa.crud.querygraph.ColumnDescr;
 import biz.softfor.jpa.crud.querygraph.ManyToOneWorDescr;
 import biz.softfor.jpa.crud.querygraph.PredicateProvider;
 import biz.softfor.jpa.crud.querygraph.QueryGraph;
 import biz.softfor.jpa.crud.querygraph.UpdateCtx;
+import biz.softfor.spring.messagesi18n.I18n;
 import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.CommonResponse;
 import biz.softfor.util.api.CreateRequest;

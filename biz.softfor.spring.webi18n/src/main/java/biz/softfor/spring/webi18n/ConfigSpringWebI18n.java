@@ -1,6 +1,6 @@
 package biz.softfor.spring.webi18n;
 
-import biz.softfor.i18nspring.I18n;
+import biz.softfor.spring.messagesi18n.I18n;
 import biz.softfor.util.Locales;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

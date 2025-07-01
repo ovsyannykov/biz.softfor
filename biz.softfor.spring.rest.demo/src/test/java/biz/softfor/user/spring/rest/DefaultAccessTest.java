@@ -1,6 +1,6 @@
 package biz.softfor.user.spring.rest;
 
-import biz.softfor.i18nspring.I18n;
+import biz.softfor.spring.messagesi18n.I18n;
 import biz.softfor.testutil.spring.RestAssuredCall;
 import biz.softfor.user.api.UserDto;
 import biz.softfor.user.spring.SecurityMgr;

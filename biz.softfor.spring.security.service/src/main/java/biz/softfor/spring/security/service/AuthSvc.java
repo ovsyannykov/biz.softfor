@@ -1,6 +1,6 @@
 package biz.softfor.spring.security.service;
 
-import biz.softfor.i18nspring.I18n;
+import biz.softfor.spring.messagesi18n.I18n;
 import biz.softfor.spring.security.SecurityUtil;
 import biz.softfor.spring.security.UserDetailsEx;
 import biz.softfor.user.jpa.User;

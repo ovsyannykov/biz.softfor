@@ -1,7 +1,7 @@
 package biz.softfor.spring;
 
-import biz.softfor.i18nspring.ConfigI18nSpring;
-import biz.softfor.i18nspring.I18n;
+import biz.softfor.spring.messagesi18n.ConfigSpringMessagesI18n;
+import biz.softfor.spring.messagesi18n.I18n;
 import java.util.Locale;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 @TestConfiguration
 @ComponentScan
 @EnableAutoConfiguration
-@ContextConfiguration(classes = { ConfigI18nSpring.class, LocalValidatorFactoryBean.class })
+@ContextConfiguration(classes = { ConfigSpringMessagesI18n.class, LocalValidatorFactoryBean.class })
 public class LocaleTest {
 
   @Autowired

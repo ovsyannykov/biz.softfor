@@ -1,6 +1,6 @@
 package biz.softfor.vaadin;
 
-import biz.softfor.i18nspring.I18n;
+import biz.softfor.spring.messagesi18n.I18n;
 import biz.softfor.util.Locales;
 import com.vaadin.flow.i18n.I18NProvider;
 import java.util.List;
