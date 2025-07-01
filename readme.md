@@ -60,8 +60,6 @@ scanning and saving to a file a list of classes annotated with a given
 annotation.
 - [biz.softfor.spring](biz.softfor.spring) - Spring Boot starter that configures
 a JSON mapper, a localization bean, and defines a number of constants.
-- [biz.softfor.spring.i18nrest](biz.softfor.spring.i18nrest) - Spring Boot
-starter configuring REST service localization via HTTP header "Accept-Language".
 - [biz.softfor.spring.jpa.crud](biz.softfor.spring.jpa.crud) - Spring Boot
 starter that configures the base class of CRUD services.
 - [biz.softfor.spring.jpa.properties](biz.softfor.spring.jpa.properties) -
@@ -84,6 +82,9 @@ Spring Boot starter containing beans and helper methods for Spring Security in
 REST services.
 - [biz.softfor.spring.servicegen](biz.softfor.spring.servicegen) - annotation
 processor that generates CRUD service classes.
+- [biz.softfor.spring.webi18n](biz.softfor.spring.webi18n) - Spring Boot
+starter configuring Spring LocaleChangeInterceptor via HTTP header
+"Accept-Language".
 - [biz.softfor.spring.ws](biz.softfor.spring.ws) - Spring Boot starter,
 facilitating the construction of SOAP services.
 - [biz.softfor.spring.ws.client.demo](biz.softfor.spring.ws.client.demo) -

@@ -32,7 +32,6 @@
     <module>${modulesPath}/biz.softfor.partner.spring.rest</module>
     <module>${modulesPath}/biz.softfor.reflectionsutil</module>
     <module>${modulesPath}/biz.softfor.spring</module>
-    <module>${modulesPath}/biz.softfor.spring.i18nrest</module>
     <module>${modulesPath}/biz.softfor.spring.jpa.crud</module>
     <module>${modulesPath}/biz.softfor.spring.jpa.properties</module>
     <module>${modulesPath}/biz.softfor.spring.rest</module>
@@ -42,6 +41,7 @@
     <module>${modulesPath}/biz.softfor.spring.security</module>
     <module>${modulesPath}/biz.softfor.spring.security.service</module>
     <module>${modulesPath}/biz.softfor.spring.servicegen</module>
+    <module>${modulesPath}/biz.softfor.spring.webi18n</module>
     <module>${modulesPath}/biz.softfor.spring.ws</module>
     <module>${modulesPath}/biz.softfor.spring.ws.client.demo</module>
     <module>${modulesPath}/biz.softfor.spring.ws.demo</module>

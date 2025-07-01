@@ -305,11 +305,6 @@
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
-        <artifactId>biz.softfor.spring.i18nrest</artifactId>
-        <version>0.0.0</version>
-      </dependency>
-      <dependency>
-        <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.spring.jpa.crud</artifactId>
         <version>0.0.0</version>
       </dependency>
@@ -352,6 +347,11 @@
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.spring.sqllog</artifactId>
         <version>3.5.3</version>
+      </dependency>
+      <dependency>
+        <groupId>biz.softfor</groupId>
+        <artifactId>biz.softfor.spring.webi18n</artifactId>
+        <version>0.0.0</version>
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>

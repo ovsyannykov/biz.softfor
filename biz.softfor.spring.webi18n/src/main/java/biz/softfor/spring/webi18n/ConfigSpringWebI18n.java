@@ -1,4 +1,4 @@
-package biz.softfor.spring.i18nrest;
+package biz.softfor.spring.webi18n;
 
 import biz.softfor.i18nspring.I18n;
 import biz.softfor.util.Locales;
@@ -13,7 +13,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 @Configuration
 @ComponentScan
-public class ConfigSpringI18nRest implements WebMvcConfigurer {
+public class ConfigSpringWebI18n implements WebMvcConfigurer {
 
   public final static String ACCEPT_LANGUAGE = "Accept-Language";
 

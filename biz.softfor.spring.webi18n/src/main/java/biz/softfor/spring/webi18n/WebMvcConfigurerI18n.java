@@ -1,4 +1,4 @@
-package biz.softfor.spring.i18nrest;
+package biz.softfor.spring.webi18n;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

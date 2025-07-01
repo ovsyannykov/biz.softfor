@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>biz.softfor</groupId>
-  <artifactId>biz.softfor.spring.i18nrest</artifactId>
+  <artifactId>biz.softfor.spring.webi18n</artifactId>
   <version>0.0.0</version>
   <packaging>jar</packaging>
 

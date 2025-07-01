@@ -294,10 +294,6 @@
     </dependency>
     <dependency>
       <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.spring.i18nrest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.spring.jpa.properties</artifactId>
     </dependency>
     <dependency>
@@ -316,6 +312,10 @@
       <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.spring.sqllog</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.spring.webi18n</artifactId>
     </dependency>
     <dependency>
       <groupId>biz.softfor</groupId>

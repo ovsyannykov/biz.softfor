@@ -61,9 +61,6 @@ Boot стартер, содержащий REST контроллеры, рабо�
 аннотацией.
 - [biz.softfor.spring](biz.softfor.spring) - Spring Boot стартер,
 конфигурирующий JSON-mapper, бин локализации и определяющий ряд констант.
-- [biz.softfor.spring.i18nrest](biz.softfor.spring.i18nrest) - Spring Boot
-стартер, конфигурирующий локализацию REST-сервиса через HTTP заголовок
-"Accept-Language".
 - [biz.softfor.spring.jpa.crud](biz.softfor.spring.jpa.crud) - Spring Boot
 стартер, конфигурирующий базовый класс CRUD-сервисов.
 - [biz.softfor.spring.jpa.properties](biz.softfor.spring.jpa.properties) -
@@ -86,6 +83,9 @@ Spring Boot стартер, содержащий бины и вспомогат�
 Security в REST-сервисах.
 - [biz.softfor.spring.servicegen](biz.softfor.spring.servicegen) - процессор
 аннотаций, генерирующий классы CRUD-сервисов.
+- [biz.softfor.spring.webi18n](biz.softfor.spring.webi18n) - Spring Boot
+стартер, конфигурирующий Spring LocaleChangeInterceptor через HTTP заголовок
+"Accept-Language".
 - [biz.softfor.spring.ws](biz.softfor.spring.ws) - Spring Boot стартер,
 облегчающий построение SOAP-сервисов.
 - [biz.softfor.spring.ws.client.demo](biz.softfor.spring.ws.client.demo) -

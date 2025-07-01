@@ -10,7 +10,7 @@ import biz.softfor.partner.api.PersonDetailsDto;
 import biz.softfor.partner.jpa.Partner;
 import biz.softfor.partner.jpa.PartnerWor;
 import biz.softfor.partner.jpa.PersonDetailsWor;
-import biz.softfor.spring.i18nrest.ConfigSpringI18nRest;
+import biz.softfor.spring.webi18n.ConfigSpringWebI18n;
 import biz.softfor.testutil.spring.RestAssuredCall;
 import biz.softfor.user.spring.rest.SecurityTest;
 import static biz.softfor.user.spring.rest.SecurityTest.authorize;
@@ -72,7 +72,7 @@ public class ValidationTest {
   @BeforeEach
   public void beforeEach() {
     testSvc = new RestAssuredCall(om);
-    testSvc.headers.put(ConfigSpringI18nRest.ACCEPT_LANGUAGE, testLocale.getLanguage());
+    testSvc.headers.put(ConfigSpringWebI18n.ACCEPT_LANGUAGE, testLocale.getLanguage());
     RestAssured.basePath = StdPath.ROOT;
     RestAssured.defaultParser = Parser.JSON;
     RestAssured.port = port;
