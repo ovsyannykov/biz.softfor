@@ -18,7 +18,6 @@
   <modules>
     <module>${modulesPath}/biz.softfor.bom</module>
     <module>${modulesPath}/biz.softfor.codegen</module>
-    <module>${modulesPath}/biz.softfor.i18nutil</module>
     <module>${modulesPath}/biz.softfor.jpa</module>
     <module>${modulesPath}/biz.softfor.jpa.apigen</module>
     <module>${modulesPath}/biz.softfor.jpa.filtergen</module>

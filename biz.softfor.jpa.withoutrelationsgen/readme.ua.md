@@ -255,7 +255,7 @@ public class Users_Groups_Id implements Serializable {
   ```biz.softfor.user.jpa.Role => biz.softfor.user.jpa.Role```<b>```Wor```</b>
 
 - Якщо вихідний клас успадковується від **Object**, то **Wor**-клас успадковується від
-[Identifiable](../biz.softfor.jpa/src/main/java/biz/softfor/util/api/Identifiable.java),
+[Identifiable](../biz.softfor.util/src/main/java/biz/softfor/util/api/Identifiable.java),
 інакше – від того ж класу, що й вихідний.
 
 - Якщо у вихідному класі є анотація
@@ -494,12 +494,12 @@ private LocalDate partnerRegdate;
 
 — [biz.softfor.user.jpa.withoutrelations](../biz.softfor.user.jpa.withoutrelations).
 
-- В api-пакеті створюємо файл **package-info.java**, у якому над пакетом ставимо
+- В jpa-пакеті створюємо файл **package-info.java**, у якому над пакетом ставимо
 анотацію **@GenWithoutRelations**, в якій вказуємо класи, в пакетах з якими
 процесор шукатиме анотацію **@Entity**:
 
 ```java
-@GenWithoutRelations({ "biz.softfor.user.jpa" })
+@GenWithoutRelations({ biz.softfor.user.jpa.User.class })
 package biz.softfor.user.jpa;
 
 import biz.softfor.jpa.withoutrelationsgen.GenWithoutRelations;

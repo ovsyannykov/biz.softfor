@@ -96,9 +96,8 @@
             <configuration>
               <scripts>
                 <script><![CDATA[
-                  String resourcesDir = project.properties.getProperty('project.testResources').replace('\\','/');
                   biz.softfor.reflectionsutil.ReflectionsUtil.scan(
-                    resourcesDir
+                    project.properties.getProperty('target.testResources').replace('\\','/')
                   , org.springframework.stereotype.Service.class
                   , new String[] { "biz.softfor.user.spring" }
                   , null

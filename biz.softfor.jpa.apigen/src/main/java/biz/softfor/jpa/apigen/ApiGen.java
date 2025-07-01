@@ -111,25 +111,26 @@ public class ApiGen extends CodeGen {
       && !Identifiable.ID.equals(fieldName)) {
         Class<?> dclClass = dclField.getType();
         TypeName fieldType;
-        CodeGenUtil.SetterCode setterCode = CodeGenUtil.SetterCode.SIMPLE;
+        CodeGenUtil.SetterCode setterCode;
         String mappedByName = null;
         boolean unidirectional = false;
         if(CodeGenUtil.isAnnotationPresent(dclField, OneToOne.class)) {
-          setterCode = CodeGenUtil.SetterCode.ONE_TO_ONE;
           fieldType = CodeGenUtil.dtoClassName(dclClass);
+          setterCode = CodeGenUtil.SetterCode.ONE_TO_ONE;
         } else if(CodeGenUtil.isAnnotationPresent(dclField, ManyToOne.class)) {
           fieldType = CodeGenUtil.dtoClassName(dclClass);
+          setterCode = CodeGenUtil.SetterCode.SIMPLE;
           TypeName keyTypeName = TypeName.get(Reflection.idClass(dclClass));
           String keyName = CodeGenUtil.manyToOneKeyName(dclField);
           FieldSpec.Builder keyBldr = FieldSpec.builder(keyTypeName, keyName);
           CodeGenUtil.setModifiers(keyBldr, mods);
           CodeGenUtil.addField(classBldr, keyBldr, keyTypeName, keyName, true);
         } else if(CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)) {
-          setterCode = CodeGenUtil.SetterCode.ONE_TO_MANY;
           Class<?> dclJoinClass = Reflection.genericParameter(dclField);
           TypeName joinClass = CodeGenUtil.dtoClassName(dclJoinClass);
           fieldType = ParameterizedTypeName.get
           (ClassName.get(List.class), joinClass);
+          setterCode = CodeGenUtil.SetterCode.ONE_TO_MANY;
 
           addFieldIds(
             ColumnDescr.toManyKeyName(fieldName)
@@ -188,12 +189,12 @@ public class ApiGen extends CodeGen {
           ;
           classBldr.addMethod(removeAll.build());
         } else if(CodeGenUtil.isAnnotationPresent(dclField, ManyToMany.class)) {
-          setterCode = CodeGenUtil.SetterCode.MANY_TO_MANY;
           String itemName = Inflector.getInstance().singularize(fieldName);
           Class<?> dclJoinClass = Reflection.genericParameter(dclField);
           TypeName joinClass = CodeGenUtil.dtoClassName(dclJoinClass);
           fieldType
           = ParameterizedTypeName.get(ClassName.get(Set.class), joinClass);
+          setterCode = CodeGenUtil.SetterCode.MANY_TO_MANY;
 
           addFieldIds(
             ColumnDescr.toManyKeyName(fieldName)
@@ -298,6 +299,7 @@ public class ApiGen extends CodeGen {
           classBldr.addMethod(removeAll.build());
         } else {
           fieldType = ClassName.get(dclClass);
+          setterCode = CodeGenUtil.SetterCode.SIMPLE;
         }
         FieldSpec.Builder fieldBldr = CodeGenUtil.fieldBuilder(
           dclField

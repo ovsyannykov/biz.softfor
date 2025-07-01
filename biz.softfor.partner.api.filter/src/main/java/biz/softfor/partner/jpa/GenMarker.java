@@ -1,3 +1,3 @@
 package biz.softfor.partner.jpa;
 
-public interface GenApiMarker {}
+public interface GenMarker {}

@@ -87,7 +87,7 @@
     <!-- biz.softfor -->
     <dependency>
       <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.i18nutil</artifactId>
+      <artifactId>biz.softfor.i18ngen</artifactId>
     </dependency>
     <dependency>
       <groupId>biz.softfor</groupId>

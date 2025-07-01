@@ -34,21 +34,6 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${project.resources}</directory>
-              <includes>
-                <include>messages*.properties</include>
-              </includes>
-              <followSymlinks>false</followSymlinks>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
@@ -131,7 +116,26 @@
             <groupId>biz.softfor</groupId>
             <artifactId>biz.softfor.reflectionsutil</artifactId>
             <version>${biz.softfor.reflectionsutil.version}</version>
-            <scope>runtime</scope>
+          </dependency>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.partner.i18n</artifactId>
+            <version>${biz.softfor.partner.i18n.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.user.i18n</artifactId>
+            <version>${biz.softfor.user.i18n.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.user.spring.i18n</artifactId>
+            <version>${biz.softfor.user.spring.i18n.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.util.i18n</artifactId>
+            <version>${biz.softfor.util.i18n.version}</version>
           </dependency>
         </dependencies>
         <executions>
@@ -144,14 +148,15 @@
             <configuration>
               <scripts>
                 <script><![CDATA[
-                  String resourcesDir = project.properties.getProperty('project.resources').replace('\\','/');
                   String locales = biz.softfor.util.PropertiesUtil.get(
-                    resourcesDir + "/application.properties"
+                    project.properties.getProperty('project.resources').replace('\\','/') + "/application.properties"
                   , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY
                   , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY_DEFAULT_VALUE
                   );
-                  biz.softfor.i18nutil.I18nUtil.genMessages(
+                  String resourcesDir = project.properties.getProperty('target.resources').replace('\\','/');
+                  biz.softfor.i18ngen.I18nGen.genMessages(
                     resourcesDir
+                  , project.properties.getProperty('target.logDir').replace('\\','/')
                   , locales
                   , "biz.softfor.util.i18n"
                   , "biz.softfor.util.partner.i18n"
@@ -186,7 +191,7 @@
             <configuration>
               <scripts>
                 <script><![CDATA[
-                  String resourcesDir = project.properties.getProperty('project.testResources').replace('\\','/');
+                  String resourcesDir = project.properties.getProperty('target.testResources').replace('\\','/');
                   biz.softfor.reflectionsutil.ReflectionsUtil.scan(
                     resourcesDir
                   , org.springframework.web.bind.annotation.RestController.class
@@ -266,6 +271,11 @@
     <!-- biz.softfor -->
     <dependency>
       <groupId>biz.softfor</groupId>
+      <artifactId>biz.softfor.i18ngen</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.logback</artifactId>
       <scope>runtime</scope>
     </dependency>
@@ -273,12 +283,6 @@
       <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.partner.api</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.partner.i18n</artifactId>
-      <optional>true</optional>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>biz.softfor</groupId>
@@ -325,25 +329,7 @@
     </dependency>
     <dependency>
       <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.user.i18n</artifactId>
-      <optional>true</optional>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.user.spring.i18n</artifactId>
-      <optional>true</optional>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.user.spring.rest</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.util.i18n</artifactId>
-      <optional>true</optional>
-      <scope>provided</scope>
     </dependency>
 
     <!-- third party -->

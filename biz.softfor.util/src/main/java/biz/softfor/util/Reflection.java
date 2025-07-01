@@ -308,8 +308,4 @@ public class Reflection {
     return result;
   }
 
-  public static String trace() {
-    return trace(4);
-  }
-
 }

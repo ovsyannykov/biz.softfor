@@ -32,6 +32,9 @@
     <project.webappDirectory>${project.basedir}/target/site</project.webappDirectory>
     <spring.sql.init.platform>h2</spring.sql.init.platform>
     <start-class>${project.artifactId}.App</start-class>
+    <target.logDir>${project.basedir}/target/log</target.logDir>
+    <target.resources>${project.basedir}/target/classes</target.resources>
+    <target.testResources>${project.basedir}/target/test-classes</target.testResources>
 
     <jaxws-tools.version>4.0.3</jaxws-tools.version>
     <io.jsonwebtoken.version>0.12.6</io.jsonwebtoken.version>
@@ -46,6 +49,13 @@
     <biz.softfor.user.jpa.version>0.0.0</biz.softfor.user.jpa.version>
     <biz.softfor.user.spring.rest.version>0.0.0</biz.softfor.user.spring.rest.version>
     <biz.softfor.user.spring.ws.version>0.0.0</biz.softfor.user.spring.ws.version>
+
+    <biz.softfor.partner.i18n.version>0.0.0</biz.softfor.partner.i18n.version>
+    <biz.softfor.user.i18n.version>0.0.0</biz.softfor.user.i18n.version>
+    <biz.softfor.user.spring.i18n.version>0.0.0</biz.softfor.user.spring.i18n.version>
+    <biz.softfor.util.i18n.version>0.0.0</biz.softfor.util.i18n.version>
+    <biz.softfor.vaadin.demo.i18n.version>0.0.0</biz.softfor.vaadin.demo.i18n.version>
+    <biz.softfor.vaadin.i18n.version>0.0.0</biz.softfor.vaadin.i18n.version>
   </properties>
 
   <build>
@@ -220,8 +230,8 @@
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
-        <artifactId>biz.softfor.i18nutil</artifactId>
-        <version>0.0.0</version>
+        <artifactId>biz.softfor.i18ngen</artifactId>
+        <version>1.0.0</version>
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
@@ -256,7 +266,7 @@
       <dependency>
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.partner.i18n</artifactId>
-        <version>0.0.0</version>
+        <version>${biz.softfor.partner.i18n.version}</version>
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
@@ -341,7 +351,7 @@
       <dependency>
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.spring.sqllog</artifactId>
-        <version>3.4.4</version>
+        <version>3.5.3</version>
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
@@ -376,7 +386,7 @@
       <dependency>
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.user.i18n</artifactId>
-        <version>0.0.0</version>
+        <version>${biz.softfor.user.i18n.version}</version>
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
@@ -396,7 +406,7 @@
       <dependency>
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.user.spring.i18n</artifactId>
-        <version>0.0.0</version>
+        <version>${biz.softfor.user.spring.i18n.version}</version>
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
@@ -416,7 +426,7 @@
       <dependency>
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.util.i18n</artifactId>
-        <version>0.0.0</version>
+        <version>${biz.softfor.util.i18n.version}</version>
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
@@ -431,12 +441,12 @@
       <dependency>
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.vaadin.demo.i18n</artifactId>
-        <version>0.0.0</version>
+        <version>${biz.softfor.vaadin.demo.i18n.version}</version>
       </dependency>
       <dependency>
         <groupId>biz.softfor</groupId>
         <artifactId>biz.softfor.vaadin.i18n</artifactId>
-        <version>0.0.0</version>
+        <version>${biz.softfor.vaadin.i18n.version}</version>
       </dependency>
 
       <!-- third party -->

@@ -259,7 +259,7 @@ suffix is ​​added to the name:
 
 - If the original class inherits from **Object**, then the **Wor** class
 inherits from
-[Identifiable](../biz.softfor.jpa/src/main/java/biz/softfor/util/api/Identifiable.java),
+[Identifiable](../biz.softfor.util/src/main/java/biz/softfor/util/api/Identifiable.java),
 otherwise - from the same class as the original.
 
 - If the source class contains the annotation
@@ -502,7 +502,7 @@ this class. This allows you to **selectively validate only the changed** fields.
 
 — [biz.softfor.user.jpa.withoutrelations](../biz.softfor.user.jpa.withoutrelations).
 
-- In the api package, we create a file **package-info.java**, in which we put
+- In the jpa package, we create a file **package-info.java**, in which we put
 the **@GenWithoutRelations** annotation above the package, in which we specify
 the classes in the packages with which the processor will look for the
 **@Entity** annotation:

@@ -18,14 +18,6 @@
   </parent>
 
   <dependencies>
-    <!-- annotation processors -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <optional>true</optional>
-      <scope>compile</scope>
-    </dependency>
-
     <!-- spring starter -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

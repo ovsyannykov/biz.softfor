@@ -1,7 +1,7 @@
 package biz.softfor.spring.rest.demo;
 
+import biz.softfor.i18ngen.I18nGen;
 import biz.softfor.i18nspring.I18n;
-import biz.softfor.i18nutil.I18nUtil;
 import biz.softfor.jpa.crud.querygraph.ColumnDescr;
 import biz.softfor.partner.api.PartnerDto;
 import biz.softfor.partner.api.PartnerRequest;
@@ -66,13 +66,13 @@ public class ValidationTest {
   private Validator validator;
 
   private RestAssuredCall testSvc;
-  private final Locale testLocale = I18nUtil.UKRAINIAN;
+  private final Locale testLocale = I18nGen.UKRAINIAN;
   //private final Locale testLocale = Locale.ENGLISH;
 
   @BeforeEach
   public void beforeEach() {
     testSvc = new RestAssuredCall(om);
-    testSvc.headers.put(ConfigSpringI18nRest.ACCEPT_LANGUAGE, testLocale.toString());
+    testSvc.headers.put(ConfigSpringI18nRest.ACCEPT_LANGUAGE, testLocale.getLanguage());
     RestAssured.basePath = StdPath.ROOT;
     RestAssured.defaultParser = Parser.JSON;
     RestAssured.port = port;
@@ -258,7 +258,7 @@ public class ValidationTest {
     assertThat(ms.getMessage(Constants.Unsupported_operation
     , new Object[] { "update" }, Locale.US))
     .isEqualTo("Unsupported operation: update.");
-    LocaleContextHolder.setLocale(I18nUtil.UKRAINIAN);
+    LocaleContextHolder.setLocale(I18nGen.UKRAINIAN);
     assertThat(i18n.message(Constants.Unsupported_operation, "update"))
     .isEqualTo("Непідтримувана операція: update.");
     LocaleContextHolder.setLocale(Locale.getDefault());

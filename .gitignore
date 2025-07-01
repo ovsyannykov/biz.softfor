@@ -17,8 +17,6 @@ screenlog/
 \!.txt
 \!err.txt
 jshell.history
-*.reflections
-messages*.properties
 tree.txt
 
 **/frontend/generated/

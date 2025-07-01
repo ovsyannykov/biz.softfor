@@ -1,8 +1,8 @@
 package biz.softfor.vaadin.demo.i18n;
 
-import biz.softfor.i18nutil.I18n;
-import static biz.softfor.i18nutil.I18nUtil.UKRAINIAN;
-import static biz.softfor.i18nutil.I18nUtil.add;
+import biz.softfor.i18ngen.I18n;
+import static biz.softfor.i18ngen.I18nGen.UKRAINIAN;
+import static biz.softfor.i18ngen.I18nGen.add;
 import biz.softfor.vaadin.MainLayout;
 import biz.softfor.vaadin.security.LoginView;
 import static java.util.Locale.ENGLISH;

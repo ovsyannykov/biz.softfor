@@ -1,9 +1,9 @@
 package biz.softfor.address.i18n;
 
 import biz.softfor.address.jpa.CityType;
-import biz.softfor.i18nutil.I18n;
-import static biz.softfor.i18nutil.I18nUtil.UKRAINIAN;
-import static biz.softfor.i18nutil.I18nUtil.add;
+import biz.softfor.i18ngen.I18n;
+import static biz.softfor.i18ngen.I18nGen.UKRAINIAN;
+import static biz.softfor.i18ngen.I18nGen.add;
 import static java.util.Locale.ENGLISH;
 import static java.util.Map.of;
 

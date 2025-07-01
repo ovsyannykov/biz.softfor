@@ -19,13 +19,11 @@ minimum amount of necessary code and low requirements for the qualifications of
 developers.
 
 **[SoftFor.Biz](http://softfor.biz)** allows you to focus on business logic and
-not drown the project at the start in a sea of ​​technological details.
+not drown the project at the start in a sea of technological details.
 
 - [biz.softfor.bom](biz.softfor.bom) - BOM (bill of materials).
 - [biz.softfor.codegen](biz.softfor.codegen) - common code for code-generating
 annotation processors.
-- [biz.softfor.i18nutil](biz.softfor.i18nutil) - utility for generating
-localization messages files.
 - [biz.softfor.jpa](biz.softfor.jpa) - class library for creating CRUD services
 based on JPA and Hibernate.
 - [biz.softfor.jpa.apigen](biz.softfor.jpa.apigen) - annotation processor that

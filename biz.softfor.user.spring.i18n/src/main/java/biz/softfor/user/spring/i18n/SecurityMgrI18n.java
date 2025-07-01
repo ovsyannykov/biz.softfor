@@ -1,8 +1,8 @@
 package biz.softfor.user.spring.i18n;
 
-import biz.softfor.i18nutil.I18n;
-import static biz.softfor.i18nutil.I18nUtil.UKRAINIAN;
-import static biz.softfor.i18nutil.I18nUtil.add;
+import biz.softfor.i18ngen.I18n;
+import static biz.softfor.i18ngen.I18nGen.UKRAINIAN;
+import static biz.softfor.i18ngen.I18nGen.add;
 import biz.softfor.user.spring.SecurityMgr;
 import static java.util.Locale.ENGLISH;
 import static java.util.Map.of;
@@ -17,7 +17,7 @@ public class SecurityMgrI18n {
     ));
     add(SecurityMgr.Access_to_items_denied, of(
       ENGLISH, "Access to ''{0}'' items denied."
-    , UKRAINIAN, "Доступ до методу {0} заборонено."
+    , UKRAINIAN, "Доступ до {0} заборонено."
     ));
     add(SecurityMgr.Access_to_method_denied, of(
       ENGLISH, "Access to method ''{0}'' denied: "

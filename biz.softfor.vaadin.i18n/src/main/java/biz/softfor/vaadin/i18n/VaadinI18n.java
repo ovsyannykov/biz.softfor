@@ -1,8 +1,8 @@
 package biz.softfor.vaadin.i18n;
 
-import biz.softfor.i18nutil.I18n;
-import static biz.softfor.i18nutil.I18nUtil.UKRAINIAN;
-import static biz.softfor.i18nutil.I18nUtil.add;
+import biz.softfor.i18ngen.I18n;
+import static biz.softfor.i18ngen.I18nGen.UKRAINIAN;
+import static biz.softfor.i18ngen.I18nGen.add;
 import biz.softfor.vaadin.Text;
 import biz.softfor.vaadin.dbgrid.ManyToOneGridColumnComponent;
 import biz.softfor.vaadin.security.LoginView;

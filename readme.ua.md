@@ -23,8 +23,6 @@ Hibernate, Spring Boot та Vaadin з простим визначенням ск
 - [biz.softfor.bom](biz.softfor.bom) - BOM (bill of materials).
 - [biz.softfor.codegen](biz.softfor.codegen) - загальний код для кодогенеруючих
 процесорів анотацій.
-- [biz.softfor.i18nutil](biz.softfor.i18nutil) - утиліта для генерації
-messages-файлів локалізації.
 - [biz.softfor.jpa](biz.softfor.jpa) - бібліотека класів для створення
 CRUD-сервісів на основі JPA та Hibernate.
 - [biz.softfor.jpa.apigen](biz.softfor.jpa.apigen) - процесор анотацій,

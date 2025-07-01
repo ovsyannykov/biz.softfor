@@ -20,23 +20,15 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${project.testResources}</directory>
-              <includes>
-                <include>messages*.properties</include>
-              </includes>
-              <followSymlinks>false</followSymlinks>
-            </fileset>
-          </filesets>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>biz.softfor</groupId>
+            <artifactId>biz.softfor.user.i18n</artifactId>
+            <version>${biz.softfor.user.i18n.version}</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <phase>generate-test-resources</phase>
@@ -46,14 +38,14 @@
             <configuration>
               <scripts>
                 <script><![CDATA[
-                  String resourcesDir = project.properties.getProperty('project.testResources').replace('\\','/');
                   String locales = biz.softfor.util.PropertiesUtil.get(
-                    resourcesDir + "/application.properties"
+                    project.properties.getProperty('project.testResources').replace('\\','/') + "/application.properties"
                   , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY
                   , biz.softfor.i18nspring.I18n.LOCALES_PROPERTY_DEFAULT_VALUE
                   );
-                  biz.softfor.i18nutil.I18nUtil.genMessages(
-                    resourcesDir
+                  biz.softfor.i18ngen.I18nGen.genMessages(
+                    project.properties.getProperty('target.testResources').replace('\\','/')
+                  , project.properties.getProperty('target.logDir').replace('\\','/')
                   , locales
                   , "biz.softfor.user.i18n"
                   )
@@ -105,11 +97,6 @@
     </dependency>
 
     <!-- biz.softfor -->
-    <dependency>
-      <groupId>biz.softfor</groupId>
-      <artifactId>biz.softfor.user.i18n</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>biz.softfor</groupId>
       <artifactId>biz.softfor.util</artifactId>

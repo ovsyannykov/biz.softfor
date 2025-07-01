@@ -37,6 +37,10 @@ public class ReflectionsUtil {
     Set<Class<?>> types
     = reflections.getTypesAnnotatedWith((Class<? extends Annotation>)anno);
     if(!types.isEmpty()) {
+      File dirFile = new File(dir);
+      if(!dirFile.exists()) {
+        dirFile.mkdir();
+      }
       String filename
       = dir + File.separator + anno.getSimpleName() + Constants.REFLECTIONS_EXT;
       try(FileWriter fileWriter = new FileWriter(filename);

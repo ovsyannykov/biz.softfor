@@ -209,12 +209,13 @@ select the interface language from the list specified in **application.propertie
 ```properties
 biz.softfor.locales=en,uk
 ```
-In this case, you must add translated values ​​for the corresponding languages ​​to
+In this case, you must add translated values for the corresponding languages to
 the source code of the localization files. Otherwise, during the application
-build process, when generating ***.messages** files, the missing values ​​will be
+build process, when generating **messages*.properties** files, the missing values will be
 replaced by default values corresponding to the first language in this list.
 You will also find warnings in the logs about each such replacement. For more
-information, see [biz.softfor.i18nutil](../biz.softfor.i18nutil). Usage example:
+information, see [biz.softfor.i18ngen](https://github.com/ovsyannykov/biz.softfor.i18ngen).
+Usage example:
 [MainLayout](src/main/java/biz/softfor/vaadin/MainLayout.java#L57).
 
 ![LangSelector](doc/images/LangSelector.png)
