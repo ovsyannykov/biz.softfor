@@ -12,8 +12,6 @@ import biz.softfor.vaadin.DbNamedColumn;
 import biz.softfor.vaadin.GridColumn;
 import biz.softfor.vaadin.Text;
 import biz.softfor.vaadin.VaadinUtil;
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -151,7 +149,8 @@ extends VerticalLayout implements LocaleChangeObserver {
     for(DbGridColumn c : filters) {
       c.filter.accept(readRequest.filter, c.component);
     }
-    DbGridDataProvider<K, E> dp = new DbGridDataProvider<>(service, readRequest);
+    DbGridDataProvider<K, E, ? extends FilterId<K>> dp
+    = new DbGridDataProvider<>(service, readRequest);
     dataView = grid.setItems(dp::get);
     for(E ev : v) {
       grid.select(ev);

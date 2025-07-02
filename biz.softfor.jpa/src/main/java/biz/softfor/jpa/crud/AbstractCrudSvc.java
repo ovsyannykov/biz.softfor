@@ -72,7 +72,7 @@ public abstract class AbstractCrudSvc
     return classWor;
   }
 
-  public abstract CommonResponse<WOR> create(CreateRequest request);
+  public abstract CommonResponse<WOR> create(CreateRequest<K, WOR> request);
 
   @IgnoreAccess
   public abstract int updateInternal(

@@ -8,14 +8,14 @@ import lombok.ToString;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class CreateRequest<K extends Number, D extends Identifiable<K>>
+public class CreateRequest<K extends Number, WOR extends Identifiable<K>>
 extends AbstractRequest {
 
   @NotNull(groups = { Create.class })
   @Valid
-  public D data;
+  public WOR data;
   
-  public CreateRequest(D data) {
+  public CreateRequest(WOR data) {
     this.data = data;
   }
 

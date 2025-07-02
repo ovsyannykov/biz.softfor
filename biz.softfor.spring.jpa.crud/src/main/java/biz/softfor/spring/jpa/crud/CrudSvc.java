@@ -53,7 +53,7 @@ public class CrudSvc<
 
   @Transactional
   @Override
-  public CommonResponse<WOR> create(CreateRequest request) {
+  public CommonResponse<WOR> create(CreateRequest<K, WOR> request) {
     em.persist(request.data);
     ColumnDescr.create
     (request.data, (Class<Identifiable<? extends Number>>)clazz(), em);
@@ -61,7 +61,7 @@ public class CrudSvc<
   }
 
   @Transactional
-  public CommonResponse delete(DeleteRequest request) {
+  public CommonResponse delete(DeleteRequest<K, F> request) {
     CriteriaBuilder cb = em.getCriteriaBuilder();
     Class<Identifiable<? extends Number>> clazz
     = (Class<Identifiable<? extends Number>>)clazz();
@@ -78,7 +78,7 @@ public class CrudSvc<
   }
 
   @Transactional(readOnly = true)
-  public CommonResponse<E> read(ReadRequest request) {
+  public CommonResponse<E> read(ReadRequest<K, F> request) {
     try {
       Class<E> clazz = clazz();
       return QueryGraph.read(em, request, clazz).toResponse(clazz);
@@ -89,7 +89,7 @@ public class CrudSvc<
   }
 
   @Transactional
-  public CommonResponse update(UpdateRequest request) {
+  public CommonResponse update(UpdateRequest<K, F, WOR> request) {
     try {
       CriteriaBuilder cb = em.getCriteriaBuilder();
       PredicateProvider ppNext = new PredicateProvider

@@ -33,13 +33,13 @@ extends CrudSvc<Long, Role, RoleWor, RoleFltr> {
 
   @ActionAccess(deniedForAll = true)
   @Override
-  public CommonResponse<RoleWor> create(CreateRequest request) {
+  public CommonResponse<RoleWor> create(CreateRequest<Long, RoleWor> request) {
     throw new ClientError(i18n.message
     (Constants.Unsupported_operation, AbstractCrudSvc.CREATE_METHOD));
   }
 
   @Override
-  public CommonResponse delete(DeleteRequest request) {
+  public CommonResponse delete(DeleteRequest<Long, RoleFltr> request) {
     request.filter.andAnd(DELETE_CONSTRAINT);
     CommonResponse result = super.delete(request);
     if(result.isOk() && result.getTotal() == 0) {
@@ -50,7 +50,7 @@ extends CrudSvc<Long, Role, RoleWor, RoleFltr> {
   }
 
   @Override
-  public CommonResponse update(UpdateRequest request) {
+  public CommonResponse update(UpdateRequest<Long, RoleFltr, RoleWor> request) {
     RoleRequest.Read req = new RoleRequest.Read();
     req.filter = (RoleFltr)request.filter;
     req.fields = List.of(Role_.ID);

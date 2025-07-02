@@ -4,6 +4,7 @@ import biz.softfor.spring.jpa.crud.CrudSvc;
 import biz.softfor.util.api.Identifiable;
 import biz.softfor.util.api.Order;
 import biz.softfor.util.api.ReadRequest;
+import biz.softfor.util.api.filter.FilterId;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
 import com.vaadin.flow.data.provider.SortDirection;
@@ -11,12 +12,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class DbGridDataProvider
-<K extends Number, E extends Identifiable<K>> {
+<K extends Number, E extends Identifiable<K>, F extends FilterId<K>> {
 
-  private final CrudSvc<K, E, ?, ?> service;
-  private final ReadRequest<K, ?> request;
+  private final CrudSvc<K, E, ?, F> service;
+  private final ReadRequest<K, F> request;
 
-  public DbGridDataProvider(CrudSvc service, ReadRequest<K, ?> request) {
+  public DbGridDataProvider(CrudSvc service, ReadRequest<K, F> request) {
     this.service = service;
     this.request = request;
   }

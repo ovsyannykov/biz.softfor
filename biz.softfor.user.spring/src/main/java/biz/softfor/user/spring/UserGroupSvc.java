@@ -25,7 +25,8 @@ extends CrudSvc<Integer, UserGroup, UserGroupWor, UserGroupFltr> {
   private final SecurityMgr securityMgr;
 
   @Override
-  public CommonResponse<UserGroupWor> create(CreateRequest request) {
+  public CommonResponse<UserGroupWor> create
+ (CreateRequest<Integer, UserGroupWor> request) {
     CommonResponse<UserGroupWor> result = super.create(request);
     Set<Long> roleIds = ((UserGroupWor)request.data).getRoleIds();
     if(CollectionUtils.isNotEmpty(roleIds)) {
@@ -35,7 +36,7 @@ extends CrudSvc<Integer, UserGroup, UserGroupWor, UserGroupFltr> {
   }
 
   @Override
-  public CommonResponse delete(DeleteRequest request) {
+  public CommonResponse delete(DeleteRequest<Integer, UserGroupFltr> request) {
     UserGroupRequest.Read req = new UserGroupRequest.Read();
     req.filter = (UserGroupFltr)request.filter;
     req.fields = List.of(UserGroup_.ID);
@@ -54,7 +55,8 @@ extends CrudSvc<Integer, UserGroup, UserGroupWor, UserGroupFltr> {
   }
 
   @Override
-  public CommonResponse update(UpdateRequest request) {
+  public CommonResponse update
+  (UpdateRequest<Integer, UserGroupFltr, UserGroupWor> request) {
     CommonResponse result;
     Set<Long> roleIds = null;
     if(request.data != null) {
