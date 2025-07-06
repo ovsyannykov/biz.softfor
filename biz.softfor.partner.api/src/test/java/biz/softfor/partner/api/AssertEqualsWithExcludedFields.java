@@ -1,8 +1,8 @@
 package biz.softfor.partner.api;
 
-import java.util.Set;
 import lombok.extern.java.Log;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.util.Lists.list;
 import org.junit.jupiter.api.Test;
 
 @Log
@@ -10,17 +10,17 @@ public class AssertEqualsWithExcludedFields {
 
   @Test
   public void AssertEqualsWithExcludedFields() {
-    PartnerDto partnerExpected = new PartnerDto();
+    PartnerRto partnerExpected = new PartnerRto();
     partnerExpected.setId(1L);
     partnerExpected.setPartnerName("nameExpected");
-    partnerExpected.setContactIds(Set.of(10L, 11L));
-    PartnerDto partnerActual = new PartnerDto();
+    partnerExpected.setContactIds(list(10L, 11L));
+    PartnerRto partnerActual = new PartnerRto();
     partnerActual.setPartnerName(partnerExpected.getPartnerName());
-    partnerActual.setContactIds(Set.of(11L, 10L));
+    partnerActual.setContactIds(list(11L, 10L));
     assertThat(partnerActual)
     .usingRecursiveComparison()
     .ignoringCollectionOrder()
-    .ignoringFields(PartnerDto.ID)
+    .ignoringFields(PartnerRto.ID)
     .as(() -> "Expected differ than actual")
     .isEqualTo(partnerExpected);
   }

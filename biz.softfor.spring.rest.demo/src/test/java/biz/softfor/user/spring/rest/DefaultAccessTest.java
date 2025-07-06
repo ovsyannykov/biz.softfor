@@ -2,7 +2,7 @@ package biz.softfor.user.spring.rest;
 
 import biz.softfor.spring.messagesi18n.I18n;
 import biz.softfor.testutil.spring.RestAssuredCall;
-import biz.softfor.user.api.UserDto;
+import biz.softfor.user.api.UserRto;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.user.spring.rest.testassets.TeztEntity;
 import biz.softfor.user.spring.rest.testassets.TeztEntityDto;
@@ -59,7 +59,7 @@ public class DefaultAccessTest {
   private final static String DATA_DEFAULT_UPDATE_ACCESS
   = TeztEntityRequest.TEST_SECURITY + TeztEntityRequest.DATA_DEFAULT_UPDATE_ACCESS;
 
-  public final static UserDto DEFAULT_ACCESS_USER_DTO = new UserDto();
+  public final static UserRto DEFAULT_ACCESS_USER_DTO = new UserRto();
   static {
     DEFAULT_ACCESS_USER_DTO.setUsername("testDefaultAccess");
     DEFAULT_ACCESS_USER_DTO.setPassword("12345678");

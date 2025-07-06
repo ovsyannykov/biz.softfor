@@ -1,6 +1,6 @@
 package biz.softfor.user.spring.rest;
 
-import biz.softfor.user.api.UserDto;
+import biz.softfor.user.api.UserRto;
 import biz.softfor.user.spring.rest.testassets.TeztEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +19,14 @@ public class InitAccessActionsTest {
 
   @Test
   public void test() {
-    UserDto[] users
+    UserRto[] users
     = { SecurityTest.ADMIN_DTO, DefaultAccessTest.DEFAULT_ACCESS_USER_DTO };
-    System.out.println("insert into users(" + UserDto.PERSON_ID
-    + ", " + UserDto.USERNAME + ", " + UserDto.PASSWORD
-    + ", " + UserDto.EMAIL + ") values");
+    System.out.println("insert into users(" + UserRto.PERSON_ID
+    + ", " + UserRto.USERNAME + ", " + UserRto.PASSWORD
+    + ", " + UserRto.EMAIL + ") values");
     for(int i = 0; i < users.length; ++i) {
       String d = i > 0 ? "," : " ";
-      UserDto u = users[i];
+      UserRto u = users[i];
       System.out.println(d + "(1,'" + u.getUsername() + "','"
       + passwordEncoder.encode(u.getPassword()) + "','" + u.getEmail() + "')--" + (i + 1));
     }

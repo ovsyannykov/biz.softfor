@@ -53,6 +53,7 @@ public class ApiGen extends CodeGen {
   .addMember(CodeGenUtil.VALUE_ANNO_PROP, "$S", "empty-statement")
   .build();
   private final static String ANNOTATION_RESTCONTROLLERS = "restControllers";
+  private final static String RTO = "Rto";//Request-data Transfer Object
 
   private final static boolean DEBUG = false;
 
@@ -103,6 +104,16 @@ public class ApiGen extends CodeGen {
     ))
     .superclass(ParameterizedTypeName.get(HaveId.class, superIdClass));
     CodeGenUtil.addToString(classBldr, true);
+    final ClassName rtoClazzName = rtoClassName(clazz);
+    TypeSpec.Builder rtoBldr = TypeSpec.classBuilder(rtoClazzName)
+    .addAnnotations(CodeGenUtil.copyAnnotations(
+      clazz.getAnnotations()
+    , CodeGenUtil.API_EXCLUDED_PACKAGES
+    , CodeGenUtil.API_EXCLUDED_ANNOTATIONS
+    , null
+    ))
+    .superclass(ParameterizedTypeName.get(HaveId.class, superIdClass));
+    CodeGenUtil.addToString(rtoBldr, true);
 
     for(Field dclField : clazz.getDeclaredFields()) {
       int mods = dclField.getModifiers();
@@ -117,28 +128,48 @@ public class ApiGen extends CodeGen {
         if(CodeGenUtil.isAnnotationPresent(dclField, OneToOne.class)) {
           fieldType = CodeGenUtil.dtoClassName(dclClass);
           setterCode = CodeGenUtil.SetterCode.ONE_TO_ONE;
+          TypeName rtoFieldType = rtoClassName(dclClass);
+          FieldSpec.Builder rtoFieldBldr = CodeGenUtil.fieldBuilder(
+            dclField
+          , fieldName
+          , rtoFieldType
+          , CodeGenUtil.API_EXCLUDED_PACKAGES
+          , API_FIELD_EXCLUDED_ANNOTATIONS
+          );
+          CodeGenUtil.addField(
+            rtoBldr
+          , rtoFieldBldr
+          , rtoFieldType
+          , fieldName
+          , true
+          , false
+          , setterCode
+          , mappedByName
+          , unidirectional
+          , null
+          );
         } else if(CodeGenUtil.isAnnotationPresent(dclField, ManyToOne.class)) {
           fieldType = CodeGenUtil.dtoClassName(dclClass);
           setterCode = CodeGenUtil.SetterCode.SIMPLE;
-          TypeName keyTypeName = TypeName.get(Reflection.idClass(dclClass));
-          String keyName = CodeGenUtil.manyToOneKeyName(dclField);
-          FieldSpec.Builder keyBldr = FieldSpec.builder(keyTypeName, keyName);
-          CodeGenUtil.setModifiers(keyBldr, mods);
-          CodeGenUtil.addField(classBldr, keyBldr, keyTypeName, keyName, true);
+          String rtoFieldName = CodeGenUtil.manyToOneKeyName(dclField);
+          TypeName rtoFieldType = TypeName.get(Reflection.idClass(dclClass));
+          FieldSpec.Builder rtoFieldBldr = FieldSpec.builder(rtoFieldType, rtoFieldName);
+          CodeGenUtil.setModifiers(rtoFieldBldr, mods);
+          CodeGenUtil.addField(rtoBldr, rtoFieldBldr, rtoFieldType, rtoFieldName, true);
         } else if(CodeGenUtil.isAnnotationPresent(dclField, OneToMany.class)) {
+          Class<?> collectionClass = List.class;
           Class<?> dclJoinClass = Reflection.genericParameter(dclField);
           TypeName joinClass = CodeGenUtil.dtoClassName(dclJoinClass);
           fieldType = ParameterizedTypeName.get
-          (ClassName.get(List.class), joinClass);
+          (ClassName.get(collectionClass), joinClass);
           setterCode = CodeGenUtil.SetterCode.ONE_TO_MANY;
 
           addFieldIds(
             ColumnDescr.toManyKeyName(fieldName)
-          , classBldr
+          , rtoBldr
+          , collectionClass
           , Reflection.idClass(dclJoinClass)
           , mods
-          , fieldName
-          , joinClass
           );
 
           mappedByName = (String)CodeGenUtil.getAnnotationProperty
@@ -189,20 +220,19 @@ public class ApiGen extends CodeGen {
           ;
           classBldr.addMethod(removeAll.build());
         } else if(CodeGenUtil.isAnnotationPresent(dclField, ManyToMany.class)) {
-          String itemName = Inflector.getInstance().singularize(fieldName);
+          Class<?> collectionClass = Set.class;
           Class<?> dclJoinClass = Reflection.genericParameter(dclField);
           TypeName joinClass = CodeGenUtil.dtoClassName(dclJoinClass);
-          fieldType
-          = ParameterizedTypeName.get(ClassName.get(Set.class), joinClass);
+          fieldType = ParameterizedTypeName.get
+          (ClassName.get(collectionClass), joinClass);
           setterCode = CodeGenUtil.SetterCode.MANY_TO_MANY;
 
           addFieldIds(
             ColumnDescr.toManyKeyName(fieldName)
-          , classBldr
+          , rtoBldr
+          , collectionClass
           , Reflection.idClass(dclJoinClass)
           , mods
-          , fieldName
-          , joinClass
           );
 
           Field dclMappedByField = manyToManyMappedField(dclField);
@@ -221,6 +251,7 @@ public class ApiGen extends CodeGen {
             mappedBySetter = CodeGenUtil.setterName(dclMappedByName);
             mappedByName = StringUtils.uncapitalize(dclMappedByName);
           }
+          String itemName = Inflector.getInstance().singularize(fieldName);
           if(DEBUG) {
             System.out.println(dclField + " " + "=".repeat(16));
             System.out.println("itemName=" + itemName);
@@ -300,6 +331,25 @@ public class ApiGen extends CodeGen {
         } else {
           fieldType = ClassName.get(dclClass);
           setterCode = CodeGenUtil.SetterCode.SIMPLE;
+          FieldSpec.Builder rtoFieldBldr = CodeGenUtil.fieldBuilder(
+            dclField
+          , fieldName
+          , fieldType
+          , CodeGenUtil.API_EXCLUDED_PACKAGES
+          , API_FIELD_EXCLUDED_ANNOTATIONS
+          );
+          CodeGenUtil.addField(
+            rtoBldr
+          , rtoFieldBldr
+          , fieldType
+          , fieldName
+          , true
+          , false
+          , setterCode
+          , mappedByName
+          , unidirectional
+          , null
+          );
         }
         FieldSpec.Builder fieldBldr = CodeGenUtil.fieldBuilder(
           dclField
@@ -323,6 +373,7 @@ public class ApiGen extends CodeGen {
       }
     }
     CodeGenUtil.writeSrc(classBldr, apiPackageName, processingEnv);
+    CodeGenUtil.writeSrc(rtoBldr, apiPackageName, processingEnv);
 
     TypeSpec.Builder responseBldr
     = TypeSpec.classBuilder(clazzSimpleName + "Response")
@@ -333,7 +384,7 @@ public class ApiGen extends CodeGen {
     TypeSpec.Builder request = CodeGenUtil.newCrudRequests(
       clazzSimpleName
     , ClassName.get(superIdClass)
-    , dtoClazzName
+    , rtoClazzName
     , CodeGenUtil.filterClassName(clazz)
     );
 
@@ -392,19 +443,17 @@ public class ApiGen extends CodeGen {
   private static void addFieldIds(
     String fieldIdsName
   , TypeSpec.Builder dtoBldr
+  , Class<?> collectionClass
   , Class<?> idClass
   , int mods
-  , String fieldName
-  , TypeName dtoJoinClass
   ) {
-    TypeName fieldIdsTypeName = ParameterizedTypeName.get(Set.class, idClass);
+    TypeName fieldIdsTypeName
+    = ParameterizedTypeName.get(collectionClass, idClass);
     FieldSpec.Builder fieldIdsBldr
     = FieldSpec.builder(fieldIdsTypeName, fieldIdsName)
     .addJavadoc("The default value of this field is {@code null}, which means "
     + "no changes when saving.");
     CodeGenUtil.setModifiers(fieldIdsBldr, mods);
-    String javadoc = "This property is only used to create/update an entity. "
-    + "{@code null} means no change and is the default value.";
     CodeGenUtil.addField(
       dtoBldr
     , fieldIdsBldr
@@ -415,30 +464,10 @@ public class ApiGen extends CodeGen {
     , CodeGenUtil.SetterCode.SIMPLE
     , null
     , false
-    , javadoc
+    , null
     );
-    MethodSpec.Builder getIdsMethod = MethodSpec.methodBuilder(fieldIdsName)
-    .addModifiers(Modifier.PUBLIC)
-    .returns(fieldIdsTypeName)
-    .addStatement("$T $N", fieldIdsTypeName, CodeGenUtil.RESULT_NAME)
-    .beginControlFlow("if($N == null)", fieldIdsName)
-    .addStatement("$N = new $T<>(0)", CodeGenUtil.RESULT_NAME, HashSet.class)
-    .nextControlFlow("else")
-    .addStatement(
-      "$N = new $T<>($N.size())"
-    , CodeGenUtil.RESULT_NAME
-    , HashSet.class
-    , fieldName
-    )
-    .beginControlFlow("for($T e : $N)", dtoJoinClass, fieldName)
-    .addStatement("$N.add(e.getId())", CodeGenUtil.RESULT_NAME)
-    .endControlFlow()
-    .endControlFlow()
-    .addStatement("return $N", CodeGenUtil.RESULT_NAME);
-    dtoBldr.addMethod(getIdsMethod.build());
   }
 
-  @SuppressWarnings("unchecked")
   private static List<Field> annotatedFields(Class clazz, Class... annotations) {
     List<Field> result = new ArrayList<>();
     for(; clazz != null; clazz = clazz.getSuperclass()) {
@@ -475,6 +504,17 @@ public class ApiGen extends CodeGen {
       result = Reflection.declaredField(joinClass, mappedBy);
     }
     return result;
+  }
+
+  public static ClassName rtoClassName(Class<?> clazz) {
+    return ClassName.get(
+      Reflection.apiPackageName(clazz.getPackageName())
+    , rtoClassName(clazz.getSimpleName())
+    );
+  }
+
+  public static String rtoClassName(String className) {
+    return className + RTO;
   }
 
 }

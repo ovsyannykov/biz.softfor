@@ -6,7 +6,9 @@ import biz.softfor.partner.api.PartnerDto;
 import biz.softfor.partner.api.PartnerRequest;
 import biz.softfor.partner.api.PartnerResponse;
 import biz.softfor.partner.api.PersonDetailsDto;
+import biz.softfor.partner.api.PersonDetailsRto;
 import biz.softfor.partner.jpa.Partner;
+import biz.softfor.partner.api.PartnerRto;
 import biz.softfor.partner.jpa.PartnerWor;
 import biz.softfor.partner.jpa.PersonDetailsWor;
 import biz.softfor.spring.messagesi18n.I18n;
@@ -96,7 +98,7 @@ public class ValidationTest {
   @Test
   public void createWithInvalidDateAndSize() throws Exception {
     PartnerRequest.Create request = new PartnerRequest.Create();
-    request.data = new PartnerDto();
+    request.data = new PartnerRto();
     request.data.setTyp(PartnerType.ORGANIZATION);
     request.data.setPartnerName("qwerty");
     request.data.setPartnerRegdate(LocalDate.of(3000, 10, 20));
@@ -129,7 +131,7 @@ public class ValidationTest {
   public void createNonPersonWithPersonDetails() throws Exception {
     PartnerRequest.Create request = new PartnerRequest.Create();
     request.token = SecurityTest.authorize(SecurityTest.ADMIN_DTO, testSvc, om);
-    request.data = new PartnerDto();
+    request.data = new PartnerRto();
     request.data.setTyp(PartnerType.ORGANIZATION);
     request.data.setPartnerName("qwerty");
     request.data.setPartnerRegdate(LocalDate.of(2024, 1, 3));
@@ -137,7 +139,7 @@ public class ValidationTest {
     request.data.setAddress("Big st., 1");
     request.data.setPartnerFullname("Fullname");
     request.data.setPartnerDetails(null);
-    PersonDetailsDto pd = new PersonDetailsDto();
+    PersonDetailsRto pd = new PersonDetailsRto();
     pd.setMarried(Boolean.FALSE);
     pd.setMiddlename("Bred");
     pd.setPassportDate(LocalDate.of(2024, 2, 24));
@@ -208,8 +210,8 @@ public class ValidationTest {
   public void updateOneToOneField() throws Exception {
     PartnerRequest.Update request = new PartnerRequest.Update();
     request.token = authorize(SecurityTest.ADMIN_DTO, testSvc, om);
-    request.data = new PartnerDto();
-    request.data.setPersonDetails(new PersonDetailsDto());
+    request.data = new PartnerRto();
+    request.data.setPersonDetails(new PersonDetailsRto());
     request.data.getPersonDetails().setPassportSeries("Q");
     request.filter.assignId(0L);
     PartnerResponse res = testSvc.call(PartnerResponse.class

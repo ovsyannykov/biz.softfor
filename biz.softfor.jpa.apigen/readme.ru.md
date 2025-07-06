@@ -16,7 +16,7 @@
 - Класс создаётся в пакете с именем, в котором **.jpa.** заменяется на **.api.**,
 а к имени самого класса добавляется суффикс **-Dto**:
 
-  ```biz.softfor.user.jpa.Role => biz.softfor.user```<b>```.api.```</b>```Role```<b>```Wor```</b>
+  ```biz.softfor.user.jpa.Role => biz.softfor.user```<b>```.api.```</b>```Role```<b>```Dto```</b>
 
 - **Dto**-класс наследуется от
 [HaveId](../biz.softfor.util/src/main/java/biz/softfor/util/api/HaveId.java).
@@ -53,7 +53,7 @@ public class RoleDto extends HaveId<Long> {
 </tr>
 </table>
 
-- Поля генерируемого **```Wor```**-класса снабжаются геттерами, сеттерами и
+- Поля генерируемого **```Dto```**-класса снабжаются геттерами, сеттерами и
 константами с именами полей. Для ясности в примерах ниже они опущены.
 
 - Тип аннотированного **@OneToOne** поля заменяется на **```Dto```**-класс:
@@ -81,9 +81,7 @@ private PartnerDetailsDto partnerDetails;
 </tr>
 </table>
 
-- Тип аннотированного **@ManyToOne** поля также заменяется на
-**```Dto```**-класс, и добавляется ещё одно поле, имя которого берётся из
-аннотации **@JoinColumn**, а тип соответствует типу ключа связи:
+- Тип аннотированного **@ManyToOne** поля также заменяется на **```Dto```**-класс:
 <table border="0">
 <tr>
 <td>
@@ -101,7 +99,6 @@ private Postcode postcode;
 <td>
 
 ```java
-private Integer postcodeId;
 private PostcodeDto postcode;
 ```
 
@@ -109,8 +106,7 @@ private PostcodeDto postcode;
 </tr>
 </table>
 
-- Аннотированное **@OneToMany** поле также преобразуется в два поля: List
-```Dto```-объектов и List ключей-идентификаторов:
+- Аннотированное **@OneToMany** поле преобразуется в List ```Dto```-объектов:
 <table border="0">
 <tr>
 <td>
@@ -138,19 +134,13 @@ private List<Contact> contacts;
 @JsonIgnoreProperties
 (allowSetters = true, value = "partner")
 private List<ContactDto> contacts;
-
-/**
- * The default value of this field is {@code null}, which means no changes when saving.
- */
-private Set<Long> contactIds;
 ```
 
 </td>
 </tr>
 </table>
 
-- Аннотированное **@ManyToMany** поле также преобразуется в два поля: Set
-Dto-объектов и Set ключей-идентификаторов:
+- Аннотированное **@ManyToMany** поле преобразуется в Set ```Dto```-объектов:
 <table border="0">
 <tr>
 <td>
@@ -178,11 +168,6 @@ private Set<User> users;
 @JsonIgnoreProperties
 (allowSetters = true, value = "groups")
 private Set<UserDto> users;
-
-/**
- * The default value of this field is {@code null}, which means no changes when saving.
- */
-private Set<Long> userIds;
 ```
 
 </td>
@@ -223,8 +208,210 @@ private LocalDate partnerRegdate;
 и соответствующими интерфейсами, также генерируемыми в этом классе. Это
 позволяет **выборочно валидировать только изменённые** поля.
 
-Кроме этого по такому вот шаблону генерируются классы ***Request**, содержащие
-классы запросов **Create**, **Read**, **Update** и **Delete**.
+В запросах **Create** и **Update** для аннотированных @ManyToOne, @OneToMany и
+@ManyToMany полей удобнее использовать идентификаторы. Для этого генерируются
+классы **Request-data Transfer Objects** - ```-Rto```:
+
+- Класс создаётся в пакете с именем, в котором **.jpa.** заменяется на **.api.**,
+а к имени самого класса добавляется суффикс **-Rto**:
+
+  ```biz.softfor.user.jpa.Role => biz.softfor.user```<b>```.api.```</b>```Role```<b>```Rto```</b>
+
+- **Rto**-класс наследуется от
+[HaveId](../biz.softfor.util/src/main/java/biz/softfor/util/api/HaveId.java).
+
+- В аннотации класса копируется аннотация **@ToString**:
+<table border="0">
+<tr>
+<td>
+
+```java
+@NoArgsConstructor
+@Entity
+@Table(name = Role.TABLE)
+@Getter
+@Setter
+@ToString
+@JsonFilter("Role")
+public class Role
+implements Identifiable<Long>, Serializable {
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+@ToString(callSuper = true)
+public class RoleRto extends HaveId<Long> {
+```
+
+</td>
+</tr>
+</table>
+
+- Поля генерируемого **```Rto```**-класса снабжаются геттерами, сеттерами и
+константами с именами полей. Для ясности в примерах ниже они опущены.
+
+- Тип аннотированного **@OneToOne** поля заменяется на **```Rto```**-класс:
+<table border="0">
+<tr>
+<td>
+
+```java
+@OneToOne(optional = true, fetch = FetchType.LAZY)
+@PrimaryKeyJoinColumn
+private PartnerDetails partnerDetails;
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+private PartnerDetailsRto partnerDetails;
+```
+
+</td>
+</tr>
+</table>
+
+- Аннотированное **@ManyToOne** поле также заменяется на идентификатор
+соответствующего ключу связи типа с взятым из аннотации **@JoinColumn** именем:
+<table border="0">
+<tr>
+<td>
+
+```java
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "postcodeId")
+private Postcode postcode;
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+private Integer postcodeId;
+```
+
+</td>
+</tr>
+</table>
+
+- Аннотированное **@OneToMany** поле преобразуется в List ключей-идентификаторов:
+<table border="0">
+<tr>
+<td>
+
+```java
+@OneToMany(
+  mappedBy = "partner"
+, orphanRemoval = true
+, fetch = FetchType.LAZY
+)
+@JsonIgnoreProperties
+(value = { "partner" }, allowSetters = true)
+@ToString.Exclude
+@EqualsAndHashCode.Exclude
+private List<Contact> contacts;
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+/**
+ * The default value of this field is {@code null}, which means no changes when saving.
+ */
+private List<Long> contactIds;
+```
+
+</td>
+</tr>
+</table>
+
+- Аннотированное **@ManyToMany** поле преобразуется в Set ключей-идентификаторов:
+<table border="0">
+<tr>
+<td>
+
+```java
+@ManyToMany(fetch = FetchType.LAZY)
+@JoinTable(
+  name = "users_groups"
+, joinColumns = @JoinColumn(name = "groupId")
+, inverseJoinColumns = @JoinColumn(name = "userId")
+)
+@JsonIgnoreProperties
+(value = { User.GROUPS }, allowSetters = true)
+@ToString.Exclude
+private Set<User> users;
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+/**
+ * The default value of this field is {@code null}, which means no changes when saving.
+ */
+private Set<Long> userIds;
+```
+
+</td>
+</tr>
+</table>
+
+- Аннотированное **@Column** поле копируется неизменным, без аннотаций пакета
+**```jakarta.persistence.*```**:
+<table border="0">
+<tr>
+<td>
+
+```java
+@Column
+@Temporal(TemporalType.DATE)
+@NotNull
+@PastOrPresent
+private LocalDate partnerRegdate;
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+@NotNull(groups = { Create.class, PartnerRegdate.class })
+@PastOrPresent(groups = { Create.class, PartnerRegdate.class })
+private LocalDate partnerRegdate;
+```
+
+</td>
+</tr>
+</table>
+
+В ```Rto```-классах также аннотации валидации дополняются параметром **```groups```**
+и соответствующими интерфейсами, генерируемыми в этом классе. Это позволяет
+**выборочно валидировать только изменённые** поля.
+
+Классы ***Request**, содержащие классы запросов **Create**, **Read**, **Update**
+и **Delete**, генерируются по такому вот шаблону.
 Это **автоматически документирует** наше API непосредственно в коде:
 ```java
 // Automatically generated. Don't modify!
@@ -253,11 +440,11 @@ public class UserGroupRequest {
 
   @ToString(callSuper = true)
   @EqualsAndHashCode(callSuper = true)
-  public static class Create extends CreateRequest<Integer, UserGroupDto> {
+  public static class Create extends CreateRequest<Integer, UserGroupRto> {
 
     public Create() {}
 
-    public Create(UserGroupDto data) {
+    public Create(UserGroupRto data) {
       super(data);
     }
 
@@ -269,15 +456,15 @@ public class UserGroupRequest {
 
   @ToString(callSuper = true)
   @EqualsAndHashCode(callSuper = true)
-  public static class Update extends UpdateRequest<Integer, UserGroupFltr, UserGroupDto> {
+  public static class Update extends UpdateRequest<Integer, UserGroupFltr, UserGroupRto> {
 
     public Update() {}
 
-    public Update(UserGroupDto data) {
+    public Update(UserGroupRto data) {
       super(data);
     }
 
-    public Update(UserGroupDto data, List<String> fields) {
+    public Update(UserGroupRto data, List<String> fields) {
       super(data, fields);
     }
 

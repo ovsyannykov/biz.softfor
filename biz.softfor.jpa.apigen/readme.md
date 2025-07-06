@@ -16,7 +16,7 @@ The **-Dto** class is generated according to the following rules:
 - The class is created in a package with a name in which **.jpa.** is replaced
 with **.api.**, and the **-Dto** suffix is ​​added to the name of the class itself:
 
-  ```biz.softfor.user.jpa.Role => biz.softfor.user```<b>```.api.```</b>```Role```<b>```Wor```</b>
+  ```biz.softfor.user.jpa.Role => biz.softfor.user```<b>```.api.```</b>```Role```<b>```Dto```</b>
 
 - **Dto** class inherits from
 [HaveId](../biz.softfor.util/src/main/java/biz/softfor/util/api/HaveId.java).
@@ -53,7 +53,7 @@ public class RoleDto extends HaveId<Long> {
 </tr>
 </table>
 
-- The fields of the generated **```Wor```**-class are provided with getters,
+- The fields of the generated **```Dto```**-class are provided with getters,
 setters and constants with the field names. For clarity, they are omitted in the
 examples below.
 
@@ -84,9 +84,7 @@ private PartnerDetailsDto partnerDetails;
 </table>
 
 - The type of the annotated **@ManyToOne** field is also replaced with the
-**```Dto```** class, and another field is added, the name of which is taken from
-the **@JoinColumn** annotation, and the type corresponds to the type of the
-relationship key:
+**```Dto```** class:
 <table border="0">
 <tr>
 <td>
@@ -104,7 +102,6 @@ private Postcode postcode;
 <td>
 
 ```java
-private Integer postcodeId;
 private PostcodeDto postcode;
 ```
 
@@ -112,8 +109,7 @@ private PostcodeDto postcode;
 </tr>
 </table>
 
-- The **@OneToMany** annotated field is also converted into two fields: List of
-```-Dto``` objects and List of identifier keys:
+- The **@OneToMany** annotated field is converted into List of ```-Dto``` objects:
 <table border="0">
 <tr>
 <td>
@@ -141,19 +137,13 @@ private List<Contact> contacts;
 @JsonIgnoreProperties
 (allowSetters = true, value = "partner")
 private List<ContactDto> contacts;
-
-/**
- * The default value of this field is {@code null}, which means no changes when saving.
- */
-private Set<Long> contactIds;
 ```
 
 </td>
 </tr>
 </table>
 
-- The **@ManyToMany** annotated field is also converted into two fields: a Set
-of Dto objects and a Set of identifier keys:
+- The **@ManyToMany** annotated field is converted into Set of ```Dto```-objects:
 <table border="0">
 <tr>
 <td>
@@ -181,11 +171,6 @@ private Set<User> users;
 @JsonIgnoreProperties
 (allowSetters = true, value = "groups")
 private Set<UserDto> users;
-
-/**
- * The default value of this field is {@code null}, which means no changes when saving.
- */
-private Set<Long> userIds;
 ```
 
 </td>
@@ -226,6 +211,212 @@ As you may have noticed, the validation annotations are supplemented by the
 **```groups```** parameter and the corresponding interfaces, which are also
 generated in this class. This allows you to **selectively validate only the changed**
 fields.
+
+In the **Create** and **Update** requests for fields annotated with @ManyToOne,
+@OneToMany and @ManyToMany it is more convenient to use identifiers. For this
+purpose, **Request-data Transfer Objects** - ```-Rto``` classes are generated.
+
+The **-Rto** class is generated according to the following rules:
+
+- The class is created in a package with a name in which **.jpa.** is replaced
+with **.api.**, and the **-Rto** suffix is ​​added to the name of the class itself:
+
+  ```biz.softfor.user.jpa.Role => biz.softfor.user```<b>```.api.```</b>```Role```<b>```Rto```</b>
+
+- **Rto** class inherits from
+[HaveId](../biz.softfor.util/src/main/java/biz/softfor/util/api/HaveId.java).
+
+- The **@ToString** annotation is copied into the class annotation:
+<table border="0">
+<tr>
+<td>
+
+```java
+@NoArgsConstructor
+@Entity
+@Table(name = Role.TABLE)
+@Getter
+@Setter
+@ToString
+@JsonFilter("Role")
+public class Role
+implements Identifiable<Long>, Serializable {
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+@ToString(callSuper = true)
+public class RoleRto extends HaveId<Long> {
+```
+
+</td>
+</tr>
+</table>
+
+- The fields of the generated **```Rto```**-class are provided with getters,
+setters and constants with the field names. For clarity, they are omitted in the
+examples below.
+
+- The type of the annotated **@OneToOne** field is replaced with a **```Rto```**-class:
+<table border="0">
+<tr>
+<td>
+
+```java
+@OneToOne(optional = true, fetch = FetchType.LAZY)
+@PrimaryKeyJoinColumn
+private PartnerDetails partnerDetails;
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+private PartnerDetailsRto partnerDetails;
+```
+
+</td>
+</tr>
+</table>
+
+- The **@ManyToOne** annotated field is also replaced with the identifier of
+the type corresponding to the relationship key with the name taken from
+the **@JoinColumn** annotation:
+<table border="0">
+<tr>
+<td>
+
+```java
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "postcodeId")
+private Postcode postcode;
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+private Integer postcodeId;
+```
+
+</td>
+</tr>
+</table>
+
+- An annotated **@OneToMany** field is converted to a List of identifier keys:
+<table border="0">
+<tr>
+<td>
+
+```java
+@OneToMany(
+  mappedBy = "partner"
+, orphanRemoval = true
+, fetch = FetchType.LAZY
+)
+@JsonIgnoreProperties
+(value = { "partner" }, allowSetters = true)
+@ToString.Exclude
+@EqualsAndHashCode.Exclude
+private List<Contact> contacts;
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+/**
+ * The default value of this field is {@code null}, which means no changes when saving.
+ */
+private List<Long> contactIds;
+```
+
+</td>
+</tr>
+</table>
+
+- An annotated **@ManyToMany** field is converted to a Set of identifier keys:
+<table border="0">
+<tr>
+<td>
+
+```java
+@ManyToMany(fetch = FetchType.LAZY)
+@JoinTable(
+  name = "users_groups"
+, joinColumns = @JoinColumn(name = "groupId")
+, inverseJoinColumns = @JoinColumn(name = "userId")
+)
+@JsonIgnoreProperties
+(value = { User.GROUPS }, allowSetters = true)
+@ToString.Exclude
+private Set<User> users;
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+/**
+ * The default value of this field is {@code null}, which means no changes when saving.
+ */
+private Set<Long> userIds;
+```
+
+</td>
+</tr>
+</table>
+
+- Annotated **@Column** field is copied unchanged, without
+**```jakarta.persistence.*```** package annotations:
+<table border="0">
+<tr>
+<td>
+
+```java
+@Column
+@Temporal(TemporalType.DATE)
+@NotNull
+@PastOrPresent
+private LocalDate partnerRegdate;
+```
+
+</td>
+<td>
+=>
+</td>
+<td>
+
+```java
+@NotNull(groups = { Create.class, PartnerRegdate.class })
+@PastOrPresent(groups = { Create.class, PartnerRegdate.class })
+private LocalDate partnerRegdate;
+```
+
+</td>
+</tr>
+</table>
+
+In ```Rto```-classes, validation annotations are also supplemented with the
+**```groups```** parameter and the corresponding interfaces generated in this
+class. This allows **selectively validating only changed** fields.
 
 In addition, the ***Request** classes are generated according to this template,
 containing the **Create**, **Read**, **Update** and **Delete** request classes.

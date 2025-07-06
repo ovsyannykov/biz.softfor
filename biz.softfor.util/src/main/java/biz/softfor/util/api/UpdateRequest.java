@@ -11,18 +11,18 @@ import org.apache.commons.collections4.CollectionUtils;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class UpdateRequest
-<K extends Number, F extends FilterId<K>, D extends Identifiable<K>>
+<K extends Number, F extends FilterId<K>, WOR extends Identifiable<K>>
 extends DeleteRequest<K, F> {
 
-  public D data;
+  public WOR data;
   public List<String> fields;
 
-  public UpdateRequest(D data, List<String> fields) {
+  public UpdateRequest(WOR data, List<String> fields) {
     this.data = data;
     this.fields = fields;
   }
 
-  public UpdateRequest(D data) {
+  public UpdateRequest(WOR data) {
     this(data, null);
   }
 

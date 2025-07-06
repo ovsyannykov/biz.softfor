@@ -50,12 +50,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 public class UserGroupRequest {
-  @ToString(
-      callSuper = true
-  )
-  @EqualsAndHashCode(
-      callSuper = true
-  )
+  @ToString(callSuper = true)
+  @EqualsAndHashCode(callSuper = true)
   public static class Create extends CreateRequest<Integer, UserGroupWor> {
     public Create() {
     }
@@ -65,21 +61,13 @@ public class UserGroupRequest {
     }
   }
 
-  @ToString(
-      callSuper = true
-  )
-  @EqualsAndHashCode(
-      callSuper = true
-  )
+  @ToString(callSuper = true)
+  @EqualsAndHashCode(callSuper = true)
   public static class Read extends ReadRequest<Integer, UserGroupFltr> {
   }
 
-  @ToString(
-      callSuper = true
-  )
-  @EqualsAndHashCode(
-      callSuper = true
-  )
+  @ToString(callSuper = true)
+  @EqualsAndHashCode(callSuper = true)
   public static class Update extends UpdateRequest<Integer, UserGroupFltr, UserGroupWor> {
     public Update() {
     }
@@ -93,12 +81,8 @@ public class UserGroupRequest {
     }
   }
 
-  @ToString(
-      callSuper = true
-  )
-  @EqualsAndHashCode(
-      callSuper = true
-  )
+  @ToString(callSuper = true)
+  @EqualsAndHashCode(callSuper = true)
   public static class Delete extends DeleteRequest<Integer, UserGroupFltr> {
   }
 }
@@ -130,9 +114,7 @@ import lombok.ToString;
 @Generated("biz.softfor.user.jpa.Users_Groups")
 @ManyToManyGeneratedLink
 @Entity
-@Table(
-    name = "users_groups"
-)
+@Table(name = "users_groups")
 @IdClass(Users_Groups_Id.class)
 @ToString
 @EqualsAndHashCode
@@ -143,24 +125,12 @@ public class Users_Groups implements Serializable {
 
   private static final long serialVersionUID = 0;
 
-  @ManyToOne(
-      fetch = FetchType.LAZY
-  )
-  @JoinColumn(
-      name = "groupId",
-      insertable = false,
-      updatable = false
-  )
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "groupId", insertable = false, updatable = false)
   private UserGroup userGroup;
 
-  @ManyToOne(
-      fetch = FetchType.LAZY
-  )
-  @JoinColumn(
-      name = "userId",
-      insertable = false,
-      updatable = false
-  )
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "userId", insertable = false, updatable = false)
   private User user;
 
   @Id

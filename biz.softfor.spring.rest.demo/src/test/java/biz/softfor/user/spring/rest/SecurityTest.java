@@ -3,13 +3,16 @@ package biz.softfor.user.spring.rest;
 import biz.softfor.address.api.StateDto;
 import biz.softfor.address.api.StateRequest;
 import biz.softfor.address.api.StateResponse;
-import biz.softfor.partner.api.ContactDetailsDto;
 import biz.softfor.partner.api.ContactDetailsRequest;
 import biz.softfor.partner.api.ContactDetailsResponse;
+import biz.softfor.partner.api.ContactDetailsRto;
+import biz.softfor.partner.api.LocationTypeDto;
 import biz.softfor.partner.api.PartnerDto;
 import biz.softfor.partner.api.PartnerRequest;
 import biz.softfor.partner.api.PartnerResponse;
+import biz.softfor.partner.api.PartnerRto;
 import biz.softfor.partner.api.PersonDetailsDto;
+import biz.softfor.partner.api.PersonDetailsRto;
 import biz.softfor.partner.spring.rest.ConfigPartnerRest;
 import biz.softfor.spring.messagesi18n.I18n;
 import biz.softfor.testutil.spring.RestAssuredCall;
@@ -19,6 +22,7 @@ import biz.softfor.user.api.UserGroupRequest;
 import biz.softfor.user.api.UserGroupResponse;
 import biz.softfor.user.api.UserRequest;
 import biz.softfor.user.api.UserResponse;
+import biz.softfor.user.api.UserRto;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.user.spring.rest.testassets.TeztEntity;
 import biz.softfor.util.Json;
@@ -60,7 +64,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 public class SecurityTest {
 
   //these values are specified in the src/test/resources/db/h2/1_1__testdata.sql
-  public final static UserDto ADMIN_DTO = new UserDto();
+  public final static UserRto ADMIN_DTO = new UserRto();
   static {
     ADMIN_DTO.setUsername("admin");
     ADMIN_DTO.setPassword("12345678");
@@ -85,7 +89,7 @@ public class SecurityTest {
   private RestAssuredCall testSvc;
 
   public static String authorize
-  (UserDto user, RestAssuredCall testSvc, ObjectMapper om)
+  (UserRto user, RestAssuredCall testSvc, ObjectMapper om)
   throws Exception {
     UserRequest.Create req = new UserRequest.Create(user);
     AuthResponse res = testSvc.call(AuthResponse.class
@@ -106,10 +110,10 @@ public class SecurityTest {
 
   @Test
   public void happyPath() throws Exception {
-    UserDto userDto = new UserDto();
-    userDto.setUsername("happyPath");
-    userDto.setPassword("l2345678");
-    userDto.setEmail("happyPath@t.co");
+    UserRto user = new UserRto();
+    user.setUsername("happyPath");
+    user.setPassword("l2345678");
+    user.setEmail("happyPath@t.co");
     String INVALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6W10sInVzZXJJZCI6NTM0LCJqdGkiOiIxIiwic3ViIjoiaGFwcHlQYXRoIiwiaWF0IjoxNjkwMjE5NTc3LCJleHAiOjE2OTAyMjAxNzd9.6060chPaWe-b3y2pvPY7PcJhwblgCq6Q1QEDqEmf9ds";
 
     AbstractRequest logoutWithInvalidTokenReq = new AbstractRequest();
@@ -128,7 +132,7 @@ public class SecurityTest {
     assertThat(nonAuthenticatedRes.getStatus()).as("nonAuthenticatedRes.status")
     .isEqualTo(BasicResponse.ACCESS_DENIED);
 
-    UserRequest.Create registrationReq = new UserRequest.Create(userDto);
+    UserRequest.Create registrationReq = new UserRequest.Create(user);
     UserResponse registrationRes = testSvc.call(UserResponse.class
     , StdPath.REGISTRATION_METHOD, StdPath.REGISTRATION, registrationReq);
     Supplier<String> registrationMsg
@@ -139,7 +143,7 @@ public class SecurityTest {
     Long userId = registrationRes.getData(0).getId();
     assertThat(userId).as(registrationMsg).isNotZero();
 
-    UserRequest.Create authReq = new UserRequest.Create(userDto);
+    UserRequest.Create authReq = new UserRequest.Create(user);
     AuthResponse authRes = testSvc.call(AuthResponse.class
     , StdPath.LOGIN_METHOD, StdPath.LOGIN, authReq);
     Supplier<String> authMsg = () -> "authRes=" + Json.serializep(om, authRes);
@@ -314,7 +318,7 @@ public class SecurityTest {
     List<String> EXPECTED_SQL = list(
       "partnerName='" + PARTNER_NAME + "'"
     , "locationTypeId=NULL"
-    , "update personDetails pdw1_0 set " + PersonDetailsDto.MARRIED + "=NULL"
+    , "update personDetails pdw1_0 set " + PersonDetailsRto.MARRIED + "=NULL"
     , "where p1_0.partnerRegdate>='2022-01-01T00:00:00.000"
     , "and p1_0.partnerRegdate<'2022-01-30T00:00:00.000"
     , "and p1_0.id=1"
@@ -322,13 +326,13 @@ public class SecurityTest {
     PartnerRequest.Update req = new PartnerRequest.Update();
 
     req.fields = list(
-      field(PartnerDto.PERSON_DETAILS, PersonDetailsDto.MARRIED)
-    , PartnerDto.LOCATION_TYPE_ID
+      field(PartnerRto.PERSON_DETAILS, PersonDetailsRto.MARRIED)
+    , PartnerRto.LOCATION_TYPE_ID
     );
     req.filter.assignId(PARTNER_ID);
     req.filter.setPartnerRegdate
     (new Range<>(LocalDate.of(2022, 1, 1), LocalDate.of(2022, 1, 30)));
-    req.data = new PartnerDto();
+    req.data = new PartnerRto();
     req.data.setPartnerName(PARTNER_NAME);
     PartnerResponse res = testSvc.call(PartnerResponse.class
     , PartnerRequest.UPDATE_METHOD, PartnerRequest.UPDATE_PATH, req);
@@ -350,8 +354,8 @@ public class SecurityTest {
     assertThat(output).doesNotContain(EXPECTED_SQL);
 
     req.fields = list(
-      field(PartnerDto.PERSON_DETAILS, PersonDetailsDto.MARRIED)
-    , PartnerDto.LOCATION_TYPE_ID
+      field(PartnerRto.PERSON_DETAILS, PersonDetailsRto.MARRIED)
+    , PartnerRto.LOCATION_TYPE_ID
     );
     PartnerResponse res3 = testSvc.call(PartnerResponse.class
     , PartnerRequest.UPDATE_METHOD, PartnerRequest.UPDATE_PATH, req);
@@ -363,7 +367,7 @@ public class SecurityTest {
   @Test
   public void createWithRestrictedClass() throws Exception {
     ContactDetailsRequest.Create req
-    = new ContactDetailsRequest.Create(new ContactDetailsDto());
+    = new ContactDetailsRequest.Create(new ContactDetailsRto());
     req.data.setId(1L);
     req.data.setNote("note");
     ContactDetailsResponse res = testSvc.call(ContactDetailsResponse.class

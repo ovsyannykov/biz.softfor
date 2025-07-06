@@ -52,12 +52,8 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 public class UserGroupRequest {
-  @ToString(
-      callSuper = true
-  )
-  @EqualsAndHashCode(
-      callSuper = true
-  )
+  @ToString(callSuper = true)
+  @EqualsAndHashCode(callSuper = true)
   public static class Create extends CreateRequest<Integer, UserGroupWor> {
     public Create() {
     }
@@ -67,21 +63,13 @@ public class UserGroupRequest {
     }
   }
 
-  @ToString(
-      callSuper = true
-  )
-  @EqualsAndHashCode(
-      callSuper = true
-  )
+  @ToString(callSuper = true)
+  @EqualsAndHashCode(callSuper = true)
   public static class Read extends ReadRequest<Integer, UserGroupFltr> {
   }
 
-  @ToString(
-      callSuper = true
-  )
-  @EqualsAndHashCode(
-      callSuper = true
-  )
+  @ToString(callSuper = true)
+  @EqualsAndHashCode(callSuper = true)
   public static class Update extends UpdateRequest<Integer, UserGroupFltr, UserGroupWor> {
     public Update() {
     }
@@ -95,12 +83,8 @@ public class UserGroupRequest {
     }
   }
 
-  @ToString(
-      callSuper = true
-  )
-  @EqualsAndHashCode(
-      callSuper = true
-  )
+  @ToString(callSuper = true)
+  @EqualsAndHashCode(callSuper = true)
   public static class Delete extends DeleteRequest<Integer, UserGroupFltr> {
   }
 }
