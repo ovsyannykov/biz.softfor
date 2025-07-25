@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.LocationTypeFltr;
 import biz.softfor.partner.jpa.LocationType;
 import biz.softfor.partner.jpa.LocationTypeWor;
 import biz.softfor.user.spring.SecurityMgr;
@@ -17,7 +18,7 @@ import org.springframework.context.annotation.Scope;
 @AnonymousAllowed
 @Route(value = LocationTypesView.PATH, layout = MainLayout.class)
 public class LocationTypesView
-extends EntityView<Short, LocationType, LocationTypeWor> {
+extends EntityView<Short, LocationType, LocationTypeWor, LocationTypeFltr> {
 
   public final static String PATH = "locationtype";
 

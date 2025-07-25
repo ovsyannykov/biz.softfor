@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.PostcodeFltr;
 import biz.softfor.address.jpa.Postcode;
 import biz.softfor.address.jpa.PostcodeWor;
 import biz.softfor.address.spring.PostcodeSvc;
@@ -11,7 +12,8 @@ import org.springframework.context.annotation.Scope;
 
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class PostcodesDbGrid extends DbGrid<Integer, Postcode, PostcodeWor> {
+public class PostcodesDbGrid
+extends DbGrid<Integer, Postcode, PostcodeWor, PostcodeFltr> {
 
   public PostcodesDbGrid(PostcodeSvc service, PostcodeDbGridColumns columns) {
     super(service, columns, DbGridColumns.EMPTY);

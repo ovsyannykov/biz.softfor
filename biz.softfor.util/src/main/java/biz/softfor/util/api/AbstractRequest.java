@@ -89,7 +89,7 @@ public class AbstractRequest {
   }
 
   @JsonIgnore
-  public int getFirstRowIndex() {
+  public final int getFirstRowIndex() {
     return getStartRow() - startRowOffset;
   }
 

@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.CountryFltr;
 import biz.softfor.address.jpa.Country;
 import biz.softfor.address.jpa.Country_;
 import biz.softfor.address.jpa.State;
@@ -37,14 +38,13 @@ public class StateForm extends EntityForm<Integer, State, StateWor> {
             }
           });
           put(State_.FULLNAME, fullname);
-          ManyToOneField<Short, Country> countryField = new ManyToOneField<>(
-            State_.COUNTRY
+          put(State_.COUNTRY, new ManyToOneField<>(State_.COUNTRY
           , countries
           , Country::getName
           , Country::getFullname
           , List.of(Country_.NAME, Country_.FULLNAME)
-          );
-          put(State_.COUNTRY, countryField);
+          , CountryDbGridColumns.FILL_REQUEST
+          ));
         }}
       , securityMgr
       )

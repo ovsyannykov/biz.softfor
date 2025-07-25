@@ -1,5 +1,8 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.LocationTypeFltr;
+import biz.softfor.partner.api.PartnerFltr;
+import biz.softfor.address.api.PostcodeFltr;
 import biz.softfor.address.jpa.Postcode;
 import biz.softfor.address.jpa.Postcode_;
 import biz.softfor.jpa.crud.querygraph.ColumnDescr;
@@ -19,6 +22,7 @@ import biz.softfor.util.StringUtil;
 import biz.softfor.util.partner.PartnerType;
 import biz.softfor.vaadin.EntityForm;
 import biz.softfor.vaadin.EntityFormColumns;
+import biz.softfor.vaadin.address.PostcodeDbGridColumns;
 import biz.softfor.vaadin.address.PostcodesDbGrid;
 import biz.softfor.vaadin.field.ManyToOneField;
 import biz.softfor.vaadin.field.ToManyField;
@@ -106,25 +110,26 @@ public class PartnerForm extends EntityForm<Long, Partner, PartnerWor> {
           put(Partner_.PARTNER_REGCODE, new TextField());
           put(Partner_.PARTNER_REGDATE, new DatePicker());
           put(Partner_.ADDRESS, new TextField());
-          ManyToOneField<Long, Partner> parentField
-          = new PartnerField(Partner_.PARENT, partnersBasicDbGrid);
-          put(Partner_.PARENT, parentField);
-          ManyToOneField<Integer, Postcode> postcodeField = new ManyToOneField<>(
+          put(
+            Partner_.PARENT
+          , new PartnerField(Partner_.PARENT, partnersBasicDbGrid)
+          );
+          put(Partner_.POSTCODE, new ManyToOneField<>(
             Partner_.POSTCODE
           , postcodesDbGrid
           , Postcode::getPostcode
           , Postcode::getPostcode
           , List.of(Postcode_.POSTCODE)
-          );
-          put(Partner_.POSTCODE, postcodeField);
-          ManyToOneField<Short, LocationType> locTypeField = new ManyToOneField<>(
+          , PostcodeDbGridColumns.FILL_REQUEST
+          ));
+          put(Partner_.LOCATION_TYPE, new ManyToOneField<>(
             Partner_.LOCATION_TYPE
           , locationTypesDbGrid
           , LocationType::getName
           , LocationType::getDescr
           , List.of(LocationType_.NAME, LocationType_.DESCR)
-          );
-          put(Partner_.LOCATION_TYPE, locTypeField);
+          , LocationTypeDbGridColumns.FILL_REQUEST
+          ));
           put(NOTE_KEY, new TextArea());
           put(PASSPORT_SERIES_KEY, new TextField());
           put(PASSPORT_NUMBER_KEY, new TextField());

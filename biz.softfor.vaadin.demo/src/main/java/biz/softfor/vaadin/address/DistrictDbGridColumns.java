@@ -44,6 +44,7 @@ public class DistrictDbGridColumns extends DbGridColumns<Integer, District> {
       , State::getName
       , State::getFullname
       , List.of(State_.NAME, State_.FULLNAME)
+      , StateField.FILL_REQUEST
       )
     );
   }

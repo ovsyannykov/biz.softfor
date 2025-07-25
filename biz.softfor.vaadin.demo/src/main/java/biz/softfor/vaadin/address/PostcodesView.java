@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.PostcodeFltr;
 import biz.softfor.address.jpa.Postcode;
 import biz.softfor.address.jpa.PostcodeWor;
 import biz.softfor.user.spring.SecurityMgr;
@@ -16,7 +17,8 @@ import org.springframework.context.annotation.Scope;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @AnonymousAllowed
 @Route(value = PostcodesView.PATH, layout = MainLayout.class)
-public class PostcodesView extends EntityView<Integer, Postcode, PostcodeWor> {
+public class PostcodesView
+extends EntityView<Integer, Postcode, PostcodeWor, PostcodeFltr> {
 
   public final static String PATH = "postcode";
 

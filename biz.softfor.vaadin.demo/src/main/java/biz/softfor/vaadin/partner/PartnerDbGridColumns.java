@@ -21,6 +21,7 @@ import biz.softfor.util.api.Order;
 import biz.softfor.util.api.filter.FilterId;
 import biz.softfor.util.partner.PartnerType;
 import biz.softfor.vaadin.VaadinUtil;
+import biz.softfor.vaadin.address.PostcodeDbGridColumns;
 import biz.softfor.vaadin.address.PostcodesDbGrid;
 import biz.softfor.vaadin.dbgrid.ComboBoxDbGridColumn;
 import biz.softfor.vaadin.dbgrid.DateDbGridColumn;
@@ -65,9 +66,9 @@ public class PartnerDbGridColumns extends DbGridColumns<Long, Partner> {
     , new TextDbGridColumn<>
       (Partner_.PARTNER_REGCODE, PartnerFltr::setPartnerRegcode)
     , new TextDbGridColumn<>(Partner_.ADDRESS, PartnerFltr::setAddress)
-    , new ManyToOneDbGridColumn<Partner, PartnerFltr, Integer, Postcode>(
+    , new ManyToOneDbGridColumn<>(
         Partner_.POSTCODE
-      , VaadinUtil.defaultRenderer(m -> {
+      , VaadinUtil.defaultRenderer((Partner m) -> {
           Postcode e = m.getPostcode();
           return e == null ? "" : e.getPostcode();
         })
@@ -77,10 +78,11 @@ public class PartnerDbGridColumns extends DbGridColumns<Long, Partner> {
       , Postcode::getPostcode
       , Postcode::getPostcode
       , List.of(Postcode_.POSTCODE)
+      , PostcodeDbGridColumns.FILL_REQUEST
       )
-    , new ManyToOneDbGridColumn<Partner, PartnerFltr, Short, LocationType>(
+    , new ManyToOneDbGridColumn<>(
         Partner_.LOCATION_TYPE
-      , VaadinUtil.defaultRenderer(m -> {
+      , VaadinUtil.defaultRenderer((Partner m) -> {
           LocationType c = m.getLocationType();
           return c == null ? "" : c.getName();
         })
@@ -93,6 +95,7 @@ public class PartnerDbGridColumns extends DbGridColumns<Long, Partner> {
       , LocationType::getName
       , LocationType::getDescr
       , List.of(LocationType_.NAME, LocationType_.DESCR)
+      , LocationTypeDbGridColumns.FILL_REQUEST
       )
     };
   }

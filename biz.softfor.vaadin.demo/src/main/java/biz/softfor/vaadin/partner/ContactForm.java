@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.AppointmentFltr;
 import biz.softfor.partner.jpa.Appointment;
 import biz.softfor.partner.jpa.Appointment_;
 import biz.softfor.partner.jpa.Contact;
@@ -39,20 +40,21 @@ public class ContactForm extends EntityForm<Long, Contact, ContactWor> {
       , new LinkedHashMap<>() {{
           put(Contact_.DESCR, new TextField(Contact_.DESCR));
           put(Contact_.PARTNER, new PartnerField(Contact_.PARTNER, partners));
-          ManyToOneField<Short, Appointment> appointmentField = new ManyToOneField<>(
+          put(Contact_.APPOINTMENT, new ManyToOneField<>(
             Contact_.APPOINTMENT
           , appointments
           , Appointment::getName
           , Appointment::getDescr
           , List.of(Appointment_.NAME, Appointment_.DESCR)
-          );
-          put(Contact_.APPOINTMENT, appointmentField);
+          , AppointmentDbGridColumns.FILL_REQUEST
+          ));
           put(Contact_.CONTACT_TYPE, new ManyToOneField<>(
             Contact_.CONTACT_TYPE
           , contactTypes
           , ContactType::getName
           , ContactType::getDescr
           , List.of(ContactType_.NAME, ContactType_.DESCR)
+          , ContactTypeDbGridColumns.FILL_REQUEST
           ));
           put(Contact_.IS_PUBLIC, new Checkbox(Contact_.IS_PUBLIC));
           put(

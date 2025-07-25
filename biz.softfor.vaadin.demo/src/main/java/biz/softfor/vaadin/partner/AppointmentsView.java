@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.AppointmentFltr;
 import biz.softfor.partner.jpa.Appointment;
 import biz.softfor.partner.jpa.AppointmentWor;
 import biz.softfor.user.spring.SecurityMgr;
@@ -17,7 +18,7 @@ import org.springframework.context.annotation.Scope;
 @AnonymousAllowed
 @Route(value = AppointmentsView.PATH, layout = MainLayout.class)
 public class AppointmentsView
-extends EntityView<Short, Appointment, AppointmentWor> {
+extends EntityView<Short, Appointment, AppointmentWor, AppointmentFltr> {
 
   public final static String PATH = "appointment";
 

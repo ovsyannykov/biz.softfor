@@ -17,7 +17,6 @@ import biz.softfor.vaadin.VaadinUtil;
 import biz.softfor.vaadin.dbgrid.BoolDbGridColumn;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
-import static biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn.defaultFilter;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.List;
@@ -50,7 +49,7 @@ public class ContactDbGridColumns extends DbGridColumns<Long, Contact> {
           ContactType e = m.getContactType();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter(
+      , ManyToOneDbGridColumn.defaultFilter(
           ContactFltr::getContactType
         , ContactFltr::setContactType
         , ContactTypeFltr::new
@@ -59,6 +58,7 @@ public class ContactDbGridColumns extends DbGridColumns<Long, Contact> {
       , ContactType::getName
       , ContactType::getName
       , List.of(ContactType_.NAME)
+      , ContactTypeDbGridColumns.FILL_REQUEST
       )
     , new PartnerBasicDbGridColumn<>(
         Contact_.PARTNER
@@ -74,7 +74,7 @@ public class ContactDbGridColumns extends DbGridColumns<Long, Contact> {
           Appointment e = m.getAppointment();
           return e == null ? "" : e.getName();
         })
-      , defaultFilter(
+      , ManyToOneDbGridColumn.defaultFilter(
           ContactFltr::getAppointment
         , ContactFltr::setAppointment
         , AppointmentFltr::new
@@ -83,6 +83,7 @@ public class ContactDbGridColumns extends DbGridColumns<Long, Contact> {
       , Appointment::getName
       , Appointment::getDescr
       , List.of(Appointment_.NAME, Appointment_.DESCR)
+      , AppointmentDbGridColumns.FILL_REQUEST
       )
     );
   }

@@ -448,11 +448,11 @@ public class UserGroupRequest {
 
   @ToString(callSuper = true)
   @EqualsAndHashCode(callSuper = true)
-  public static class Create extends CreateRequest<Integer, UserGroupDto> {
+  public static class Create extends CreateRequest<Integer, UserGroupRto> {
 
     public Create() {}
 
-    public Create(UserGroupDto data) {
+    public Create(UserGroupRto data) {
       super(data);
     }
 
@@ -464,15 +464,15 @@ public class UserGroupRequest {
 
   @ToString(callSuper = true)
   @EqualsAndHashCode(callSuper = true)
-  public static class Update extends UpdateRequest<Integer, UserGroupFltr, UserGroupDto> {
+  public static class Update extends UpdateRequest<Integer, UserGroupFltr, UserGroupRto> {
 
     public Update() {}
 
-    public Update(UserGroupDto data) {
+    public Update(UserGroupRto data) {
       super(data);
     }
 
-    public Update(UserGroupDto data, List<String> fields) {
+    public Update(UserGroupRto data, List<String> fields) {
       super(data, fields);
     }
 

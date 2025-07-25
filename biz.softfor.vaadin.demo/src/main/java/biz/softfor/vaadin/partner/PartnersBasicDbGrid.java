@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.PartnerFltr;
 import biz.softfor.partner.jpa.Partner;
 import biz.softfor.partner.jpa.PartnerWor;
 import biz.softfor.partner.spring.PartnerSvc;
@@ -11,7 +12,8 @@ import org.springframework.context.annotation.Scope;
 
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class PartnersBasicDbGrid extends DbGrid<Long, Partner, PartnerWor> {
+public class PartnersBasicDbGrid
+extends DbGrid<Long, Partner, PartnerWor, PartnerFltr> {
 
   public PartnersBasicDbGrid
   (PartnerSvc service, PartnerBasicDbGridColumns columns) {

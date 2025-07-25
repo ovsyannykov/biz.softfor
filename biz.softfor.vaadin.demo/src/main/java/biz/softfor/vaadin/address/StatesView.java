@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.StateFltr;
 import biz.softfor.address.jpa.State;
 import biz.softfor.address.jpa.StateWor;
 import biz.softfor.user.spring.SecurityMgr;
@@ -16,7 +17,7 @@ import org.springframework.context.annotation.Scope;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @AnonymousAllowed
 @Route(value = StatesView.PATH, layout = MainLayout.class)
-public class StatesView extends EntityView<Integer, State, StateWor> {
+public class StatesView extends EntityView<Integer, State, StateWor, StateFltr> {
 
   public final static String PATH = "state";
 

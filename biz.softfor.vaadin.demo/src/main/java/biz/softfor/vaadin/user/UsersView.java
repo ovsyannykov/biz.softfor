@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.user;
 
+import biz.softfor.user.api.UserFltr;
 import biz.softfor.user.jpa.User;
 import biz.softfor.user.jpa.UserGroup;
 import biz.softfor.user.jpa.UserWor;
@@ -22,7 +23,7 @@ import org.springframework.context.annotation.Scope;
 @AnonymousAllowed
 @Route(value = UsersView.PATH, layout = MainLayout.class)
 @PreserveOnRefresh
-public class UsersView extends EntityView<Long, User, UserWor> {
+public class UsersView extends EntityView<Long, User, UserWor, UserFltr> {
 
   public final static String PATH = "user";
 

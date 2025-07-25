@@ -6,7 +6,6 @@ import biz.softfor.spring.security.SecurityUtil;
 import biz.softfor.user.jpa.User;
 import biz.softfor.user.jpa.UserRequest;
 import biz.softfor.user.jpa.UserWor;
-import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.user.spring.UserSvc;
 import biz.softfor.util.api.CommonResponse;
 import biz.softfor.util.api.ServerError;

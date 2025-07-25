@@ -13,6 +13,7 @@ import biz.softfor.util.api.Identifiable;
 import biz.softfor.util.api.ReadRequest;
 import biz.softfor.util.api.ServerError;
 import biz.softfor.util.api.UpdateRequest;
+import biz.softfor.util.api.filter.FilterId;
 import biz.softfor.util.security.UpdateClassRoleCalc;
 import biz.softfor.vaadin.dbgrid.DbGrid;
 import biz.softfor.vaadin.field.grid.GridField;
@@ -31,11 +32,14 @@ import java.util.Collection;
 import java.util.Set;
 import org.apache.commons.collections4.CollectionUtils;
 
-public abstract class EntityView
-<K extends Number, E extends Identifiable<K>, WOR extends Identifiable<K>>
-extends BasicView {
+public abstract class EntityView<
+  K extends Number
+, E extends Identifiable<K>
+, WOR extends Identifiable<K>
+, F extends FilterId<K>
+> extends BasicView {
 
-  private final DbGrid<K, E, WOR> dbGrid;
+  private final DbGrid<K, E, WOR, F> dbGrid;
   private final GridFields<K, E> grids;
   private final EntityForm<K, E, WOR> form;
   private final SecurityMgr securityMgr;
@@ -76,7 +80,7 @@ extends BasicView {
   }
 
   protected EntityView(
-    DbGrid<K, E, WOR> dbGrid
+    DbGrid<K, E, WOR, F> dbGrid
   , GridFields<K, E> grids
   , EntityForm<K, E, WOR> form
   , SecurityMgr securityMgr

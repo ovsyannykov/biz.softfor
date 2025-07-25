@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.CityTypeFltr;
 import biz.softfor.address.jpa.CityType;
 import biz.softfor.address.jpa.CityTypeWor;
 import biz.softfor.user.spring.SecurityMgr;
@@ -16,7 +17,8 @@ import org.springframework.context.annotation.Scope;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @AnonymousAllowed
 @Route(value = CityTypesView.PATH, layout = MainLayout.class)
-public class CityTypesView extends EntityView<Short, CityType, CityTypeWor> {
+public class CityTypesView
+extends EntityView<Short, CityType, CityTypeWor, CityTypeFltr> {
 
   public final static String PATH = "citytype";
 

@@ -1,21 +1,26 @@
 package biz.softfor.vaadin.dbgrid;
 
 import biz.softfor.util.api.Identifiable;
+import biz.softfor.util.api.ReadRequest;
 import biz.softfor.util.api.filter.FilterId;
 import biz.softfor.vaadin.field.ManyToOneBasicField;
+import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBox;
+import com.vaadin.flow.component.combobox.MultiSelectComboBoxVariant;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class ManyToOneGridColumnComponent
-<K extends Number, E extends Identifiable<K>>
-extends ManyToOneBasicField<K, E, Set<E>> implements LocaleChangeObserver {
+<K extends Number, E extends Identifiable<K>, F extends FilterId<K>>
+extends ManyToOneBasicField<K, E, F, Set<E>, MultiSelectComboBox<E>>
+implements LocaleChangeObserver {
 
   public final static String Selected_only = "Selected_only";
 
@@ -24,19 +29,43 @@ extends ManyToOneBasicField<K, E, Set<E>> implements LocaleChangeObserver {
 
   public ManyToOneGridColumnComponent(
     String name
-  , DbGrid<K, E, ? extends Identifiable<K>> dbGrid
-  , Function<E, String> label
+  , DbGrid<K, E, ? extends Identifiable<K>, F> dbGrid
+  , ItemLabelGenerator<E> label
   , Function<E, String> detail
   , List<String> involvedFields
+  , BiConsumer<ReadRequest<K, F>, String> fillRequest
   ) {
-    super(name, dbGrid, label, detail, involvedFields);
+    super(
+      name
+    , dbGrid
+    , label
+    , detail
+    , involvedFields
+    , fillRequest
+    , new MultiSelectComboBox<>()
+    , dbg -> dbg.grid.asMultiSelect().getValue()
+    , (dbg, v) -> dbg.grid.asMultiSelect().setValue(v)
+    , v -> {
+        String result = "";
+        for(E item : v) {
+          if(!result.isEmpty()) {
+            result += ", ";
+          }
+          result += detail.apply(item);
+        }
+        return result;
+      }
+    );
     this.dbGrid.grid.setSelectionMode(Grid.SelectionMode.MULTI);
+    ((MultiSelectComboBox)viewCtl)
+    .addThemeVariants(MultiSelectComboBoxVariant.LUMO_SMALL);
+    ((MultiSelectComboBox)viewCtl).setSelectedItemsOnTop(true);
     selectedOnly = new Checkbox(getTranslation(Selected_only), e -> {
       Consumer<FilterId<K>> selectedOnlyFilter;
       if(e.getValue()) {
         originalFilter = this.dbGrid.filter();
         selectedOnlyFilter = f -> {
-          f.setId(Identifiable.ids(getModelValue()));
+          f.setId(Identifiable.ids(generateModelValue()));
           if(originalFilter != null) {
             originalFilter.accept(f);
           }
@@ -52,35 +81,6 @@ extends ManyToOneBasicField<K, E, Set<E>> implements LocaleChangeObserver {
       this.dbGrid.filterClear();
       selectedOnly.setValue(Boolean.FALSE);
     });
-    viewCtl.addThemeVariants(TextFieldVariant.LUMO_SMALL);
-    viewCtl.setWidthFull();
-  }
-
-  @Override
-  public Set<E> getModelValue() {
-    return dbGrid.grid.asMultiSelect().getValue();
-  }
-
-  @Override
-  protected void setPresentationValue(Set<E> values) {
-    if(values == null) {
-      values = Set.of();
-    }
-    value = values;
-    String l = "";
-    String t = "";
-    for(E v : values) {
-      if(!l.isEmpty()) {
-        l += ", ";
-      }
-      if(!t.isEmpty()) {
-        t += ", ";
-      }
-      l += label.apply(v);
-      t += detail.apply(v);
-    }
-    viewCtl.setValue(l);
-    viewCtl.setTooltipText(t);
   }
 
   @Override

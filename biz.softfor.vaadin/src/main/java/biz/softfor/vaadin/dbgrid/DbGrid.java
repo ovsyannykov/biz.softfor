@@ -28,11 +28,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class DbGrid
-<K extends Number, E extends Identifiable<K>, WOR extends Identifiable<K>>
-extends VerticalLayout implements LocaleChangeObserver {
+public class DbGrid<
+  K extends Number
+, E extends Identifiable<K>
+, WOR extends Identifiable<K>
+, F extends FilterId<K>
+> extends VerticalLayout implements LocaleChangeObserver {
 
-  public final CrudSvc<K, E, WOR, ?> service;
+  public final CrudSvc<K, E, WOR, F> service;
   public final EntityInf<K, E, WOR> entityInf;
   public final DbGridColumns<K, E> columns;
   private final DbGridColumns<K, E> filters;
@@ -58,7 +61,7 @@ extends VerticalLayout implements LocaleChangeObserver {
   }
 
   public DbGrid(
-    CrudSvc<K, E, WOR, ?> service
+    CrudSvc<K, E, WOR, F> service
   , DbGridColumns<K, E> columns
   , DbGridColumns<K, E> filters
   ) {
@@ -149,7 +152,7 @@ extends VerticalLayout implements LocaleChangeObserver {
     for(DbGridColumn c : filters) {
       c.filter.accept(readRequest.filter, c.component);
     }
-    DbGridDataProvider<K, E, ? extends FilterId<K>> dp
+    DbGridDataProvider<K, E, F> dp
     = new DbGridDataProvider<>(service, readRequest);
     dataView = grid.setItems(dp::get);
     for(E ev : v) {

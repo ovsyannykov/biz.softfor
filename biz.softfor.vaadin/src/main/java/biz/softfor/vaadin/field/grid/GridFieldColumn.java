@@ -24,7 +24,9 @@ extends GridColumn<E, C> {
     this.filter = filter;
     component.addValueChangeListener(e -> {
       value = (CV)e.getValue();
-      dataView.refreshAll();
+      if(dataView != null) {
+        dataView.refreshAll();
+      }
     });
   }
 

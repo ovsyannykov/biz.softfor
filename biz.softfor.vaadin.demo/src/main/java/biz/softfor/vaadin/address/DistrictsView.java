@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.DistrictFltr;
 import biz.softfor.address.jpa.District;
 import biz.softfor.address.jpa.DistrictWor;
 import biz.softfor.user.spring.SecurityMgr;
@@ -16,7 +17,8 @@ import org.springframework.context.annotation.Scope;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @AnonymousAllowed
 @Route(value = DistrictsView.PATH, layout = MainLayout.class)
-public class DistrictsView extends EntityView<Integer, District, DistrictWor> {
+public class DistrictsView
+extends EntityView<Integer, District, DistrictWor, DistrictFltr> {
 
   public final static String PATH = "district";
 

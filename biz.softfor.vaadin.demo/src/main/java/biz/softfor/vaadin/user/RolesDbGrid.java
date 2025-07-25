@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.user;
 
+import biz.softfor.user.api.RoleFltr;
 import biz.softfor.user.jpa.Role;
 import biz.softfor.user.jpa.RoleWor;
 import biz.softfor.user.spring.RoleSvc;
@@ -10,7 +11,7 @@ import org.springframework.context.annotation.Scope;
 
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class RolesDbGrid extends DbGrid<Long, Role, RoleWor> {
+public class RolesDbGrid extends DbGrid<Long, Role, RoleWor, RoleFltr> {
 
   public RolesDbGrid
   (RoleSvc service, RoleDbGridColumns columns, RoleDbGridFilters filters) {

@@ -25,9 +25,13 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import org.apache.commons.collections4.CollectionUtils;
 
-public class ToManyField
-<K extends Number, E extends Identifiable<K>, M, V extends Collection<E>>
-extends GridField<K, E, M, V> {
+public class ToManyField<
+  K extends Number
+, E extends Identifiable<K>
+, M
+, V extends Collection<E>
+, F extends FilterId<K>
+> extends GridField<K, E, M, V> {
 
   private Button add;
   private Button delete;
@@ -57,7 +61,7 @@ extends GridField<K, E, M, V> {
   , Class<M> parent
   , Supplier<V> defaultValue
   , GridFieldColumns<K, E> columns
-  , DbGrid<K, E, ? extends Identifiable<K>> dbGrid
+  , DbGrid<K, E, ? extends Identifiable<K>, F> dbGrid
   , SecurityMgr securityMgr
   , boolean isManyToMany
   ) {
@@ -122,7 +126,7 @@ extends GridField<K, E, M, V> {
   , Class<M> parent
   , Supplier<V> defaultValue
   , GridFieldColumns<K, E> columns
-  , DbGrid<K, E, ? extends Identifiable<K>> dbGrid
+  , DbGrid<K, E, ? extends Identifiable<K>, F> dbGrid
   , SecurityMgr securityMgr
   ) {
     this(

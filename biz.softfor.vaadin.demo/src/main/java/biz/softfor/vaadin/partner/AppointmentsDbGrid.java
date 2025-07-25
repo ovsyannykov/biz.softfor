@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.AppointmentFltr;
 import biz.softfor.partner.jpa.Appointment;
 import biz.softfor.partner.jpa.AppointmentWor;
 import biz.softfor.partner.spring.AppointmentSvc;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class AppointmentsDbGrid
-extends DbGrid<Short, Appointment, AppointmentWor> {
+extends DbGrid<Short, Appointment, AppointmentWor, AppointmentFltr> {
 
   public AppointmentsDbGrid
   (AppointmentSvc service, AppointmentDbGridColumns columns) {

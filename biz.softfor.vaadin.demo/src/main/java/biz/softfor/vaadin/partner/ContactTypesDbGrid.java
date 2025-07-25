@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.ContactTypeFltr;
 import biz.softfor.partner.jpa.ContactType;
 import biz.softfor.partner.jpa.ContactTypeWor;
 import biz.softfor.partner.spring.ContactTypeSvc;
@@ -12,7 +13,7 @@ import org.springframework.context.annotation.Scope;
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ContactTypesDbGrid
-extends DbGrid<Short, ContactType, ContactTypeWor> {
+extends DbGrid<Short, ContactType, ContactTypeWor, ContactTypeFltr> {
 
   public final static String TITLE = "Contact types";
 

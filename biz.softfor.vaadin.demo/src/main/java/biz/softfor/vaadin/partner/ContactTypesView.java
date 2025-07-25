@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.ContactTypeFltr;
 import biz.softfor.partner.jpa.ContactType;
 import biz.softfor.partner.jpa.ContactTypeWor;
 import biz.softfor.user.spring.SecurityMgr;
@@ -17,7 +18,7 @@ import org.springframework.context.annotation.Scope;
 @AnonymousAllowed
 @Route(value = ContactTypesView.PATH, layout = MainLayout.class)
 public class ContactTypesView
-extends EntityView<Short, ContactType, ContactTypeWor> {
+extends EntityView<Short, ContactType, ContactTypeWor, ContactTypeFltr> {
 
   public final static String PATH = "contacttype";
 

@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.PartnerFileFltr;
 import biz.softfor.partner.jpa.PartnerFile;
 import biz.softfor.partner.jpa.PartnerFileWor;
 import biz.softfor.user.spring.SecurityMgr;
@@ -17,7 +18,7 @@ import org.springframework.context.annotation.Scope;
 @AnonymousAllowed
 @Route(value = PartnerFilesView.PATH, layout = MainLayout.class)
 public class PartnerFilesView
-extends EntityView<Long, PartnerFile, PartnerFileWor> {
+extends EntityView<Long, PartnerFile, PartnerFileWor, PartnerFileFltr> {
 
   public final static String PATH = "partnerfile";
 

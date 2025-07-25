@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.CityTypeFltr;
 import biz.softfor.address.jpa.CityType;
 import biz.softfor.address.jpa.CityTypeWor;
 import biz.softfor.address.spring.CityTypeSvc;
@@ -11,7 +12,8 @@ import org.springframework.context.annotation.Scope;
 
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class CityTypesDbGrid extends DbGrid<Short, CityType, CityTypeWor> {
+public class CityTypesDbGrid
+extends DbGrid<Short, CityType, CityTypeWor, CityTypeFltr> {
 
   public CityTypesDbGrid(CityTypeSvc service, CityTypeDbGridColumns columns) {
     super(service, columns, DbGridColumns.EMPTY);

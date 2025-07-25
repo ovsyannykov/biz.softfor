@@ -6,6 +6,9 @@ import biz.softfor.user.jpa.Role_;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.util.BooleansEnum;
 import biz.softfor.util.api.Order;
+import biz.softfor.util.api.ReadRequest;
+import biz.softfor.util.api.filter.Expr;
+import biz.softfor.util.api.filter.Value;
 import biz.softfor.util.security.DefaultAccess;
 import biz.softfor.vaadin.dbgrid.BoolDbGridColumn;
 import biz.softfor.vaadin.dbgrid.ComboBoxDbGridColumn;
@@ -15,6 +18,7 @@ import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
 import com.vaadin.flow.component.textfield.LongField;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.List;
+import java.util.function.BiConsumer;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
@@ -26,6 +30,25 @@ public class RoleDbGridColumns extends DbGridColumns<Long, Role> {
     new Order(Order.Direction.ASC, Role_.OBJ_NAME)
   , new Order(Order.Direction.ASC, Role_.UPDATE_FOR)
   );
+
+  public final static BiConsumer<ReadRequest<Long, RoleFltr>, String>
+  FILL_REQUEST = (request, lookingFor) -> {
+    String like = "%" + lookingFor.toLowerCase() + "%";
+    request.filter.and(new Expr(Expr.OR
+    , new Expr(Expr.LIKE
+      , new Expr(Expr.LOWER, Role_.NAME)
+      , new Value(like)
+      )
+    , new Expr(Expr.LIKE
+      , new Expr(Expr.LOWER, Role_.DESCRIPTION)
+      , new Value(like)
+      )
+    , new Expr(Expr.LIKE
+      , new Expr(Expr.LOWER, Role_.OBJ_NAME)
+      , new Value(like)
+      )
+    ));
+  };
 
   public RoleDbGridColumns(SecurityMgr securityMgr) {
     super(Role.TABLE, securityMgr, Role.class

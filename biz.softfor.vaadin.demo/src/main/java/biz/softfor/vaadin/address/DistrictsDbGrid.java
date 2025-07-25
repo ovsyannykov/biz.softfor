@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.DistrictFltr;
 import biz.softfor.address.jpa.District;
 import biz.softfor.address.jpa.DistrictWor;
 import biz.softfor.address.spring.DistrictSvc;
@@ -11,7 +12,8 @@ import org.springframework.context.annotation.Scope;
 
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class DistrictsDbGrid extends DbGrid<Integer, District, DistrictWor> {
+public class DistrictsDbGrid
+extends DbGrid<Integer, District, DistrictWor, DistrictFltr> {
 
   public DistrictsDbGrid(DistrictSvc service, DistrictDbGridColumns columns) {
     super(service, columns, DbGridColumns.EMPTY);

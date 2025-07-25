@@ -36,6 +36,7 @@ public class ContactGridFieldColumns extends GridFieldColumns<Long, Contact> {
         , ContactType::getName
         , ContactType::getDescr
         , List.of(ContactType_.NAME, ContactType_.DESCR)
+        , ContactTypeDbGridColumns.FILL_REQUEST
         )
       , VaadinUtil.defaultRenderer(m -> {
         ContactType e = m.getContactType();

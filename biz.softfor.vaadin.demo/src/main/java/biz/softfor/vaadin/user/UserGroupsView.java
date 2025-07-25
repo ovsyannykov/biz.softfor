@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.user;
 
+import biz.softfor.user.api.UserGroupFltr;
 import biz.softfor.user.jpa.Role;
 import biz.softfor.user.jpa.User;
 import biz.softfor.user.jpa.UserGroup;
@@ -21,7 +22,8 @@ import org.springframework.context.annotation.Scope;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @AnonymousAllowed
 @Route(value = UserGroupsView.PATH, layout = MainLayout.class)
-public class UserGroupsView extends EntityView<Integer, UserGroup, UserGroupWor> {
+public class UserGroupsView
+extends EntityView<Integer, UserGroup, UserGroupWor, UserGroupFltr> {
 
   public final static String PATH = "userGroup";
 

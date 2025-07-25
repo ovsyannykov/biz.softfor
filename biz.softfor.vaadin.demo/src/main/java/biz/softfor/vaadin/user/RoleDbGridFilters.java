@@ -24,7 +24,8 @@ public class RoleDbGridFilters extends DbGridColumns<Long, Role> {
 
   public RoleDbGridFilters(SecurityMgr securityMgr, UsersDbGridBasic users) {
     super("", securityMgr, Role.class
-    , new DbGridColumn<Role, User, ManyToOneField<Long, User>, User, RoleFltr>(
+    , new DbGridColumn
+      <Role, User, ManyToOneField<Long, User, UserFltr>, User, RoleFltr>(
         StringUtil.field(Role_.GROUPS, UserGroup_.USERS)
       , new ManyToOneField<>(
           User.TITLE
@@ -32,6 +33,7 @@ public class RoleDbGridFilters extends DbGridColumns<Long, Role> {
         , User::getUsername
         , User::getUsername
         , List.of(User_.USERNAME)
+        , UserDbGridColumns.FILL_REQUEST
         )
       , null
       , (filter, component) -> {

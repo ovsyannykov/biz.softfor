@@ -1,42 +1,57 @@
 package biz.softfor.vaadin.field;
 
+import biz.softfor.util.Reflection;
 import biz.softfor.util.api.Identifiable;
+import biz.softfor.util.api.Order;
+import biz.softfor.util.api.ReadRequest;
+import biz.softfor.util.api.filter.FilterId;
 import biz.softfor.vaadin.CSS;
 import biz.softfor.vaadin.DbNamedColumn;
 import biz.softfor.vaadin.Text;
 import biz.softfor.vaadin.dbgrid.DbGrid;
+import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBoxBase;
 import com.vaadin.flow.component.customfield.CustomField;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.dialog.DialogVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.textfield.TextField;
-import java.util.Collection;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-public abstract class ManyToOneBasicField
-<K extends Number, E extends Identifiable<K>, V> extends CustomField<V>
-implements DbNamedColumn {
+public class ManyToOneBasicField<
+  K extends Number
+, E extends Identifiable<K>
+, F extends FilterId<K>
+, V
+, C extends ComboBoxBase<C, E, V>
+>
+extends CustomField<V> implements DbNamedColumn {
 
   private final String dbName;
-  protected final DbGrid<K, E, ? extends Identifiable<K>> dbGrid;
-  protected final Function<E, String> label;
+  protected final DbGrid<K, E, ? extends Identifiable<K>, F> dbGrid;
+  protected final ItemLabelGenerator<E> label;
   protected final Function<E, String> detail;
   private final List<String> involvedFields;
-  protected final TextField viewCtl;
-  protected V value;
-  private final Button clearBtn;
+  private final ReadRequest<K, F> readRequest;
+  protected final ComboBoxBase<C, E, V> viewCtl;
   private final Button selectBtn;
 
   public ManyToOneBasicField(
     String name
-  , DbGrid<K, E, ? extends Identifiable<K>> dbGrid
-  , Function<E, String> label
+  , DbGrid<K, E, ? extends Identifiable<K>, F> dbGrid
+  , ItemLabelGenerator<E> label
   , Function<E, String> detail
   , List<String> involvedFields
+  , BiConsumer<ReadRequest<K, F>, String> fillRequest
+  , C ctl
+  , Function<DbGrid<K, E, ? extends Identifiable<K>, F>, V> getGridSelection
+  , BiConsumer<DbGrid<K, E, ? extends Identifiable<K>, F>, V> setGridSelection
+  , Function<V, String> tooltip
   ) {
     this.dbName = name;
     this.dbGrid = dbGrid;
@@ -44,25 +59,35 @@ implements DbNamedColumn {
     this.label = label;
     this.detail = detail;
     this.involvedFields = involvedFields;
-    viewCtl = new TextField();
-    viewCtl.setReadOnly(true);
-    viewCtl.setWidthFull();
-    clearBtn = new Button(new Icon(VaadinIcon.CLOSE), e -> {
-      this.dbGrid.grid.deselectAll();
-      updateModel();
+    readRequest = Reflection.newInstance(this.dbGrid.entityInf.readRequestClass);
+    readRequest.fields = this.involvedFields;
+    readRequest.sort.clear();
+    readRequest.sort
+    .add(new Order(Order.Direction.ASC, readRequest.fields.getFirst()));
+    viewCtl = ctl;
+    viewCtl.addValueChangeListener(e -> {
+      V v = e.getValue();
+      viewCtl.setTooltipText(v == null ? "" : tooltip.apply(v));
     });
-    clearBtn.addThemeVariants(
-      ButtonVariant.LUMO_SMALL
-    , ButtonVariant.LUMO_TERTIARY_INLINE
-    , ButtonVariant.LUMO_ERROR
-    );
-    clearBtn.setVisible(false);
-    viewCtl.setSuffixComponent(clearBtn);
+    viewCtl.setClearButtonVisible(true);
+    viewCtl.setItemLabelGenerator(this.label);
+    viewCtl.setItemsPageable((pageable, lookingFor) -> {
+      if(lookingFor.isBlank()) {
+        readRequest.filter.reset();
+      } else {
+        fillRequest.accept(readRequest, lookingFor);
+      }
+      readRequest.setStartRow((int) pageable.getOffset());
+      readRequest.setRowsOnPage(pageable.getPageSize());
+      return this.dbGrid.service.read(readRequest).getData();
+    });
+    viewCtl.setWidthFull();
     selectBtn = new Button(new Icon(VaadinIcon.LIST_SELECT), e -> {
+      setGridSelection.accept(this.dbGrid, viewCtl.getValue());
       this.dbGrid.updateView();
       Dialog dialog = new Dialog(this.dbGrid);
       Button select = new Button(getTranslation(Text.Select), ev -> {
-        updateModel();
+        setValue(getGridSelection.apply(this.dbGrid));
         dialog.close();
       });
       select.setId(ToManyField.selectId());
@@ -80,8 +105,11 @@ implements DbNamedColumn {
     });
     selectBtn.addThemeVariants
     (ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_TERTIARY_INLINE);
-    viewCtl.setPrefixComponent(selectBtn);
-    add(viewCtl);
+    HorizontalLayout layout = new HorizontalLayout(viewCtl, selectBtn);
+    layout.setPadding(false);
+    layout.setSpacing(false);
+    layout.getThemeList().add("spacing-xs");
+    add(layout);
   }
 
   @Override
@@ -96,23 +124,29 @@ implements DbNamedColumn {
 
   @Override
   protected V generateModelValue() {
-    return value;
+    return viewCtl.getValue();
   }
 
-  public abstract V getModelValue();
+  @Override
+  public V getValue() {
+    return viewCtl.getValue();
+  }
+
+  @Override
+  public void setValue(V v) {
+    super.setValue(v);
+    viewCtl.setValue(v);
+  }
+
+  @Override
+  protected void setPresentationValue(V v) {
+    viewCtl.setValue(v);
+  }
 
   @Override
   public void setReadOnly(boolean v) {
-    clearBtn.setVisible(!v);
+    viewCtl.setReadOnly(v);
     selectBtn.setVisible(!v);
-  }
-
-  private void updateModel() {
-    V v = getModelValue();
-    setPresentationValue(v);
-    setModelValue(v, true);
-    clearBtn.setVisible(v != null
-    && !((v instanceof Collection) && ((Collection)v).isEmpty()));
   }
 
 }

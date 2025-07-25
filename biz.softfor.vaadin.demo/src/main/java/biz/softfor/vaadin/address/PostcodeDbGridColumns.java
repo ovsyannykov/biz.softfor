@@ -11,12 +11,16 @@ import biz.softfor.address.jpa.Postcode;
 import biz.softfor.address.jpa.Postcode_;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.util.api.Order;
+import biz.softfor.util.api.ReadRequest;
+import biz.softfor.util.api.filter.Expr;
+import biz.softfor.util.api.filter.Value;
 import biz.softfor.vaadin.dbgrid.DbGridColumns;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
 import biz.softfor.vaadin.dbgrid.TextDbGridColumn;
 import biz.softfor.vaadin.VaadinUtil;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import java.util.List;
+import java.util.function.BiConsumer;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 
@@ -26,6 +30,15 @@ public class PostcodeDbGridColumns extends DbGridColumns<Integer, Postcode> {
 
   public static List<Order> DEFAULT_SORT
   = List.of(new Order(Order.Direction.ASC, Postcode_.POSTCODE));
+
+  public final static BiConsumer<ReadRequest<Integer, PostcodeFltr>, String>
+  FILL_REQUEST = (request, lookingFor) -> {
+    String like = "%" + lookingFor.toLowerCase() + "%";
+    request.filter.and(new Expr(Expr.LIKE
+    , new Expr(Expr.LOWER, Postcode_.POSTCODE)
+    , new Value(like)
+    ));
+  };
 
   public PostcodeDbGridColumns(
     SecurityMgr securityMgr
@@ -49,6 +62,7 @@ public class PostcodeDbGridColumns extends DbGridColumns<Integer, Postcode> {
       , District::getName
       , District::getFullname
       , List.of(District_.NAME, District_.FULLNAME)
+      , DistrictField.FILL_REQUEST
       )
     , new ManyToOneDbGridColumn<>(
         Postcode_.CITY
@@ -62,6 +76,7 @@ public class PostcodeDbGridColumns extends DbGridColumns<Integer, Postcode> {
       , City::getName
       , City::getName
       , List.of(City_.NAME)
+      , CityDbGridColumns.FILL_REQUEST
       )
     );
   }

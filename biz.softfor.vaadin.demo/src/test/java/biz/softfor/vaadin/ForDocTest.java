@@ -24,7 +24,7 @@ import org.junit.jupiter.api.TestInfo;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
 
-//@org.springframework.boot.test.context.SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@org.springframework.boot.test.context.SpringBootTest(webEnvironment = org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = { App.class })
 @UsePlaywright
 public class ForDocTest {
@@ -37,7 +37,7 @@ public class ForDocTest {
   @LocalServerPort
   private int port;
 
-  //@org.junit.jupiter.api.Test
+//  @org.junit.jupiter.api.Test
   public void forDoc(TestInfo testInfo, Page page) throws Exception {
     page.setViewportSize(1280, 800);
     DriverHlpr drvHlpr = new DriverHlpr(page, port);
@@ -118,7 +118,7 @@ public class ForDocTest {
     screenshot.get(page, name + 0);
     Object manyToOneFieldStyle = VaadinTestUtil.highlight(manyToOneFieldLocator);
     screenshot.get(page, name + 1);
-    page.click(manyToOneField + "/vaadin-text-field/vaadin-button[2]");
+    page.click(manyToOneField + "/vaadin-horizontal-layout/vaadin-button");
     String locationTypeGridId = ToManyField.gridId(Partner_.LOCATION_TYPE);
     String manyToOneFieldSelectedXp = "//*[@id='" + locationTypeGridId + "']/vaadin-grid-cell-content[text()='branch'][1]";
     page.locator(manyToOneFieldSelectedXp).scrollIntoViewIfNeeded();
@@ -127,13 +127,27 @@ public class ForDocTest {
     page.locator("#" + ToManyField.selectId()).click();
     page.locator("#" + locationTypeGridId).waitFor(VaadinTestUtil.DETACHED);
     screenshot.get(page, name + 3);
+    manyToOneFieldLocator.locator("#clearButton").click();
+    screenshot.get(page, name + 4);
+    manyToOneFieldLocator.locator("#toggleButton").click();
+    manyToOneFieldLocator.scrollIntoViewIfNeeded();
+    Locator m2oFieldItem0 = page.locator("//*[@id='vaadin-combo-box-item-0']");
+    m2oFieldItem0.waitFor(DriverHlpr.wait);
+    screenshot.get(page, name + 5);
+    m2oFieldItem0.click();
+    manyToOneFieldLocator.locator("#toggleButton").click();
+    manyToOneFieldLocator.scrollIntoViewIfNeeded();
+    screenshot.get(page, name + 6);
+    manyToOneFieldLocator.locator("#toggleButton").click();
+    manyToOneFieldLocator.scrollIntoViewIfNeeded();
+    screenshot.get(page, name + 7);
     VaadinTestUtil.unhighlight(manyToOneFieldLocator, manyToOneFieldStyle);
     page.click("#" + EntityForm.saveId());
     page.locator("#" + entityViewGridId).waitFor(DriverHlpr.wait);
     Locator manyToOneCell = page.locator("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='branch']");
     manyToOneCell.scrollIntoViewIfNeeded();
     Object manyToOneCellStyle = VaadinTestUtil.highlight(manyToOneCell);
-    screenshot.get(page, name + 4);
+    screenshot.get(page, name + 8);
     VaadinTestUtil.unhighlight(manyToOneCell, manyToOneCellStyle);
 
     name = "ManyToOneDbGridColumn";
@@ -144,19 +158,44 @@ public class ForDocTest {
     screenshot.get(page, name + 0);
     Object m2oDbGridColumnStyle = VaadinTestUtil.highlight(m2oDbGridColumn);
     screenshot.get(page, name + 1);
-    m2oDbGridColumn.locator("//vaadin-button[2]").click();
-    page.locator("#" + locationTypeGridId).scrollIntoViewIfNeeded();
+    Locator m2oDbGridColumnInput = m2oDbGridColumn.locator("//vaadin-multi-select-combo-box/input");
+    m2oDbGridColumnInput.click();
+    Locator m2oDbGridColumnItem0 = page.locator("//*[@id='vaadin-multi-select-combo-box-item-0']");
+    m2oDbGridColumnItem0.waitFor(DriverHlpr.wait);
     screenshot.get(page, name + 2);
+    m2oDbGridColumnInput.fill("n");
+    m2oDbGridColumnItem0.waitFor(DriverHlpr.wait);
+    screenshot.get(page, name + 3);
+    m2oDbGridColumnInput.fill("nt");
+    m2oDbGridColumnItem0.waitFor(DriverHlpr.wait);
+    screenshot.get(page, name + 4);
+    m2oDbGridColumnInput.fill("nte");
+    m2oDbGridColumnItem0.waitFor(DriverHlpr.wait);
+    screenshot.get(page, name + 5);
+    m2oDbGridColumnItem0.click();
+    screenshot.get(page, name + 6);
+    m2oDbGridColumnInput.fill("nt");
+    m2oDbGridColumnItem0.waitFor(DriverHlpr.wait);
+    screenshot.get(page, name + 7);
+    m2oDbGridColumnItem0.click();
+    screenshot.get(page, name + 8);
+    m2oDbGridColumnInput.click();
+    m2oDbGridColumnItem0.waitFor(DriverHlpr.wait);
+    screenshot.get(page, name + 9);
+    m2oDbGridColumn.locator("#toggleButton").click();
+    m2oDbGridColumn.locator("//vaadin-horizontal-layout/vaadin-button").click();
+    page.locator("#" + locationTypeGridId).scrollIntoViewIfNeeded();
+    screenshot.get(page, name + 10);
     page.click("//*[@id='" + locationTypeGridId + "']/vaadin-grid-cell-content"
     + "[text()='main office']/preceding-sibling::*[1]/vaadin-checkbox");
-    screenshot.get(page, name + 3);
+    screenshot.get(page, name + 11);
     page.locator("#" + ToManyField.selectId()).click();
     page.locator("#" + locationTypeGridId).waitFor(VaadinTestUtil.DETACHED);
-    screenshot.get(page, name + 4);
+    screenshot.get(page, name + 12);
     page.click("#" + filtrateId);
     page.locator("//*[@id='" + entityViewGridId + "']/vaadin-grid-cell-content[text()='office']")
     .waitFor(VaadinTestUtil.DETACHED);
-    screenshot.get(page, name + 5);
+    screenshot.get(page, name + 13);
     VaadinTestUtil.unhighlight(m2oDbGridColumn, m2oDbGridColumnStyle);
 
     name = "ManyToManyField";
@@ -216,7 +255,7 @@ public class ForDocTest {
     Object gridFilterStyle = VaadinTestUtil.highlight(gridFilter);
     screenshot.get(page, name + 1);
     dialogSlctId = ToManyField.gridId(User.TITLE);
-    gridFilter.locator("xpath=/vaadin-text-field/vaadin-button[2]").click();
+    gridFilter.locator("xpath=/vaadin-horizontal-layout/vaadin-button").click();
     page.locator("//*[@id='" + dialogSlctId + "']").scrollIntoViewIfNeeded();
     screenshot.get(page, name + 2);
     page.click("//*[@id='" + dialogSlctId + "']/vaadin-grid-cell-content[text()='" + ADMIN_USER + "']");

@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.ContactFltr;
 import biz.softfor.partner.jpa.Contact;
 import biz.softfor.partner.jpa.ContactWor;
 import biz.softfor.partner.spring.ContactSvc;
@@ -11,7 +12,8 @@ import org.springframework.context.annotation.Scope;
 
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ContactsDbGrid extends DbGrid<Long, Contact, ContactWor> {
+public class ContactsDbGrid
+extends DbGrid<Long, Contact, ContactWor, ContactFltr> {
 
   public ContactsDbGrid(ContactSvc service, ContactDbGridColumns columns) {
     super(service, columns, DbGridColumns.EMPTY);

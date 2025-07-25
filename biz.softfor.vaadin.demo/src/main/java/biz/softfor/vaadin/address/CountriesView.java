@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.CountryFltr;
 import biz.softfor.address.jpa.Country;
 import biz.softfor.address.jpa.CountryWor;
 import biz.softfor.user.spring.SecurityMgr;
@@ -16,7 +17,8 @@ import org.springframework.context.annotation.Scope;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @AnonymousAllowed
 @Route(value = CountriesView.PATH, layout = MainLayout.class)
-public class CountriesView extends EntityView<Short, Country, CountryWor> {
+public class CountriesView
+extends EntityView<Short, Country, CountryWor, CountryFltr> {
 
   public final static String PATH = "country";
 

@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.CountryFltr;
 import biz.softfor.address.jpa.Country;
 import biz.softfor.address.jpa.CountryWor;
 import biz.softfor.address.spring.CountrySvc;
@@ -11,7 +12,8 @@ import org.springframework.context.annotation.Scope;
 
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class CountriesDbGrid extends DbGrid<Short, Country, CountryWor> {
+public class CountriesDbGrid
+extends DbGrid<Short, Country, CountryWor, CountryFltr> {
 
   public CountriesDbGrid(CountrySvc service, CountryDbGridColumns columns) {
     super(service, columns, DbGridColumns.EMPTY);

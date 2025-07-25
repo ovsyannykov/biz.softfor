@@ -7,16 +7,14 @@ import biz.softfor.partner.jpa.PersonDetails_;
 import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.filter.FilterId;
 import biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn;
-import static biz.softfor.vaadin.dbgrid.ManyToOneDbGridColumn.defaultFilter;
 import biz.softfor.vaadin.VaadinUtil;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class PartnerBasicDbGridColumn<M, MF extends FilterId>
-extends ManyToOneDbGridColumn<M, MF, Long, Partner> {
+extends ManyToOneDbGridColumn<M, MF, Long, Partner, PartnerFltr> {
 
   public PartnerBasicDbGridColumn(
     String dbName
@@ -32,16 +30,18 @@ extends ManyToOneDbGridColumn<M, MF, Long, Partner> {
         Partner e = getter.apply(m);
         return e == null ? "" : e.label();
       })
-      , defaultFilter(filterGetter, filterSetter, filterSupplier)
-      , partners
-      , Partner::label
-      , Partner::details
-      , List.of(
-          Partner_.TYP
-        , Partner_.PARTNER_NAME
-        , Partner_.PARTNER_FULLNAME
-        , StringUtil.field(Partner_.PERSON_DETAILS, PersonDetails_.MIDDLENAME)
-        )
+    , ManyToOneDbGridColumn.defaultFilter
+      (filterGetter, filterSetter, filterSupplier)
+    , partners
+    , Partner::label
+    , Partner::details
+    , List.of(
+        Partner_.TYP
+      , Partner_.PARTNER_NAME
+      , Partner_.PARTNER_FULLNAME
+      , StringUtil.field(Partner_.PERSON_DETAILS, PersonDetails_.MIDDLENAME)
+      )
+    , PartnerField.FILL_REQUEST
     );
   }
 

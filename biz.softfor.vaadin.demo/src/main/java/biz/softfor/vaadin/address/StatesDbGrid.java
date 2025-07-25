@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.StateFltr;
 import biz.softfor.address.jpa.State;
 import biz.softfor.address.jpa.StateWor;
 import biz.softfor.address.spring.StateSvc;
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.Scope;
 
 @SpringComponent
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class StatesDbGrid extends DbGrid<Integer, State, StateWor> {
+public class StatesDbGrid extends DbGrid<Integer, State, StateWor, StateFltr> {
 
   public StatesDbGrid(StateSvc service, StateDbGridColumns columns) {
     super(service, columns, DbGridColumns.EMPTY);

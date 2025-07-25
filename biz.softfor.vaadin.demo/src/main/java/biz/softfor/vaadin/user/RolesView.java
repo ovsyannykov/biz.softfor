@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.user;
 
+import biz.softfor.user.api.RoleFltr;
 import biz.softfor.user.jpa.Role;
 import biz.softfor.user.jpa.RoleWor;
 import biz.softfor.user.jpa.Role_;
@@ -21,7 +22,7 @@ import org.springframework.context.annotation.Scope;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @AnonymousAllowed
 @Route(value = RolesView.PATH, layout = MainLayout.class)
-public class RolesView extends EntityView<Long, Role, RoleWor> {
+public class RolesView extends EntityView<Long, Role, RoleWor, RoleFltr> {
 
   public final static String PATH = "role";
 

@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.address;
 
+import biz.softfor.address.api.CityFltr;
 import biz.softfor.address.jpa.City;
 import biz.softfor.address.jpa.City_;
 import biz.softfor.address.jpa.Postcode;
@@ -32,12 +33,16 @@ public class PostcodeForm extends EntityForm<Integer, Postcode, PostcodeWor> {
         Postcode.class
       , new LinkedHashMap<>() {{
           put(Postcode_.POSTCODE, new TextField(Postcode_.POSTCODE));
-          DistrictField districtField
-          = new DistrictField(Postcode_.DISTRICT, districts);
-          put(Postcode_.DISTRICT, districtField);
-          ManyToOneField<Integer, City> cityField = new ManyToOneField<>
-          (Postcode_.CITY, cities, City::getName, City::getName, List.of(City_.NAME));
-          put(Postcode_.CITY, cityField);
+          put(Postcode_.DISTRICT, new DistrictField(Postcode_.DISTRICT
+          , districts
+          ));
+          put(Postcode_.CITY, new ManyToOneField<>(Postcode_.CITY
+          , cities
+          , City::getName
+          , City::getName
+          , List.of(City_.NAME)
+          , CityDbGridColumns.FILL_REQUEST
+          ));
         }}
       , securityMgr
       )

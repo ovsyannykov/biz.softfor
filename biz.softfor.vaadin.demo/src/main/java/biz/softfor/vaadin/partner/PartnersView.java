@@ -1,5 +1,6 @@
 package biz.softfor.vaadin.partner;
 
+import biz.softfor.partner.api.PartnerFltr;
 import biz.softfor.partner.jpa.Contact;
 import biz.softfor.partner.jpa.Partner;
 import biz.softfor.partner.jpa.PartnerFile;
@@ -25,7 +26,8 @@ import org.springframework.context.annotation.Scope;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Route(value = PartnersView.PATH, layout = MainLayout.class)
 @AnonymousAllowed
-public class PartnersView extends EntityView<Long, Partner, PartnerWor> {
+public class PartnersView
+extends EntityView<Long, Partner, PartnerWor, PartnerFltr> {
 
   public final static String PATH = "partner";
 
