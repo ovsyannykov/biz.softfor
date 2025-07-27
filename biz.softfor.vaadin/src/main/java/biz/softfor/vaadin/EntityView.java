@@ -94,16 +94,15 @@ public abstract class EntityView<
     layout.addToPrimary(this.dbGrid);
     layout.setSizeFull();
     if(this.dbGrid.columns.isAccessible()) {
+      binder = new Binder<>(this.dbGrid.entityInf.clazz);
       this.dbGrid.grid.setId(gridId(this.dbGrid.entityInf.clazz));
       for(GridField<?, ?, E, ?> c : this.grids) {
         DbNamedColumn.fields
         (this.dbGrid.readRequest.fields, c.columns, c.dbName());
       }
       if(this.grids.isEmpty()) {
-        binder = null;
         itemsPanesContainer = null;
       } else {
-        binder = new Binder<>(this.dbGrid.entityInf.clazz);
         itemsPanesContainer = new VerticalLayout();
         for(GridField<?, ?, E, ?> g : this.grids) {
           binder.bindReadOnly(g, g.dbName());

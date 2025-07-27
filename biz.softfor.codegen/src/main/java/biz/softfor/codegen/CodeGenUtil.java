@@ -33,6 +33,7 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.URL;
 
 public class CodeGenUtil {
 
@@ -63,8 +65,8 @@ public class CodeGenUtil {
   public final static String ID_SUFFIX = "_Id";
   public final static String PARAM_NAME = "v";
   public final static String RESULT_NAME = "result";
-  public final static String VALIDATION_ANNOTATIONS_PKG
-  = NotNull.class.getPackageName();
+  public final static String[] VALIDATION_ANNOTATIONS_PKGS
+  = { NotNull.class.getPackageName(), URL.class.getPackageName() };
   public final static String[] API_EXCLUDED_ANNOTATIONS
   = { ActionAccess.class.getName(), JsonFilter.class.getName() };
   public final static String[] API_EXCLUDED_PACKAGES
@@ -354,7 +356,7 @@ public class CodeGenUtil {
       if(!ArrayUtils.contains(excludePackages, aPackageName)
       && !ArrayUtils.contains(excludeAnnotations, aClass.getName())) {
         AnnotationSpec as = AnnotationSpec.get(a);
-        if(VALIDATION_ANNOTATIONS_PKG.equals(aPackageName)) {
+        if(ArrayUtils.contains(VALIDATION_ANNOTATIONS_PKGS, aPackageName)) {
           as = as.toBuilder().addMember(
             "groups"
           , "{ $T.class, $L.class }"

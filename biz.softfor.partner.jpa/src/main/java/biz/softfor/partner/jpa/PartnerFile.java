@@ -42,7 +42,6 @@ public class PartnerFile extends IdEntity<Long> implements Serializable {
   private String descr;
 
   @Column
-  @URL
   @NotBlank
   @Size(max = 511)
   private String uri;

@@ -20,6 +20,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
@@ -31,8 +32,11 @@ import org.hibernate.validator.constraints.URL;
 
 public class FilterGen extends CodeGen {
 
-  private final static String[] FILTER_EXCLUDED_PACKAGES
-  = { Entity.class.getPackageName(), CodeGenUtil.VALIDATION_ANNOTATIONS_PKG };
+  private final static String[] FILTER_EXCLUDED_PACKAGES = {
+    Entity.class.getPackageName()
+  , NotNull.class.getPackageName()
+  , URL.class.getPackageName()
+  };
   private final static String[] FILTER_FIELD_EXCLUDED_ANNOTATIONS = {
     ActionAccess.class.getName()
   , Identifier.class.getName()
