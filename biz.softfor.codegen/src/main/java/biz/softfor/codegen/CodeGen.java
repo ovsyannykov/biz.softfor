@@ -57,15 +57,20 @@ public abstract class CodeGen extends AbstractProcessor {
             exclude.add(v.getValue().toString());
           }
         }
+        String[] packages;
         AnnotationValue av = CodeGenUtil.getAnnotationProperty
         (element, supportedAnnotation, CodeGenUtil.VALUE_ANNO_PROP);
-        @SuppressWarnings("unchecked")
-        List<? extends AnnotationValue> avs
-        = (List<? extends AnnotationValue>)av.getValue();
-        String[] packages = new String[avs.size()];
-        for(int i = 0; i < packages.length; ++i) {
-          String className = avs.get(i).getValue().toString();
-          packages[i] = className.substring(0, className.lastIndexOf('.'));
+        if(av == null) {
+          packages = new String[] { element.asType().toString() };
+        } else {
+          @SuppressWarnings("unchecked")
+          List<? extends AnnotationValue> avs
+          = (List<? extends AnnotationValue>)av.getValue();
+          packages = new String[avs.size()];
+          for(int i = 0; i < packages.length; ++i) {
+            String className = avs.get(i).getValue().toString();
+            packages[i] = className.substring(0, className.lastIndexOf('.'));
+          }
         }
         FilterBuilder fb = new FilterBuilder();
         for(String p : packages) {
