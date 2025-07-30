@@ -5,7 +5,7 @@ import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.util.api.Identifiable;
 import biz.softfor.util.api.filter.Expr;
 import biz.softfor.util.api.filter.FilterId;
-import biz.softfor.vaadin.ColumnSecured;
+import biz.softfor.vaadin.RequiredSecured;
 import biz.softfor.vaadin.Text;
 import biz.softfor.vaadin.VaadinUtil;
 import biz.softfor.vaadin.dbgrid.DbGrid;
@@ -67,9 +67,9 @@ public class ToManyField<
   ) {
     super(dbName, dbGrid.service.clazz(), defaultValue, columns);
     Map<String, ColumnDescr> cds = ColumnDescr.get(parent);
-    ColumnSecured cs
-    = new ColumnSecured(securityMgr, cds, dbName, Collections.EMPTY_LIST);
-    if(!cs.isReadOnly()) {
+    RequiredSecured rs
+    = new RequiredSecured(securityMgr, cds, dbName, Collections.EMPTY_LIST);
+    if(!rs.isReadOnly()) {
       if(isManyToMany) {
         dbGrid.grid.setId(gridId(dbName()));
         dbGrid.grid.setSelectionMode(Grid.SelectionMode.MULTI);

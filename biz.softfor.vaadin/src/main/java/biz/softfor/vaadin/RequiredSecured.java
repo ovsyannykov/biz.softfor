@@ -8,13 +8,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class ColumnSecured implements Secured {
+public class RequiredSecured implements Secured {
 
   private final boolean required;
   private final boolean accessible;
   private final boolean readOnly;
 
-  public ColumnSecured(
+  public RequiredSecured(
     SecurityMgr securityMgr
   , Map<String, ColumnDescr> cds
   , String field
@@ -45,8 +45,28 @@ public class ColumnSecured implements Secured {
       }
     }
     required = req;
-    accessible = acc && isInvolvedFieldsAccessible
-    (securityMgr, cds, fieldParts[fieldParts.length - 1], involvedFields);
+    if(acc) {
+      boolean isInvolvedFieldsAccessible = true;
+      Class<?> clazz = cds.get(fieldParts[fieldParts.length - 1]).clazz;
+      RETURN:
+      for(String invf : involvedFields) {
+        String[] invfp = invf.split(StringUtil.FIELDS_DELIMITER_REGEX);
+        for(int i = 0; i < invfp.length; ++i) {
+          ColumnDescr cd = ColumnDescr.get(clazz).get(invfp[i]);
+          if(cd == null || !securityMgr.isAllowed(cd.roleId, groups)) {
+            isInvolvedFieldsAccessible = false;
+            break RETURN;
+          }
+          if(i < invfp.length - 1) {
+            clazz = cd.clazz;
+          }
+        }
+      }
+      if(!isInvolvedFieldsAccessible) {
+        acc = false;
+      }
+    }
+    accessible = acc;
     readOnly = ro;
   }
 
@@ -62,32 +82,6 @@ public class ColumnSecured implements Secured {
 
   public boolean required() {
     return required;
-  }
-
-  private static boolean isInvolvedFieldsAccessible(
-    SecurityMgr securityMgr
-  , Map<String, ColumnDescr> cds
-  , String columnName
-  , List<String> involvedFields
-  ) {
-    boolean result = true;
-    Collection<String> groups = SecurityUtil.groups();
-    Class<?> clazz = cds.get(columnName).clazz;
-    RETURN:
-    for(String field : involvedFields) {
-      String[] fieldParts = field.split(StringUtil.FIELDS_DELIMITER_REGEX);
-      for(int i = 0; i < fieldParts.length; ++i) {
-        ColumnDescr cd = ColumnDescr.get(clazz).get(fieldParts[i]);
-        if(cd == null || !securityMgr.isAllowed(cd.roleId, groups)) {
-          result = false;
-          break RETURN;
-        }
-        if(i < fieldParts.length - 1) {
-          clazz = cd.clazz;
-        }
-      }
-    }
-    return result;
   }
 
 }

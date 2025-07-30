@@ -4,7 +4,7 @@ import biz.softfor.jpa.crud.querygraph.ColumnDescr;
 import biz.softfor.user.spring.SecurityMgr;
 import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.Identifiable;
-import biz.softfor.vaadin.ColumnSecured;
+import biz.softfor.vaadin.RequiredSecured;
 import biz.softfor.vaadin.DefaultSort;
 import biz.softfor.vaadin.Secured;
 import com.vaadin.flow.component.AbstractField;
@@ -27,9 +27,9 @@ implements DefaultSort, Secured {
       Map<String, ColumnDescr> cds = ColumnDescr.get(clazz);
       for(GridFieldColumn<E, ?, ? extends AbstractField, ?> c : columns) {
         String columnName = c.dbName();
-        ColumnSecured cs
-        = new ColumnSecured(securityMgr, cds, columnName, c.involvedFields());
-        if(cs.isAccessible()) {
+        RequiredSecured rs
+        = new RequiredSecured(securityMgr, cds, columnName, c.involvedFields());
+        if(rs.isAccessible()) {
           add(c);
           if(!acc && !columnName.equals(Identifiable.ID)
           && !columnName.endsWith(StringUtil.FIELDS_DELIMITER + Identifiable.ID)) {

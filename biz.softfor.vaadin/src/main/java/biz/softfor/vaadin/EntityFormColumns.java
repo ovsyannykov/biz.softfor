@@ -38,19 +38,19 @@ extends LinkedHashMap<String, Component> implements Secured {
       } else {
         involvedFields = Collections.EMPTY_LIST;
       }
-      ColumnSecured cs = new ColumnSecured
+      RequiredSecured rs = new RequiredSecured
       (securityMgr, entityInf.cds, fieldName, involvedFields);
       boolean isGrid = c instanceof GridField;
-      if(cs.isAccessible() && (!isGrid || ((GridField)c).columns.isAccessible())) {
+      if(rs.isAccessible() && (!isGrid || ((GridField)c).columns.isAccessible())) {
         put(fieldName, c);
         if(!((HasValue)c).isReadOnly()) {
-          if(cs.isReadOnly()) {
+          if(rs.isReadOnly()) {
             ((HasValue)c).setReadOnly(true);
           } else {
             ro = false;
           }
         }
-      } else if(cs.required()) {
+      } else if(rs.required()) {
         ae = false;
       }
     }

@@ -6,7 +6,7 @@ import biz.softfor.util.StringUtil;
 import biz.softfor.util.api.Identifiable;
 import biz.softfor.util.api.Order;
 import biz.softfor.util.api.filter.FilterId;
-import biz.softfor.vaadin.ColumnSecured;
+import biz.softfor.vaadin.RequiredSecured;
 import biz.softfor.vaadin.DefaultSort;
 import biz.softfor.vaadin.Secured;
 import com.vaadin.flow.component.AbstractField;
@@ -40,15 +40,15 @@ implements DefaultSort, Secured {
       for(DbGridColumn<E, ?, ? extends AbstractField, ?, ? extends FilterId<K>>
       c : columns) {
         String columnName = c.dbName();
-        ColumnSecured cs
-        = new ColumnSecured(securityMgr, cds, c.dbName(), c.involvedFields());
-        if(cs.isAccessible()) {
+        RequiredSecured rs
+        = new RequiredSecured(securityMgr, cds, c.dbName(), c.involvedFields());
+        if(rs.isAccessible()) {
           add(c);
           if(!acc && !columnName.equals(Identifiable.ID)
           && !columnName.endsWith(StringUtil.FIELDS_DELIMITER + Identifiable.ID)) {
             acc = true;
           }
-          if(!cs.isReadOnly()) {
+          if(!rs.isReadOnly()) {
             ro = false;
           }
         }
